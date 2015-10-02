@@ -1,0 +1,13 @@
+---  
+
+- name: "Setup AWS"
+  hosts: localhost
+  gather_facts: no
+
+  vars:
+    aws_region: us-west-2  # If not specified then the value of the EC2_REGION environment variable, if any, is used.
+
+  tasks:
+
+    - name: create VPC
+      command: /usr/local/terraform/terraform plan
