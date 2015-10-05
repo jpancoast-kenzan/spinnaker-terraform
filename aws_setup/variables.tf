@@ -5,7 +5,7 @@ variable "region" {
 }
 
 # vpc tag name
-variable "tag_name" {
+variable "vpc_tag_name" {
   default = "vpc_A"
 }
 
@@ -27,6 +27,15 @@ variable "count_private_subnet_block" {
   default = 6
 }
 
+# Sub netting defaults
+variable "subnets" {
+  default = {
+    "eelb"="192.0/22"
+    "elb"="195.0/22"
+    "infra"="198.0/22"
+    "admin"="201.0/22"
+  }
+}
 
 variable "public_subnet_block" {
  default = {
