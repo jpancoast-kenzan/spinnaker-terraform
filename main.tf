@@ -2,7 +2,7 @@
 # provider
 
 module "vpc" {
-	source = "./vpc"
+	source = "modules/vpc"
 }
 
 #module "securitygroups" {
@@ -10,9 +10,9 @@ module "vpc" {
 #}
 
 module "iam" {
-    source = "./iam"
+    source = "modules/iam"
 }
 
 module "keypair" {
-    source = "./keypair"
+    source = "modules/keypair"
 }
