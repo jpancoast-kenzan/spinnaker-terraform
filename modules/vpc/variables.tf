@@ -5,7 +5,7 @@ variable "region" {
 }
 
 # vpc tag name
-variable "tag_name" {
+variable "vpc_tag_name" {
   default = "vpc_A"
 }
 
@@ -27,6 +27,15 @@ variable "count_private_subnet_block" {
   default = 6
 }
 
+# Sub netting defaults
+variable "subnets" {
+  default = {
+    "eelb"="192.0/22"
+    "elb"="195.0/22"
+    "infra"="198.0/22"
+    "admin"="201.0/22"
+  }
+}
 
 variable "public_subnet_block" {
  default = {
@@ -40,12 +49,12 @@ variable "private_subnet_block" {
  default = {
 
   "0" = "4.0/24;us-west-2a;zuul_private_vpc_A;{\"purpose\":\"zuul\",\"target\":\"ec2\"}"
-  "1" = "5.0/24;us-west-2b;zuul_private_vpc_A;{\"purpose\":\"vpc_A_zuul\",\"target\":\"ec2\"}"
-  "2" = "6.0/24;us-west-2c;zuul_private_vpc_A;{\"purpose\":\"vpc_A_zuul\",\"target\":\"ec2\"}"
+  "1" = "5.0/24;us-west-2b;zuul_private_vpc_A;{\"purpose\":\"zuul\",\"target\":\"ec2\"}"
+  "2" = "6.0/24;us-west-2c;zuul_private_vpc_A;{\"purpose\":\"zuul\",\"target\":\"ec2\"}"
 
-  "3" = "8.0/26;us-west-2a;loginedge_private_vpc_A;{\"purpose\":\"vpc_A_loginedge\",\"target\":\"ec2\"}"
-  "4" = "8.64/26;us-west-2b;loginedge_private_vpc_A;{\"purpose\":\"vpc_A_loginedge\",\"target\":\"ec2\"}"
-  "5" = "8.128/26;us-west-2c;loginedge_private_vpc_A;{\"purpose\":\"vpc_A_loginedge\",\"target\":\"ec2\"}"
+  "3" = "8.0/26;us-west-2a;admin_private_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
+  "4" = "8.64/26;us-west-2b;admin_private_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
+  "5" = "8.128/26;us-west-2c;admin_private_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
 
   }
 } 

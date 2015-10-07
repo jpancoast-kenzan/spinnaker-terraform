@@ -39,6 +39,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# terraform module import
+.terraform
+
 # Random editors
 .edit*
 *.swp

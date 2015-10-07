@@ -9,5 +9,8 @@
 
   tasks:
 
-    - name: create VPC
-      command: /usr/local/terraform/terraform plan
+    - name: import modules
+      command: /usr/local/terraform/terraform get
+
+    - name: execute terraform
+      raw: /usr/local/terraform/terraform plan
