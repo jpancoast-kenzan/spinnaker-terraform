@@ -42,6 +42,11 @@ Temporary Items
 # terraform module import
 .terraform
 
+# Terraform state (for now)
+terraform.tfstate
+terraform.tfstate.*
+
 # Random editors
 .edit*
 *.swp
+
