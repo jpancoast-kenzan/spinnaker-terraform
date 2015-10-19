@@ -90,8 +90,8 @@ resource "aws_iam_role" "spinnaker_role" {
 EOF
 }
 
-resource "aws_iam_role_policy" "asgard_autoscale_policy" {
-  name = "asgard_autoscale_policy"
+resource "aws_iam_role_policy" "spinnaker_autoscale_policy" {
+  name = "spinnaker_autoscale_policy"
   role = "${aws_iam_role.spinnaker_role.id}"
   policy = <<EOF
 {
@@ -146,8 +146,8 @@ resource "aws_iam_role_policy" "asgard_autoscale_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy" "asgard_cloudwatch_policy" {
-  name = "asgard_cloudwatch_policy"
+resource "aws_iam_role_policy" "spinnaker_cloudwatch_policy" {
+  name = "spinnaker_cloudwatch_policy"
   role = "${aws_iam_role.spinnaker_role.id}"
   policy = <<EOF
 {
@@ -165,8 +165,8 @@ resource "aws_iam_role_policy" "asgard_cloudwatch_policy" {
 }
 EOF
 }
-resource "aws_iam_role_policy" "asgard_dynamodb_policy" {
-  name = "asgard_dynamodb_policy"
+resource "aws_iam_role_policy" "spinnaker_dynamodb_policy" {
+  name = "spinnaker_dynamodb_policy"
   role = "${aws_iam_role.spinnaker_role.id}"
   policy = <<EOF
 {
@@ -184,8 +184,8 @@ resource "aws_iam_role_policy" "asgard_dynamodb_policy" {
 }
 EOF
 }
-resource "aws_iam_role_policy" "asgard_ec2_policy" {
-  name = "asgard_ec2_policy"
+resource "aws_iam_role_policy" "spinnaker_ec2_policy" {
+  name = "spinnaker_ec2_policy"
   role = "${aws_iam_role.spinnaker_role.id}"
   policy = <<EOF
 {
@@ -253,8 +253,8 @@ resource "aws_iam_role_policy" "asgard_ec2_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy" "asgard_elasticache_policy" {
-  name = "asgard_elasticache_policy"
+resource "aws_iam_role_policy" "spinnaker_elasticache_policy" {
+  name = "spinnaker_elasticache_policy"
   role = "${aws_iam_role.spinnaker_role.id}"
   policy = <<EOF
 {
@@ -273,8 +273,8 @@ resource "aws_iam_role_policy" "asgard_elasticache_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy" "asgard_elb_policy" {
-  name = "asgard_elb_policy"
+resource "aws_iam_role_policy" "spinnaker_elb_policy" {
+  name = "spinnaker_elb_policy"
   role = "${aws_iam_role.spinnaker_role.id}"
   policy = <<EOF
 {
@@ -293,8 +293,8 @@ resource "aws_iam_role_policy" "asgard_elb_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy" "asgard_iam-passrole_policy" {
-  name = "asgard_iam-passrole_policy"
+resource "aws_iam_role_policy" "spinnaker_iam-passrole_policy" {
+  name = "spinnaker_iam-passrole_policy"
   role = "${aws_iam_role.spinnaker_role.id}"
   policy = <<EOF
 {
@@ -313,8 +313,8 @@ resource "aws_iam_role_policy" "asgard_iam-passrole_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy" "asgard_route53_policy" {
-  name = "asgard_route53_policy"
+resource "aws_iam_role_policy" "spinnaker_route53_policy" {
+  name = "spinnaker_route53_policy"
   role = "${aws_iam_role.spinnaker_role.id}"
   policy = <<EOF
 {
@@ -333,8 +333,8 @@ resource "aws_iam_role_policy" "asgard_route53_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy" "asgard_rds_policy" {
-  name = "asgard_rds_policy"
+resource "aws_iam_role_policy" "spinnaker_rds_policy" {
+  name = "spinnaker_rds_policy"
   role = "${aws_iam_role.spinnaker_role.id}"
   policy = <<EOF
 {
@@ -365,8 +365,8 @@ resource "aws_iam_role_policy" "asgard_rds_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy" "asgard_s3_policy" {
-  name = "asgard_s3_policy"
+resource "aws_iam_role_policy" "spinnaker_s3_policy" {
+  name = "spinnaker_s3_policy"
   role = "${aws_iam_role.spinnaker_role.id}"
   policy = <<EOF
 {
@@ -391,8 +391,8 @@ resource "aws_iam_role_policy" "asgard_s3_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy" "asgard_simpledb_policy" {
-  name = "asgard_simpledb_policy"
+resource "aws_iam_role_policy" "spinnaker_simpledb_policy" {
+  name = "spinnaker_simpledb_policy"
   role = "${aws_iam_role.spinnaker_role.id}"
   policy = <<EOF
 {
@@ -411,8 +411,8 @@ resource "aws_iam_role_policy" "asgard_simpledb_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy" "asgard_sms_policy" {
-  name = "asgard_sns_policy"
+resource "aws_iam_role_policy" "spinnaker_sms_policy" {
+  name = "spinnaker_sns_policy"
   role = "${aws_iam_role.spinnaker_role.id}"
   policy = <<EOF
 {
@@ -431,8 +431,8 @@ resource "aws_iam_role_policy" "asgard_sms_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy" "asgard_sqs_policy" {
-  name = "asgard_sqs_policy"
+resource "aws_iam_role_policy" "spinnaker_sqs_policy" {
+  name = "spinnaker_sqs_policy"
   role = "${aws_iam_role.spinnaker_role.id}"
   policy = <<EOF
 {
@@ -451,8 +451,8 @@ resource "aws_iam_role_policy" "asgard_sqs_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy" "asgard_swf_policy" {
-  name = "asgard_swf_policy"
+resource "aws_iam_role_policy" "spinnaker_swf_policy" {
+  name = "spinnaker_swf_policy"
   role = "${aws_iam_role.spinnaker_role.id}"
   policy = <<EOF
 {
@@ -471,8 +471,8 @@ resource "aws_iam_role_policy" "asgard_swf_policy" {
 EOF
 }
 
-resource "aws_iam_instance_profile" "asgard_instance_profile" {
-  name = "asgard_profile"
+resource "aws_iam_instance_profile" "spinnaker_instance_profile" {
+  name = "spinnaker_profile"
   roles = ["${aws_iam_role.spinnaker_role.id}"]
 
 }
