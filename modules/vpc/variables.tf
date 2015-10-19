@@ -48,13 +48,17 @@ variable "public_subnet_block" {
 variable "private_subnet_block" {
  default = {
 
-  "0" = "4.0/24;us-west-2a;zuul_private_vpc_A;{\"purpose\":\"zuul\",\"target\":\"ec2\"}"
-  "1" = "5.0/24;us-west-2b;zuul_private_vpc_A;{\"purpose\":\"zuul\",\"target\":\"ec2\"}"
-  "2" = "6.0/24;us-west-2c;zuul_private_vpc_A;{\"purpose\":\"zuul\",\"target\":\"ec2\"}"
+  "0" = "3.0/24;us-west-2a;zuul_private_vpc_A;{\"purpose\":\"zuul\",\"target\":\"ec2\"}"
+  "1" = "4.0/24;us-west-2b;zuul_private_vpc_A;{\"purpose\":\"zuul\",\"target\":\"ec2\"}"
+  "2" = "5.0/24;us-west-2c;zuul_private_vpc_A;{\"purpose\":\"zuul\",\"target\":\"ec2\"}"
 
-  "3" = "8.0/26;us-west-2a;admin_private_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
-  "4" = "8.64/26;us-west-2b;admin_private_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
-  "5" = "8.128/26;us-west-2c;admin_private_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
+  "3" = "6.0/24;us-west-2a;zuul_private_vpc_A;{\"purpose\":\"ielb\",\"target\":\"ec2\"}"
+  "4" = "7.0/24;us-west-2b;zuul_private_vpc_A;{\"purpose\":\"ielb\",\"target\":\"ec2\"}"
+  "5" = "8.0/24;us-west-2c;zuul_private_vpc_A;{\"purpose\":\"ielb\",\"target\":\"ec2\"}"
+
+  "6" = "9.0/26;us-west-2a;admin_private_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
+  "7" = "9.64/26;us-west-2b;admin_private_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
+  "8" = "9.128/26;us-west-2c;admin_private_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
 
   }
 } 
