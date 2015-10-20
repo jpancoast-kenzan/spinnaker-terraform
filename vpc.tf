@@ -17,10 +17,10 @@ resource "aws_subnet" "private_subnets" {
   count = "${var.count_private_subnet_block}"
   
   cidr_block           = "${element(split (".", var.vpc_cidr), 0)}.${element(split (".", var.vpc_cidr), 1)}.${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 0)}"
-  availability_zone    = "${var.region}${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 1)}"
+  availability_zone    = "${var.region}${element(split (":", "${lookup(var.azs, var.region)}"), count.index%3)}"
     tags {
-      Name               = "${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 2)}_${var.vpc_name}"
-      immutable_metadata = "${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 3)}_${var.vpc_name}"
+      Name               = "${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 1)}_${var.vpc_name}"
+      immutable_metadata = "${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 2)}"
     }
   vpc_id = "${aws_vpc.main.id}"
 }
@@ -32,16 +32,15 @@ resource "aws_subnet" "public_subnet" {
 count = "${var.count_public_subnet_block}"
 
   cidr_block           = "${element(split (".", var.vpc_cidr), 0)}.${element(split (".", var.vpc_cidr), 1)}.${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 0)}"
-  availability_zone   = "${var.region}${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 1)}"
+  availability_zone   = "${var.region}${element(split (":", "${lookup(var.azs, var.region)}"), count.index%3)}"
   map_public_ip_on_launch = true
   depends_on = ["aws_internet_gateway.gw"]
     tags {
-      Name               = "${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 2)}_${var.vpc_name}"
-      immutable_metadata = "${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 3)}_${var.vpc_name}"
+      Name               = "${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 1)}_${var.vpc_name}"
+      immutable_metadata = "${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 2)}"
     }
   vpc_id = "${aws_vpc.main.id}"
 }
-
 
 
 /* Internet gateway for the public subnet */
