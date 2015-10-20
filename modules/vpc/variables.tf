@@ -3,6 +3,9 @@
 variable "region" {
   default = "us-west-2"
 }
+variable "vpc_cidr" {
+  default = "10.0.0.0/16"
+}
 
 # vpc tag name
 variable "vpc_tag_name" {
@@ -13,9 +16,7 @@ variable "base_ip" {
   default="10.10."
 }
 
-variable "top_cidr" {
-  default = "10.10.0.0/16"
-}
+
 
 # loop count for setting up muliple public subnets
 variable "count_public_subnet_block" {
@@ -37,38 +38,29 @@ variable "count_private_subnet_block" {
 #  }
 #}
 
-#Create a total of 12 subnets (1 per AZ in 3 AZs)
-#3 - EC2 use (public subnet)
-#3 - ELB (public subnet)
-#3 - IELB (private subnet)
-#3 - Admin (Jenkins, Spinnaker) (public subnet)
-
-#0.0/22: 0 - 3
-#        4 - 7
-#        8 - 11
 
 variable "public_subnet_block" {
  default = {
-  "0" = "0.0/24;us-west-2a;eelb_public_vpc_A;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
-  "1" = "1.0/24;us-west-2b;eelb_public_vpc_A;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
-  "2" = "2.0/24;us-west-2c;eelb_public_vpc_A;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
+  "0" = "0.0/24;a;eelb_public_vpc_A;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
+  "1" = "1.0/24;b;eelb_public_vpc_A;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
+  "2" = "2.0/24;c;eelb_public_vpc_A;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
 
-  "3" = "3.0/26;us-west-2a;admin_public_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
-  "4" = "3.64/26;us-west-2b;admin_public_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
-  "5" = "3.128/26;us-west-2c;admin_public_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
+  "3" = "3.0/26;a;admin_public_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
+  "4" = "3.64/26;b;admin_public_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
+  "5" = "3.128/26;c;admin_public_vpc_A;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
 
-  "6" = "8.0/22;us-west-2a;ec2_public_vpc_A;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
-  "7" = "12.0/22;us-west-2b;ec2_public_vpc_A;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
-  "8" = "16.0/22;us-west-2c;ec2_public_vpc_A;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
+  "6" = "8.0/22;a;ec2_public_vpc_A;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
+  "7" = "12.0/22;b;ec2_public_vpc_A;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
+  "8" = "16.0/22;c;ec2_public_vpc_A;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
   }
 } 
 
 variable "private_subnet_block" {
  default = {
 
-  "0" = "4.0/24;us-west-2a;ielb_private_vpc_A;{\"purpose\":\"ielb\",\"target\":\"ec2\"}"
-  "1" = "5.0/24;us-west-2b;ielb_private_vpc_A;{\"purpose\":\"ielb\",\"target\":\"ec2\"}"
-  "2" = "6.0/24;us-west-2c;ielb_private_vpc_A;{\"purpose\":\"ielb\",\"target\":\"ec2\"}"
+  "0" = "4.0/24;a;ielb_private_vpc_A;{\"purpose\":\"ielb\",\"target\":\"ec2\"}"
+  "1" = "5.0/24;b;ielb_private_vpc_A;{\"purpose\":\"ielb\",\"target\":\"ec2\"}"
+  "2" = "6.0/24;c;ielb_private_vpc_A;{\"purpose\":\"ielb\",\"target\":\"ec2\"}"
 
   }
 } 

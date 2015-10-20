@@ -1,9 +1,10 @@
 provider "aws" {
     region = "${var.region}"
 }
-
+#main.top_cidr = "10.10.0.0/16"
 resource "aws_vpc" "main" {
-    cidr_block = "${var.top_cidr}"
+    cidr_block = "${var.vpc_cidr}"
+#    cidr_block = "${lookup(var.top_cidr}"
     instance_tenancy = "default"
     enable_dns_hostnames = "true"
     tags {
@@ -17,7 +18,7 @@ resource "aws_subnet" "private_subnets" {
   count = "${var.count_private_subnet_block}"
   
   cidr_block           = "${var.base_ip}${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 0)}"
-  availability_zone    = "${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 1)}"
+  availability_zone    = "${var.region}${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 1)}"
     tags {
     Name               = "${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 2)}"
     immutable_metadata = "${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 3)}"
@@ -32,7 +33,7 @@ resource "aws_subnet" "public_subnet" {
 count = "${var.count_public_subnet_block}"
 
   cidr_block          = "${var.base_ip}${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 0)}"
-  availability_zone   = "${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 1)}"
+  availability_zone   = "${var.region}${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 1)}"
   map_public_ip_on_launch = true
   depends_on = ["aws_internet_gateway.gw"]
     tags {
