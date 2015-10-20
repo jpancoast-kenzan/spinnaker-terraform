@@ -27,7 +27,8 @@ variable "azs_per_region" {
 # 
 # loop count for setting up muliple public subnets
 #   This should match the number of entries in the 'public_subnet_block' map
-#   because there is no way to get a length on a map in terraform yet.
+#   because there is no way to get a length on a map in terraform as of this
+#   writing.
 #
 variable "count_public_subnet_block" {
   default = 9
@@ -52,7 +53,8 @@ variable "public_subnet_block" {
 # 
 # loop count for setting up muliple private subnets
 #   This should match the number of entries in the 'private_subnet_block' map
-#   because there is no way to get a length on a map in terraform yet.
+#   because there is no way to get a length on a map in terraform as of this
+#   writing.
 #
 variable "count_private_subnet_block" {
   default = 3
