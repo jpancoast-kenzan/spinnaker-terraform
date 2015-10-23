@@ -67,6 +67,11 @@ resource "aws_instance" "jenkins" {
     destination = "/tmp/nginx_jenkins.conf"
   }
 
+  provisioner "file" {
+    source = "../files/provision_base_ami"
+    destination = "/tmp/provision_base_ami"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -",
@@ -76,9 +81,39 @@ resource "aws_instance" "jenkins" {
       "sudo update-rc.d jenkins enable",
       "sudo /etc/init.d/jenkins start",
       "sudo apt-get -y install nginx",
-      "sudo update-rc.d nginx enable",
       "sudo mv /tmp/nginx_jenkins.conf /etc/nginx/sites-available/default",
-      "sudo /etc/init.d/nginx start"
+      "sudo mv /tmp/provision_base_ami /usr/bin/",
+      "sudo apt-get install unzip",
+
+      "curl -L https://dl.bintray.com/mitchellh/packer/packer_0.8.6_linux_amd64.zip > /tmp/packer.zip",
+      "cd /tmp/ ; sudo unzip /tmp/packer.zip -d /usr/bin",
+      
+      "sudo mkdir -p /var/lib/jenkins/updates",
+      "sudo chown jenkins:jenkins /var/lib/jenkins/updates/",
+      "sudo chmod 0755 /var/lib/jenkins/updates/",
+      "curl -L https://updates.jenkins-ci.org/update-center.json | sed '1d;$d' > /var/lib/jenkins/updates/default.json",
+      "sudo mv /tmp/default.json /var/lib/jenkins/updates/default.json",
+      "sudo chown jenkins:jenkins /var/lib/jenkins/updates/default.json",
+      "sudo chmod 0755 /var/lib/jenkins/updates/default.json",
+      "cd /opt/;sudo wget -q http://localhost:8080/jnlpJars/jenkins-cli.jar",
+
+      "/usr/bin/java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ install-plugin chucknorris",
+      "/usr/bin/java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ install-plugin git",
+      "/usr/bin/java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ install-plugin github-api",
+      "/usr/bin/java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ install-plugin github",
+      "/usr/bin/java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ install-plugin git-parameter",
+      "/usr/bin/java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ install-plugin job-dsl",
+      "/usr/bin/java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ install-plugin parameterized-trigger",
+      "/usr/bin/java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ install-plugin shelve-project-plugin",
+      "/usr/bin/java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ install-plugin ssh",
+      "/usr/bin/java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ install-plugin swarm",
+      "/usr/bin/java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ install-plugin credentials-binding",
+      "/usr/bin/java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ install-plugin workflow-step-api",
+      "/usr/bin/java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ install-plugin ws-cleanup",
+      "/usr/bin/java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ install-plugin plain-credentials",
+
+      "sudo update-rc.d nginx enable",
+      "sudo /etc/init.d/nginx restart",
     ]
   }
 
