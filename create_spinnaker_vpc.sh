@@ -10,10 +10,8 @@ if [ "x$2" = "x" ]; then
 	exit 1
 fi
 
-
 CLOUD_PROVIDER=$1
 ACTION=$2
-
 
 cd $CLOUD_PROVIDER
 

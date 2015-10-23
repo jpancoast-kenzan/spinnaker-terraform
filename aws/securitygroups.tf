@@ -6,8 +6,8 @@ resource "aws_security_group" "adm_bastion" {
   description="Bastion Host SG"
   tags {
     Name="ADM_BASTION"
-    created_on="2015-08-03 or whatever"
-    created_by="Kenzanmedia terraform"
+    created_on="${var.run_date}"
+    created_by="Kenzan terraform"
     application="none"
     allocated="false"
     allocated_on="none"
@@ -29,7 +29,7 @@ resource "aws_security_group" "eelb" {
   description="security group for eelb"
   tags {
     Name="EELB"
-    created_on="2015-08-03 this date is actually quite invalid"
+    created_on="${var.run_date}"
     created_by="Kenzan terraform"
     application="none"
     allocated="false"
@@ -63,7 +63,7 @@ resource "aws_security_group" "ielb" {
   description="security group for ielb"
   tags {
     Name="IELB"
-    created_on="2015-08-03 this date is actually quite invalid"
+    created_on="${var.run_date}"
     created_by="Kenzan terraform"
     application="none"
     allocated="false"
@@ -97,7 +97,7 @@ resource "aws_security_group" "vpc_sg" {
   description="VPC Default Security group for ${aws_vpc.main.id}"
   tags {
     Name="VPC_${element(split ("-", "${aws_vpc.main.id}"), 1)}"
-    created_on="2015-08-03 this date is actually quite invalid"
+    created_on="${var.run_date}"
     created_by="Kenzan terraform"
     application="none"
     allocated="false"
@@ -110,6 +110,186 @@ resource "aws_security_group" "vpc_sg" {
     protocol="-1"
     cidr_blocks=["${var.vpc_cidr}"]
   }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["8.0.0.0/7"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["0.0.0.0/5"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["11.0.0.0/8"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["12.0.0.0/6"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["16.0.0.0/4"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["32.0.0.0/3"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["64.0.0.0/2"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["128.0.0.0/3"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["160.0.0.0/5"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["168.0.0.0/6"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["172.0.0.0/12"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["172.32.0.0/11"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["172.64.0.0/10"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["172.128.0.0/9"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["173.0.0.0/8"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["174.0.0.0/7"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["176.0.0.0/4"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["192.0.0.0/9"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["192.128.0.0/11"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["192.160.0.0/13"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["192.169.0.0/16"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["192.170.0.0/15"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["192.172.0.0/14"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["192.176.0.0/12"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["192.192.0.0/10"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["193.0.0.0/8"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["194.0.0.0/7"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["196.0.0.0/6"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["200.0.0.0/5"]
+  }
+  egress {
+    from_port="0"
+    to_port="0"
+    protocol="-1"
+    cidr_blocks=["208.0.0.0/4"]
+  }
 }
 
 
@@ -120,7 +300,7 @@ resource "aws_security_group" "mgmt_sg" {
   description="MGMT Security group for ${aws_vpc.main.id}"
   tags {
     Name="MGMT_${element(split ("-", "${aws_vpc.main.id}"), 1)}"
-    created_on="2015-08-03 this date is actually quite invalid"
+    created_on="${var.run_date}"
     created_by="Kenzan terraform"
     application="none"
     allocated="false"
@@ -143,7 +323,7 @@ resource "aws_security_group" "infra_spinnaker" {
   description="Spinnaker Security group for ${aws_vpc.main.id}"
   tags {
     Name="INFRA_SPINNAKER"
-    created_on="2015-08-03 this date is actually quite invalid"
+    created_on="${var.run_date}"
     created_by="Kenzan terraform"
     application="none"
     allocated="false"
@@ -177,7 +357,7 @@ resource "aws_security_group" "infra_jenkins" {
   description="Jenkins Security group for ${aws_vpc.main.id}"
   tags {
     Name="INFRA_JENKINS"
-    created_on="2015-08-03 this date is actually quite invalid"
+    created_on="${var.run_date}"
     created_by="Kenzan terraform"
     application="none"
     allocated="false"

@@ -1,26 +1,22 @@
 
 
 variable "region" {}
-
 variable "vpc_cidr" {}
-
 variable "vpc_name" {}
+variable "ssh_public_key" {}
+variable "ssh_key_name" {}
+variable "run_date" {}
+variable "ssh_private_key_location" {}
+variable "ssh_user" {}
+
+variable "trusty_amis" {
+  default = {}
+}
 
 variable "azs_per_region" {
   default = 3
 }
 
-
-
-# Sub netting defaults
-#variable "subnets" {
-#  default = {
-#    "eelb"="192.0/22"
-#    "elb"="195.0/22"
-#    "infra"="198.0/22"
-#    "admin"="201.0/22"
-#  }
-#}
 
 
 
