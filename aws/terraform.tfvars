@@ -8,13 +8,16 @@ vpc_name = "vpc_X"
 ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDkWmtpATmnVRgrtylVNdyPsCZJWC4i/dJLeqxm0rv9pJDrFNSLzHKrjzBaxrTUW69VzymgSGD6owAmtQEYffx7n8nyacp91f6s9jhUgqtXJAljQ2KVD424gNMmJeP4yHtzavUbucI7bNbhHH4pJSuVCOOsX7ULHVuaE+VPSOXBBV6XC6x4isfyn1k7SnYcWWJ36HRSpp2hoXxR1QC+31vyQJjW6F5UAILkw5CadVHghi+tp/aVoTrmG3bQNvsNKn9glFHZHo0ATwuJS3LY1LdylX7FiD6wcGt3QLqwmGpR03sEO4n+WZCxRMlXWLZVWS+SpKJTidqqoHbbpRsl8wDh kenzan@kenzan.local"
 ssh_key_name = "spinnaker_vpc"
 run_date = "10/21/2015"
-ssh_user = "ubuntu"
 ssh_private_key_location = "/Users/jpancoast/.ssh/id_rsa_spinnaker_terraform"
-
+jenkins_admin_username = "admin"
+jenkins_admin_password = "admin123"
 
 #
 #	Stuff that you probably won't have to update that often
 #
+aptly_repo_key = "E083A3782A194991"
+ssh_user = "ubuntu"
+
 trusty_amis.us-east-1 = "ami-198a495d"
 trusty_amis.us-west-2 = "ami-8ee605bd"
 trusty_amis.ap-northeast-1 = "ami-402e4c40"

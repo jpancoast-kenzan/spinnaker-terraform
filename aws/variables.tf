@@ -8,6 +8,9 @@ variable "ssh_key_name" {}
 variable "run_date" {}
 variable "ssh_private_key_location" {}
 variable "ssh_user" {}
+variable "aptly_repo_key" {}
+variable "jenkins_admin_username" {}
+variable "jenkins_admin_password" {}
 
 variable "trusty_amis" {
   default = {}
