@@ -69,36 +69,6 @@ resource "aws_instance" "jenkins" {
     ]
   }
 
-#  provisioner "file" {
-#    source = "../files/nginx_jenkins.conf"
-#    destination = "/tmp/terraform/nginx_jenkins.conf"
-#  }
-#
-#  provisioner "file" {
-#    source = "../files/provision_base_ami"
-#    destination = "/tmp/terraform/provision_base_ami"
-#  }
-#
-#  provisioner "file" {
-#    source = "../files/config.xml"
-#    destination = "/tmp/terraform/config.xml"
-#  }
-#
-#  provisioner "file" {
-#    source = "../files/jenkins_provision.sh"
-#    destination = "/tmp/terraform/jenkins_provision.sh"
-#  }
-#
-#  provisioner "file" {
-#    source = "../files/jenkins_tempaccount_config.xml"
-#    destination = "/tmp/terraform/jenkins_tempaccount_config.xml"
-#  }
-#
-#  provisioner "file" {
-#    source = "../files/jenkins_config.xml"
-#    destination = "/tmp/terraform/jenkins_config.xml"
-#  }
-
 
   provisioner "file" {
     source = "../files/"
