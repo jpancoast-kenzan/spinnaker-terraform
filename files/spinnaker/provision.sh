@@ -1,5 +1,9 @@
 #!/bin/sh
 
+
+usermod -a -G docker ubuntu
+#usermod -a -G docker spinnaker
+
 DEBIAN_FRONTEND='noninteractive apt-get -yq upgrade'
 
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys $1
@@ -23,6 +27,10 @@ apt-get install -y docker-engine
 update-alternatives --config java
 update-alternatives --config javac
 java -version
+
+# Start up the docker registry
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+
 
 ##aws
 #sudo mkdir /home/ubuntu/.aws
