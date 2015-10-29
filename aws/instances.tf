@@ -53,6 +53,7 @@ resource "aws_instance" "jenkins" {
   vpc_security_group_ids = ["${aws_security_group.infra_jenkins.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]
   associate_public_ip_address=true
   key_name = "${var.ssh_key_name}"
+  iam_instance_profile = "${aws_iam_role.jenkins_role.id}"
 
   connection {
     user = "${var.ssh_user}"
@@ -96,6 +97,7 @@ resource "aws_instance" "spinnaker" {
   vpc_security_group_ids = ["${aws_security_group.infra_spinnaker.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]
   associate_public_ip_address=true
   key_name = "${var.ssh_key_name}"
+  iam_instance_profile = "${aws_iam_role.spinnaker_role.id}"
 
   connection {
     user = "${var.ssh_user}"

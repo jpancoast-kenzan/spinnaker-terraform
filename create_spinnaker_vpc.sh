@@ -1,12 +1,12 @@
 #!/bin/bash
 
 if [ "x$1" == "x" ]; then
-	echo "usage: $0 <cloud provider (aws only for now)> <plan|apply>"
+	echo "usage: $0 <cloud provider (aws only for now)> <plan|apply|destroy> <log (optional)>" 
 	exit 1
 fi
 
 if [ "x$2" == "x" ]; then
-	echo "usage: $0 <cloud provider (aws only for now)> <plan|apply>"
+	echo "usage: $0 <cloud provider (aws only for now)> <plan|apply|destroy> <log (optional)>" 
 	exit 1
 fi
 
@@ -91,7 +91,7 @@ fi
 
 cd $SCRIPT_DIR/$CLOUD_PROVIDER
 
-if [ "$ACTION" != "destroy" ]; then
+if [ "$ACTION" != "destroy" ] && [ "$3" == "log" ]; then
 	#
 	#	Where to log the 'apply' and 'plan' output
 	#
