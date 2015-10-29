@@ -1,43 +1,65 @@
 #!/bin/sh
 
+#
+#	Not sure why this is needed. Chad's script(s) set it, so I will too
+#
+DEBIAN_FRONTEND=noninteractive apt-get -yq upgrade
 
+#
+#	Download the keys for the apt repositories we're going to add in just a bit.
+#
 apt-key adv --keyserver keys.gnupg.net --recv-keys $1
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys $4
 wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
 
+
+#
+#	add some fancy repos
+#
 echo "deb http://pkg.jenkins-ci.org/debian binary/" > /etc/apt/sources.list.d/jenkins.list
 echo "deb http://repo.aptly.info/ squeeze main" > /etc/apt/sources.list.d/aptly.list
 echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" > /etc/apt/sources.list.d/webupd8team-java.list
 add-apt-repository -y ppa:openjdk-r/ppa
 
+#
+#	Install some packages...
+#
 apt-get update
-apt-get -y install jenkins aptly nginx unzip git openjdk-7-jdk openjdk-8-jdk
+apt-get -y install jenkins aptly nginx unzip git openjdk-7-jdk openjdk-8-jdk htop
 
-mkdir -p /var/lib/jenkins/jobs/dsl-ami-provisioning/
-mv /tmp/terraform/dsl-ami-provisioning-job.xml /var/lib/jenkins/jobs/dsl-ami-provisioning/
-
-chown jenkins:jenkins /var/lib/jenkins/jobs/
-chown jenkins:jenkins /var/lib/jenkins/jobs/* -R
-
-mv /tmp/terraform/jenkins_config.xml /var/lib/jenkins/config.xml
+#
+#	Create/move/copy/fix permissions on all the configs that are needed
+#
+mv /tmp/terraform/config.xml /var/lib/jenkins/config.xml
 chown jenkins:jenkins /var/lib/jenkins/config.xml
 
 mkdir -p /var/lib/jenkins/users/tempaccount/
 chown jenkins:jenkins /var/lib/jenkins/users/
-mv /tmp/terraform/jenkins_tempaccount_config.xml /var/lib/jenkins/users/tempaccount/config.xml
+mv /tmp/terraform/tempaccount_config.xml /var/lib/jenkins/users/tempaccount/config.xml
 chown -f jenkins:jenkins /var/lib/jenkins/users/* -R
 
+mv /tmp/terraform/aptly.conf /etc/aptly.conf
+
+mkdir -p /opt/aptly
 
 update-rc.d jenkins enable
 /etc/init.d/jenkins start
-mv /tmp/terraform/nginx_jenkins.conf /etc/nginx/sites-available/default
+
+mv /tmp/terraform/nginx.conf /etc/nginx/sites-available/default
 mv /tmp/terraform/provision_base_ami /usr/bin/
-chmod a+x /tmp/terraform/provision_base_ami
+chmod a+x /usr/bin/provision_base_ami
 
 
-curl -L https://dl.bintray.com/mitchellh/packer/packer_0.8.6_linux_amd64.zip > /tmp/terraform/packer.zip
+#
+#	Install packer
+#
+curl -L $5 > /tmp/terraform/packer.zip
 sudo unzip /tmp/terraform/packer.zip -d /usr/bin
-     
+ 
+
+#
+#	Get ready to install Jenkins plugins
+#    
 sudo mkdir -p /var/lib/jenkins/updates
 sudo chown jenkins:jenkins /var/lib/jenkins/updates/
 sudo chmod 0755 /var/lib/jenkins/updates/
@@ -46,7 +68,7 @@ sudo mv /tmp/terraform/default.json /var/lib/jenkins/updates/default.json
 sudo chown jenkins:jenkins /var/lib/jenkins/updates/default.json
 sudo chmod 0755 /var/lib/jenkins/updates/default.json
 
-sleep 120
+sleep 60
 
 cd /tmp/terraform/ ; curl -O http://localhost:8080/jnlpJars/jenkins-cli.jar
 
@@ -56,6 +78,9 @@ cd /tmp/terraform/ ; curl -O http://localhost:8080/jnlpJars/jenkins-cli.jar
 #
 java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ login --username tempaccount --password blah123
 
+#
+#	Install jenkins plugins
+#
 /usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ install-plugin chucknorris
 /usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ install-plugin git
 /usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ install-plugin github-api
@@ -72,21 +97,36 @@ java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ login --usern
 /usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ install-plugin plain-credentials
 /usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ install-plugin postbuildscript
 
-update-rc.d nginx enable
-/etc/init.d/nginx restart
+/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ create-job dsl-ami-provisioning < /tmp/terraform/dsl-ami-provisioning-job.xml
+
+
+#/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ reload-configuration
+
+#
+#	Restart jenkins...
+#
 /etc/init.d/jenkins restart
 
-sleep 120
+sleep 60
 
-cd /tmp/terraform/ ; java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ login --username tempaccount --password blah123
+#cd /tmp/terraform/ ; java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ login --username tempaccount --password blah123
 
-#admin/admin123 should be passed in variables
+
+#
+#	Create admin user, delete tempaccount, and reload jenkins config
+#
 echo "jenkins.model.Jenkins.instance.securityRealm.createAccount(\"$2\", \"$3\")" | java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ groovy =
 /usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ build dsl-ami-provisioning
 
 rm -rf /var/lib/jenkins/users/tempaccount/
-java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ reload-configuration
+/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ reload-configuration
 
-#Should clean up /tmp/terraform here...
+update-rc.d nginx enable
+/etc/init.d/nginx restart
+
+
+#
+#	clean up /tmp/terraform/
+#
 rm -rf /tmp/terraform/
 

@@ -9,17 +9,38 @@ variable "run_date" {}
 variable "ssh_private_key_location" {}
 variable "ssh_user" {}
 variable "aptly_repo_key" {}
+variable "ppa_repo_key" {}
 variable "jenkins_admin_username" {}
 variable "jenkins_admin_password" {}
+variable "packer_url" {}
+variable "created_by" {}
+variable "docker_repo_key" {}
+
+variable "jenkins_instance_type" {}
+variable "bastion_instance_type" {}
+variable "spinnaker_instance_type" {}
+
+variable "internal_dns_zone" {}
+
 
 variable "trusty_amis" {
   default = {}
 }
 
-variable "azs_per_region" {
-  default = 3
-}
+#variable "azs_per_region" {
+#  default = 3
+#}
 
+
+
+module "tf_kenzan" {
+  source = "github.com/jpancoast-kenzan/tf_kenzan_spinnaker"
+  region = "${var.region}"
+  distribution = "trusty"
+  architecture = "amd64"
+  virttype = "hvm"
+  storagetype = "ebs-ssd"
+}
 
 
 
@@ -68,10 +89,10 @@ variable "private_subnet_block" {
 } 
 
 
-variable "azs" {
-  default = {
-    "us-west-2" = "a:b:c"
-    "us-east-1" = "b:c:d"
-    "us-west-1" = "a:b:c"
-  }
-}
+#variable "azs" {
+#  default = {
+#    "us-west-2" = "a:b:c"
+#    "us-east-1" = "b:c:d"
+#    "us-west-1" = "a:b:c"
+#  }
+#}
