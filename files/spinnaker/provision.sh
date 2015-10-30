@@ -11,6 +11,7 @@ apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys $2
 
 echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" > /etc/apt/sources.list.d/webupd8team-java.list
 echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > /etc/apt/sources.list.d/docker.list
+echo "deb https://spinnaker.bintray.com/ospackages /" > /etc/apt/sources.list.d/spinnaker-bintray.list
 
 add-apt-repository -y ppa:openjdk-r/ppa 
 
