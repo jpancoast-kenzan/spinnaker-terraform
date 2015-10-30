@@ -5,19 +5,21 @@
 # change dir to calling jenkins job workspace
 cd $WORKSPACE
 
+MAC_ADDR=$(/sbin/ifconfig eth0 | grep HWaddr | sed -e 's/.*HWaddr //' | tr -d '[[:space:]]' )
+
+# VPC to launch instance in
+VPC_ID=$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/$MAC_ADDR/vpc-id)
+
+# Subnet ID to launch instance in (Required in VPC)
+SUBNET_ID=$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/$MAC_ADDR/subnet-id)
+
 
 # All .yml in running dir
 AMI_PROFILES=($(ls *.yml))
 # Timestamp for image
 DATE=$(date +%Y-%m-%d-%H-%M)
-# VPC to launch instance in
-VPC_ID={{ vpc_id }}
-# Security group to launch provisioned instance with
-SECURITY_GROUP_ID={{ group_id }}
-# Subnet ID to launch instance in (Required in VPC)
-SUBNET_ID={{ subnet_public }}
 # Region to launch instance in
-REGION=us-west-2
+REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document|grep region|awk -F\" '{print $4}')
 # Instance type http://www.ec2instances.info/
 INSTANCE_TYPE=t2.small
 # Packer file
@@ -61,7 +63,6 @@ fi
 -var ami_profile=$AMI_PROFILE \
 -var date=$DATE \
 -var vpc_id=$VPC_ID \
--var security_group_id=$SECURITY_GROUP_ID \
 -var subnet_id=$SUBNET_ID \
 -var region=$REGION \
 -var instance_type=$INSTANCE_TYPE \

@@ -20,7 +20,7 @@ spinnaker_instance_type = "t2.large"
 
 created_by = "Kenzan Spinnaker Terraform"
 
-internal_dns_zone = "kenzanisawesome.internal"
+internal_dns_zone = "kenzan.int"
 
 
 #
@@ -30,15 +30,3 @@ aptly_repo_key = "E083A3782A194991"
 ppa_repo_key = "C2518248EEA14886"
 docker_repo_key = "58118E89F3A912897C070ADBF76221572C52609D"
 ssh_user = "ubuntu"
-
-#trusty_amis.us-east-1 = "ami-198a495d"
-#trusty_amis.us-west-2 = "ami-8ee605bd"
-#trusty_amis.ap-northeast-1 = "ami-402e4c40"
-#trusty_amis.ap-southeast-1 = "ami-42170410"
-#trusty_amis.eu-central-1 = "ami-46272b5b"
-#trusty_amis.eu-west-1 = "ami-37360a40"
-#trusty_amis.sa-east-1 = "ami-1f4bda02"
-#trusty_amis.us-west-1 = "ami-198a495d"
-#trusty_amis.cn-north-1 = "ami-a664f89f"
-#trusty_amis.us-gov-west-1 = "ami-c64725e5"
-#trusty_amis.ap-southeast-2 = "ami-6d6c2657"
