@@ -17,10 +17,12 @@ resource "aws_security_group" "adm_bastion" {
     from_port=22
     to_port=22
     protocol="tcp"
-    cidr_blocks=["0.0.0.0/0"]
+    cidr_blocks=["${split(",",var.adm_bastion_incoming_cidrs)}"]
   }
 }
 
+#adm_bastion_incoming_cidrs
+#      Name               = "${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 1)}_${var.vpc_name}"
 
 /* security group for eelb  */
 resource "aws_security_group" "eelb" {
@@ -334,7 +336,7 @@ resource "aws_security_group" "infra_spinnaker" {
     from_port="80"
     to_port="80"
     protocol="tcp"
-    cidr_blocks=["0.0.0.0/0"]
+    cidr_blocks=["${split(",",var.infra_spinnaker_incoming_cidrs)}"]
   }
 }
 
@@ -368,6 +370,7 @@ resource "aws_security_group" "infra_jenkins" {
     from_port="80"
     to_port="80"
     protocol="tcp"
-    cidr_blocks=["0.0.0.0/0"]
+#    cidr_blocks=["${var.infra_jenkins_incoming_cidr_list}"]
+    cidr_blocks=["${split(",",var.infra_jenkins_incoming_cidrs)}"]
   }
 }

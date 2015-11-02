@@ -24,6 +24,22 @@ internal_dns_zone = "kenzan.int"
 
 
 #
+#	For the following '..._incoming_cidrs', you can use a comma separated list of incoming CIDRS
+#
+
+#
+#	adm_bastion is inbound to port 22
+#
+adm_bastion_incoming_cidrs = "38.75.226.18/32"
+
+#
+#	infra_jenkins and infra_spinnaker are inbound to port 80
+#
+infra_jenkins_incoming_cidrs = "38.75.226.18/32"
+infra_spinnaker_incoming_cidrs = "38.75.226.18/32"
+
+
+#
 #	Stuff that you probably won't have to update that often
 #
 aptly_repo_key = "E083A3782A194991"

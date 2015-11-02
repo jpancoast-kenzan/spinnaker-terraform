@@ -21,6 +21,14 @@ variable "bastion_instance_type" {}
 variable "spinnaker_instance_type" {}
 
 variable "internal_dns_zone" {}
+ 
+#variable "infra_spinnaker_incoming_cidr_list" { default = {} }
+#variable "infra_jenkins_incoming_cidr_list" { default = {} }
+#variable "adm_bastion_incoming_cidr_list" { default = {} }
+
+variable "adm_bastion_incoming_cidrs" {}
+variable "infra_jenkins_incoming_cidrs" {}
+variable "infra_spinnaker_incoming_cidrs" {}
 
 
 variable "trusty_amis" {

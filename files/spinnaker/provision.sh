@@ -20,6 +20,11 @@ apt-get update
 
 apt-get install -y git zip python-support curl openjdk-8-jdk htop software-properties-common python-software-properties awscli
 
+#
+#	Install spinnaker packages from bintray. 'force-yes' is required as noone seems to know the key...
+#
+#apt-get install --force-yes -y clouddriver front50 gate orca rosco rush spinnaker echo
+
 #docker
 #	lxc-docker didn't work for some reason...
 #apt-get --yes --force-yes install lxc-docker
