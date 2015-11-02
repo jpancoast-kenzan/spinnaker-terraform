@@ -5,7 +5,7 @@
 # change dir to calling jenkins job workspace
 cd $WORKSPACE
 
-MAC_ADDR=$(/sbin/ifconfig eth0 | grep HWaddr | sed -e 's/.*HWaddr //' | tr -d '[[:space:]]' )
+MAC_ADDR=$(curl -s http://169.254.169.254/latest/meta-data/mac)
 
 # VPC to launch instance in
 VPC_ID=$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/$MAC_ADDR/vpc-id)
