@@ -24,6 +24,36 @@ class spinnaker():
         self.retries = 5
         self.retry_interval = 2  # in seconds...
 
+    
+
+    '''
+    curl 'http://52.26.81.34/gate/pipelines' 
+    -H 'Origin: http://52.26.81.34' 
+    -H 'Accept-Encoding: gzip, deflate' 
+    -H 'Accept-Language: en-US,en;q=0.8' 
+    -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36' 
+    -H 'Content-Type: application/json;charset=UTF-8' 
+    -H 'Accept: application/json, text/plain, */*' 
+    -H 'Referer: http://52.26.81.34/' 
+    -H 'Connection: keep-alive' -H 'DNT: 1' 
+    --data-binary '{"name":"pipeline-name","stages":[],"triggers":[],"application":"jpancoast.test.script","stageCounter":0,"parallel":true,"index":0}' --compressed
+    '''
+    def create_pipeline(self, pipeline):
+        print "Creating pipeline: " + pipeline['name']
+
+        '''
+        This returns nothing in the response, just headers, so don't go looking for nothing if it's not in the headers
+        '''
+        url = 'http://' + self.spinnaker_address + \
+            '/gate/pipelines'
+
+        try:
+            r = requests.post(url, json=pipeline)
+        except requests.exceptions.RequestException, e:
+            print e
+            return False
+
+
     '''
     curl 'http://52.32.241.219/gate/applications/jpancoast.test.3/tasks' \
         -H 'Origin: http://52.32.241.219' \
@@ -33,10 +63,6 @@ class spinnaker():
         --data-binary '{"suppressNotification":true,"job":[{"type":"createApplication","account":"default","application":{"name":"jpancoast.test.3","description":"description","email":"jpancoast@kenzan.com","pdApiKey":"pagerdutyapikey","repoProjectKey":"repoprojectname","repoSlug":"reponame","repoType":"stash","cloudProviders":"","platformHealthOnly":true,"platformHealthOnlyShowOverride":true},"user":"[anonymous]"}],"application":"jpancoast.test.3","description":"Create Application: jpancoast.test.3"}' 
     
     '''
-
-    def create_pipeline(self, pipeline):
-        self.pp.pprint(pipeline)
-
     def create_application(self, application):
         print "Create Application"
 
