@@ -50,3 +50,4 @@ terraform.tfstate.*
 .edit*
 *.swp
 
+**/*.pyc
