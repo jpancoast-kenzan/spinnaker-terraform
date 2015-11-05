@@ -90,9 +90,9 @@ variable "count_private_subnet_block" {
 
 variable "private_subnet_block" {
   default = {
-    "0" = "4.0/24;ielb_private;{\"purpose\":\"ielb\",\"target\":\"ec2\"}"
-    "1" = "5.0/24;ielb_private;{\"purpose\":\"ielb\",\"target\":\"ec2\"}"
-    "2" = "6.0/24;ielb_private;{\"purpose\":\"ielb\",\"target\":\"ec2\"}"
+    "0" = "4.0/24;ielb_private;{\"purpose\":\"ielb\",\"target\":\"elb\"}"
+    "1" = "5.0/24;ielb_private;{\"purpose\":\"ielb\",\"target\":\"elb\"}"
+    "2" = "6.0/24;ielb_private;{\"purpose\":\"ielb\",\"target\":\"elb\"}"
   }
 } 
 

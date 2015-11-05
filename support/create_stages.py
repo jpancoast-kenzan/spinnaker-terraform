@@ -17,8 +17,9 @@ def main(argv):
     app_name = "jpancoast.test.script"
 
 
- #   '{"name":"pipeline-name","stages":[],"triggers":[],"application":"jpancoast.test.script","stageCounter":0,"parallel":true,"index":0}'
+#   '{"name":"pipeline-name","stages":[],"triggers":[],"application":"jpancoast.test.script","stageCounter":0,"parallel":true,"index":0}'
 
+    '''
     pipeline['name'] = 'pipeline-name-2'
     pipeline['stages'] = []
     pipeline['triggers'] = []
@@ -28,6 +29,11 @@ def main(argv):
     pipeline['index'] = 0
 
     spin_tools.create_pipeline(pipeline)
+    '''
 
+
+    spin_tools.create_stage()
+
+    
 if __name__ == "__main__":
     main(sys.argv)

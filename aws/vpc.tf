@@ -29,7 +29,7 @@ resource "aws_subnet" "private_subnets" {
 /* Public subnet */
 resource "aws_subnet" "public_subnet" {
 
-count = "${var.count_public_subnet_block}"
+  count = "${var.count_public_subnet_block}"
 
   cidr_block           = "${element(split (".", var.vpc_cidr), 0)}.${element(split (".", var.vpc_cidr), 1)}.${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 0)}"
   availability_zone   = "${var.region}${element(split (":", "${module.tf_kenzan.azs_per_region}"), count.index%module.tf_kenzan.az_counts_per_region)}"
@@ -66,9 +66,9 @@ resource "aws_route_table" "gw_rt" {
 
 /* Associate the routing table to public subnet */
 resource "aws_route_table_association" "public" {
+    count = "${var.count_public_subnet_block}"
     subnet_id = "${element(aws_subnet.public_subnet.*.id, count.index)}"
     route_table_id = "${aws_route_table.gw_rt.id}"
-    count = "${var.count_public_subnet_block}"
     depends_on = ["aws_vpc.main", "aws_internet_gateway.gw"]
 }
 

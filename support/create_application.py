@@ -10,7 +10,7 @@ from spinnaker import spinnaker
 # repo_project_key, repo_name, repo_type):
 #
 def main(argv):
-    spin_tools = spinnaker(spinnaker_address='52.32.114.41')
+    spin_tools = spinnaker(spinnaker_address='52.33.42.42')
 
     application = {}
     pipeline = {}
