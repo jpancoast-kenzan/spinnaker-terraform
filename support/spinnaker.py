@@ -27,6 +27,39 @@ class spinnaker():
     
 
     '''
+    curl 'http://ec2-52-26-72-234.us-west-2.compute.amazonaws.com/8084/pipelines' 
+        -H 'Origin: http://ec2-52-26-72-234.us-west-2.compute.amazonaws.com' 
+        -H 'Accept-Encoding: gzip, deflate' 
+        -H 'Accept-Language: en-US,en;q=0.8' 
+        -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36' 
+        -H 'Content-Type: application/json;charset=UTF-8' 
+        -H 'Accept: application/json, text/plain, */*' 
+        -H 'Referer: http://ec2-52-26-72-234.us-west-2.compute.amazonaws.com/' 
+        -H 'Connection: keep-alive' 
+        -H 'DNT: 1' 
+        --data-binary '{"name":"pipelinetest","stages":[],"triggers":[{"enabled":true,"type":"jenkins","master":"Jenkins","job":"Package_example_app"}],"application":"appnme","limitConcurrent":true,"stageCounter":0,"parallel":true,"index":0,"id":"b4f3c970-84de-11e5-832e-77b4d230fd64"}' --compressed
+    '''
+    def create_trigger(self,something):
+        print "Creating Trigger"
+
+    '''
+    Curl to create the first stage:
+    curl 'http://ec2-52-26-72-234.us-west-2.compute.amazonaws.com/8084/pipelines' 
+        -H 'Origin: http://ec2-52-26-72-234.us-west-2.compute.amazonaws.com' 
+        -H 'Accept-Encoding: gzip, deflate' 
+        -H 'Accept-Language: en-US,en;q=0.8' 
+        -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36' 
+        -H 'Content-Type: application/json;charset=UTF-8' 
+        -H 'Accept: application/json, text/plain, */*' 
+        -H 'Referer: http://ec2-52-26-72-234.us-west-2.compute.amazonaws.com/' 
+        -H 'Connection: keep-alive' 
+        -H 'DNT: 1' --data-binary '{"name":"pipelinetest","stages":[{"requisiteStageRefIds":[],"refId":"1","type":"bake","name":"Bake","cloudProviderType":"aws","regions":["us-west-2"],"user":"[anonymous]","vmType":"hvm","storeType":"ebs","baseOs":"trusty","baseLabel":"unstable","showAdvancedOptions":true,"baseAmi":"ami-8ee605bd","package":"echo"}],"triggers":[{"enabled":true,"type":"jenkins","master":"Jenkins","job":"Package_example_app"}],"application":"appnme","limitConcurrent":true,"stageCounter":1,"parallel":true,"index":0,"id":"b4f3c970-84de-11e5-832e-77b4d230fd64"}' --compressed
+    '''
+    def create_stage(self,something):
+        print "Creating stage"
+
+
+    '''
     curl 'http://52.26.81.34/gate/pipelines' 
     -H 'Origin: http://52.26.81.34' 
     -H 'Accept-Encoding: gzip, deflate' 
@@ -55,13 +88,17 @@ class spinnaker():
 
 
     '''
-    curl 'http://52.32.241.219/gate/applications/jpancoast.test.3/tasks' \
-        -H 'Origin: http://52.32.241.219' \
-        -H 'Content-Type: application/json;charset=UTF-8' \
-        -H 'Accept: application/json, text/plain, */*' \
-        -H 'Referer: http://52.32.241.219/' \
-        --data-binary '{"suppressNotification":true,"job":[{"type":"createApplication","account":"default","application":{"name":"jpancoast.test.3","description":"description","email":"jpancoast@kenzan.com","pdApiKey":"pagerdutyapikey","repoProjectKey":"repoprojectname","repoSlug":"reponame","repoType":"stash","cloudProviders":"","platformHealthOnly":true,"platformHealthOnlyShowOverride":true},"user":"[anonymous]"}],"application":"jpancoast.test.3","description":"Create Application: jpancoast.test.3"}' 
-    
+    curl 'http://ec2-52-26-72-234.us-west-2.compute.amazonaws.com/8084/applications/appnme/tasks' 
+        -H 'Origin: http://ec2-52-26-72-234.us-west-2.compute.amazonaws.com' 
+        -H 'Accept-Encoding: gzip, deflate' 
+        -H 'Accept-Language: en-US,en;q=0.8' 
+        -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36' 
+        -H 'Content-Type: application/json;charset=UTF-8' 
+        -H 'Accept: application/json, text/plain, */*' 
+        -H 'Referer: http://ec2-52-26-72-234.us-west-2.compute.amazonaws.com/' 
+        -H 'Connection: keep-alive' 
+        -H 'DNT: 1' 
+        --data-binary '{"suppressNotification":true,"job":[{"type":"createApplication","account":"my-aws-account","application":{"name":"appnme","description":"description","email":"jpancoast@kenzan.com","pdApiKey":"pagerduty","repoProjectKey":"repoproject","repoSlug":"reponame","repoType":"github","cloudProviders":"","platformHealthOnly":false,"platformHealthOnlyShowOverride":false},"user":"[anonymous]"}],"application":"appnme","description":"Create Application: appnme"}' --compressed
     '''
     def create_application(self, application):
         print "Create Application"
@@ -79,7 +116,7 @@ class spinnaker():
         job = {}
         job['user'] = 'anonymous'
         job['type'] = 'createApplication'
-        job['account'] = 'default'
+        job['account'] = 'my-aws-account' #default value for now, probably shouldn't hard code it
 
         job['application'] = {}
         job['application']['name'] = application['app_name']
@@ -98,7 +135,7 @@ class spinnaker():
         url = 'http://' + self.spinnaker_address + \
             '/gate/applications/' + application['app_name'] + '/tasks'
 
-        print "Attempting to create application..."
+        print "Attempting to create application..." + url
 
         try:
             r = requests.post(url, json=payload)

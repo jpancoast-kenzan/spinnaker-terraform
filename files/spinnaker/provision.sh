@@ -18,6 +18,11 @@ chown $spinnaker_user /home/$spinnaker_user/.aws/*
 
 echo "deb http://jenkins.$6:8000/ binary/" > /etc/apt/sources.list.d/deb-internal.list
 
+#
+#	This is only for testing, should not be needed when meta package is done.
+#
+#cd /home/ubuntu/build && ../spinnaker/dev/run_dev.sh
+
 ################## Everything below this line is probably not needed and should MOSTLY be covered by the meta package install ###############
 #
 #usermod -a -G docker ubuntu

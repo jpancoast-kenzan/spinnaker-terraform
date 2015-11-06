@@ -16,7 +16,7 @@ jenkins_admin_password = "admin123"
 packer_url = "https://dl.bintray.com/mitchellh/packer/packer_0.8.6_linux_amd64.zip"
 jenkins_instance_type = "t2.small"
 bastion_instance_type = "t2.small"
-spinnaker_instance_type = "t2.large"
+spinnaker_instance_type = "m4.2xlarge"
 
 created_by = "Kenzan Spinnaker Terraform"
 

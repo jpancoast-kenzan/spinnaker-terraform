@@ -5,7 +5,7 @@ import imp
 
 
 def main(argv):
-    reqd_module_names = ['boto', 'requests', 'json']
+    reqd_module_names = ['boto', 'requests', 'json', 'docopt']
 
     ret_val = 0
 
