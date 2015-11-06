@@ -19,9 +19,9 @@ resource "aws_route53_record" "jenkins" {
 	records = ["${aws_instance.jenkins.private_ip}"]
 }
 
-resource "aws_route53_record" "aptly" {
+resource "aws_route53_record" "debianrepo" {
 	zone_id = "${aws_route53_zone.internal.zone_id}"
-	name = "aptly"
+	name = "debianrepo"
 	type = "A"
 	ttl = "300"
 	records = ["${aws_instance.jenkins.private_ip}"]

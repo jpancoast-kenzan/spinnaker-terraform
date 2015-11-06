@@ -17,7 +17,6 @@ wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add
 #	add some fancy repos
 #
 echo "deb http://pkg.jenkins-ci.org/debian binary/" > /etc/apt/sources.list.d/jenkins.list
-echo "deb http://repo.aptly.info/ squeeze main" > /etc/apt/sources.list.d/aptly.list
 echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" > /etc/apt/sources.list.d/webupd8team-java.list
 add-apt-repository -y ppa:openjdk-r/ppa
 
@@ -25,7 +24,7 @@ add-apt-repository -y ppa:openjdk-r/ppa
 #	Install some packages...
 #
 apt-get update
-apt-get -y install jenkins aptly nginx unzip git openjdk-7-jdk openjdk-8-jdk htop
+apt-get -y install jenkins nginx unzip git openjdk-7-jdk openjdk-8-jdk htop
 
 #
 #	Create/move/copy/fix permissions on all the configs that are needed
@@ -38,14 +37,14 @@ chown jenkins:jenkins /var/lib/jenkins/users/
 mv /tmp/terraform/tempaccount_config.xml /var/lib/jenkins/users/tempaccount/config.xml
 chown -f jenkins:jenkins /var/lib/jenkins/users/* -R
 
-mv /tmp/terraform/aptly.conf /var/lib/jenkins/.aptly.conf
 
-mkdir -p /var/lib/jenkins/.aptly
-
-/usr/bin/aptly repo create -distribution=trusty -architectures=amd64 -component=main spinnaker
-
-chown jenkins:jenkins /var/lib/jenkins/.aptly
-chown jenkins:jenkins -R /var/lib/jenkins/.aptly/*
+#
+#	Setup trivial debian repo
+#
+apt-get install -y --force-yes dpkg-dev
+mkdir -p /opt/deb_repo/binary
+chown jenkins:jenkins /opt/deb_repo/
+chown jenkins:jenkins -R /opt/deb_repo/*
 
 
 update-rc.d jenkins enable
@@ -106,17 +105,17 @@ java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ login --usern
 #
 #	Install the one job by hand...
 #
-/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ create-job dsl-ami-provisioning < /tmp/terraform/jobs/dsl-ami-provisioning/config.xml
+#/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ create-job dsl-ami-provisioning < /tmp/terraform/jobs/dsl-ami-provisioning/config.xml
 
 #
 #	OR find all the jobs in the jobs/ dir and install them all
 #
-#for job_xml in $(find /tmp/terraform/jobs/ -name config.xml -print)
-#do
-#	job_name=$(echo $job_xml | sed -e 's/\/tmp\/terraform\/jobs\///' | sed -e 's/\/config.xml//')
-#
-#	/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ create-job $job_name < $job_xml
-#done
+for job_xml in $(find /tmp/terraform/jobs/ -name config.xml -print)
+do
+	job_name=$(echo $job_xml | sed -e 's/\/tmp\/terraform\/jobs\///' | sed -e 's/\/config.xml//')
+
+	/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ create-job $job_name < $job_xml
+done
 
 
 #/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ reload-configuration

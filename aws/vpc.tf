@@ -19,13 +19,13 @@ resource "aws_subnet" "private_subnets" {
   cidr_block           = "${element(split (".", var.vpc_cidr), 0)}.${element(split (".", var.vpc_cidr), 1)}.${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 0)}"
   availability_zone    = "${var.region}${element(split (":", "${module.tf_kenzan.azs_per_region}"), count.index%module.tf_kenzan.az_counts_per_region)}"
     tags {
-      Name               = "${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 1)}_${var.vpc_name}"
+      Name               = "${var.vpc_name}.${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 1)}.${var.region}${element(split (":", "${module.tf_kenzan.azs_per_region}"), count.index%module.tf_kenzan.az_counts_per_region)}"
       immutable_metadata = "${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 2)}"
     }
   vpc_id = "${aws_vpc.main.id}"
 }
 
-
+#vpcName.internal.<availabilityZone>)
 /* Public subnet */
 resource "aws_subnet" "public_subnet" {
 
@@ -36,7 +36,7 @@ resource "aws_subnet" "public_subnet" {
   map_public_ip_on_launch = true
   depends_on = ["aws_internet_gateway.gw"]
     tags {
-      Name               = "${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 1)}_${var.vpc_name}"
+      Name               = "${var.vpc_name}.${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 1)}.${var.region}${element(split (":", "${module.tf_kenzan.azs_per_region}"), count.index%module.tf_kenzan.az_counts_per_region)}"
       immutable_metadata = "${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 2)}"
     }
   vpc_id = "${aws_vpc.main.id}"

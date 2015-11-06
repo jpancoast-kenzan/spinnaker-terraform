@@ -23,7 +23,6 @@ resource "aws_instance" "bastion" {
   key_name = "${var.ssh_key_name}"
   tags = {
     Name = "bastion host"
-    terraform_run_on = "${var.run_date}"
     created_by = "${var.created_by}"
   }
 
@@ -84,14 +83,14 @@ resource "aws_instance" "jenkins" {
 
   tags = {
     Name = "Jenkins host"
-    terraform_run_on = "${var.run_date}"
     created_by = "${var.created_by}"
   }
 }
 
 /* Spinnaker instance */
 resource "aws_instance" "spinnaker" {
-  ami = "${module.tf_kenzan.ami_id}"
+  #ami = "${module.tf_kenzan.ami_id}"
+  ami = "ami-84baade5"
   instance_type = "${var.spinnaker_instance_type}"
   subnet_id = "${aws_subnet.public_subnet.5.id}"
   vpc_security_group_ids = ["${aws_security_group.infra_spinnaker.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]
@@ -122,13 +121,12 @@ resource "aws_instance" "spinnaker" {
   provisioner "remote-exec" {
     inline = [
       "chmod a+x /tmp/terraform/provision.sh",
-      "sudo /tmp/terraform/provision.sh ${var.ppa_repo_key} ${var.docker_repo_key}"
+      "sudo /tmp/terraform/provision.sh ${var.ppa_repo_key} ${var.docker_repo_key} ${var.region} ${aws_iam_access_key.spinnaker.id} ${aws_iam_access_key.spinnaker.secret} ${var.internal_dns_zone}"
     ]
   }
 
   tags = {
     Name = "Spinnaker host"
-    terraform_run_on = "${var.run_date}"
     created_by = "${var.created_by}"
   }
 }
@@ -137,19 +135,49 @@ resource "aws_instance" "spinnaker" {
 #
 # The following two instances are for test purposes only and should be removed before we make this public
 #
-/* Spinnaker instance */
-resource "aws_instance" "spinnaker_test" {
-  ami = "ami-673c2b06"
-  instance_type = "${var.spinnaker_instance_type}"
-  subnet_id = "${aws_subnet.public_subnet.5.id}"
-  vpc_security_group_ids = ["${aws_security_group.infra_spinnaker.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]
+/* TEST Spinnaker instance */
+#resource "aws_instance" "spinnaker_test" {
+#  ami = "ami-84baade5"
+#  instance_type = "${var.spinnaker_instance_type}"
+#  subnet_id = "${aws_subnet.public_subnet.5.id}"
+#  vpc_security_group_ids = ["${aws_security_group.infra_spinnaker.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]
+#  associate_public_ip_address=true
+#  key_name = "${var.ssh_key_name}"
+#  iam_instance_profile = "${aws_iam_instance_profile.spinnaker_instance_profile.id}"
+#
+#  tags = {
+#    Name = "Spinnaker WORKING I HOPE host"
+#    created_by = "${var.created_by}"
+#  }
+#}
+
+/* TEST bastion instance */
+resource "aws_instance" "bastion_test" {
+  ami = "${module.tf_kenzan.ami_id}"
+  instance_type = "${var.bastion_instance_type}"
+  subnet_id = "${aws_subnet.public_subnet.3.id}"
+  vpc_security_group_ids = ["${aws_security_group.adm_bastion.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]
   associate_public_ip_address=true
   key_name = "${var.ssh_key_name}"
-  iam_instance_profile = "${aws_iam_instance_profile.spinnaker_instance_profile.id}"
-
   tags = {
-    Name = "Spinnaker WORKING I HOPE host"
-    terraform_run_on = "${var.run_date}"
+    Name = "bastion TEST host"
     created_by = "${var.created_by}"
+  }
+
+  connection {
+    user = "${var.ssh_user}"
+    key_file = "${var.ssh_private_key_location}"
+    agent = false
+  }
+
+  provisioner "file" {
+    source = "${var.ssh_private_key_location}"
+    destination = "/home/${var.ssh_user}/.ssh/id_rsa"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod 0600 /home/${var.ssh_user}/.ssh/id_rsa"
+    ]
   }
 }

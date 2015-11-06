@@ -5,7 +5,6 @@ variable "vpc_cidr" {}
 variable "vpc_name" {}
 variable "ssh_public_key" {}
 variable "ssh_key_name" {}
-variable "run_date" {}
 variable "ssh_private_key_location" {}
 variable "ssh_user" {}
 variable "aptly_repo_key" {}
@@ -62,6 +61,7 @@ variable "count_public_subnet_block" {
   default = 9
 }
 
+#vpcName.internal.<availabilityZone>)
 variable "public_subnet_block" {
  default = {
   "0" = "0.0/24;eelb_public;{\"purpose\":\"eelb\",\"target\":\"elb\"}"

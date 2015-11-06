@@ -6,7 +6,6 @@ resource "aws_security_group" "adm_bastion" {
   description="Bastion Host SG"
   tags {
     Name="ADM_BASTION"
-    terraform_run_on="${var.run_date}"
     created_by="${var.created_by}"
     application="none"
     allocated="false"
@@ -21,9 +20,6 @@ resource "aws_security_group" "adm_bastion" {
   }
 }
 
-#adm_bastion_incoming_cidrs
-#      Name               = "${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 1)}_${var.vpc_name}"
-
 /* security group for eelb  */
 resource "aws_security_group" "eelb" {
   vpc_id = "${aws_vpc.main.id}"
@@ -31,7 +27,6 @@ resource "aws_security_group" "eelb" {
   description="security group for eelb"
   tags {
     Name="EELB"
-    terraform_run_on="${var.run_date}"
     created_by="${var.created_by}"
     application="none"
     allocated="false"
@@ -65,7 +60,6 @@ resource "aws_security_group" "ielb" {
   description="security group for ielb"
   tags {
     Name="IELB"
-    terraform_run_on="${var.run_date}"
     created_by="${var.created_by}"
     application="none"
     allocated="false"
@@ -99,7 +93,6 @@ resource "aws_security_group" "vpc_sg" {
   description="VPC Default Security group for ${aws_vpc.main.id}"
   tags {
     Name="VPC_${element(split ("-", "${aws_vpc.main.id}"), 1)}"
-    terraform_run_on="${var.run_date}"
     created_by="${var.created_by}"
     application="none"
     allocated="false"
@@ -302,7 +295,6 @@ resource "aws_security_group" "mgmt_sg" {
   description="MGMT Security group for ${aws_vpc.main.id}"
   tags {
     Name="MGMT_${element(split ("-", "${aws_vpc.main.id}"), 1)}"
-    terraform_run_on="${var.run_date}"
     created_by="${var.created_by}"
     application="none"
     allocated="false"
@@ -325,7 +317,6 @@ resource "aws_security_group" "infra_spinnaker" {
   description="Spinnaker Security group for ${aws_vpc.main.id}"
   tags {
     Name="INFRA_SPINNAKER"
-    terraform_run_on="${var.run_date}"
     created_by="${var.created_by}"
     application="none"
     allocated="false"
@@ -359,7 +350,6 @@ resource "aws_security_group" "infra_jenkins" {
   description="Jenkins Security group for ${aws_vpc.main.id}"
   tags {
     Name="INFRA_JENKINS"
-    terraform_run_on="${var.run_date}"
     created_by="${var.created_by}"
     application="none"
     allocated="false"
@@ -373,8 +363,8 @@ resource "aws_security_group" "infra_jenkins" {
     cidr_blocks=["${split(",",var.infra_jenkins_incoming_cidrs)}"]
   }
   ingress {
-    from_port="80"
-    to_port="80"
+    from_port="8000"
+    to_port="8000"
     protocol="tcp"
     cidr_blocks=["${var.vpc_cidr}"]
   }

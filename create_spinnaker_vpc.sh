@@ -97,7 +97,7 @@ if [ "$ACTION" != "destroy" ] && [ "$3" == "log" ]; then
 	#
 	LOG_TARGET=/tmp/$CLOUD_PROVIDER.SPINNAKER.$ACTION.$(date +%Y-%m-%d-%H-%M-%S)
 	echo "Logging to: $LOG_TARGET"
-	terraform $ACTION -var "run_date=$CURRENT_DATE" > $LOG_TARGET 2>&1
+	terraform $ACTION > $LOG_TARGET 2>&1
 else
-	terraform $ACTION -var "run_date=$CURRENT_DATE"
+	terraform $ACTION
 fi
