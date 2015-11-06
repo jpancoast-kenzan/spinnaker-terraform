@@ -38,9 +38,15 @@ chown jenkins:jenkins /var/lib/jenkins/users/
 mv /tmp/terraform/tempaccount_config.xml /var/lib/jenkins/users/tempaccount/config.xml
 chown -f jenkins:jenkins /var/lib/jenkins/users/* -R
 
-mv /tmp/terraform/aptly.conf /etc/aptly.conf
+mv /tmp/terraform/aptly.conf /var/lib/jenkins/.aptly.conf
 
-mkdir -p /opt/aptly
+mkdir -p /var/lib/jenkins/.aptly
+
+/usr/bin/aptly repo create -distribution=trusty -architectures=amd64 -component=main spinnaker
+
+chown jenkins:jenkins /var/lib/jenkins/.aptly
+chown jenkins:jenkins -R /var/lib/jenkins/.aptly/*
+
 
 update-rc.d jenkins enable
 /etc/init.d/jenkins start
@@ -97,7 +103,20 @@ java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ login --usern
 /usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ install-plugin plain-credentials
 /usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ install-plugin postbuildscript
 
-/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ create-job dsl-ami-provisioning < /tmp/terraform/dsl-ami-provisioning-job.xml
+#
+#	Install the one job by hand...
+#
+/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ create-job dsl-ami-provisioning < /tmp/terraform/jobs/dsl-ami-provisioning/config.xml
+
+#
+#	OR find all the jobs in the jobs/ dir and install them all
+#
+#for job_xml in $(find /tmp/terraform/jobs/ -name config.xml -print)
+#do
+#	job_name=$(echo $job_xml | sed -e 's/\/tmp\/terraform\/jobs\///' | sed -e 's/\/config.xml//')
+#
+#	/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ create-job $job_name < $job_xml
+#done
 
 
 #/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ reload-configuration

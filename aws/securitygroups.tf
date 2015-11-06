@@ -376,6 +376,12 @@ resource "aws_security_group" "infra_jenkins" {
     from_port="80"
     to_port="80"
     protocol="tcp"
+    cidr_blocks=["${var.vpc_cidr}"]
+  }
+  ingress {
+    from_port="80"
+    to_port="80"
+    protocol="tcp"
     security_groups=["${aws_security_group.infra_spinnaker.id}"]
   }
 }
