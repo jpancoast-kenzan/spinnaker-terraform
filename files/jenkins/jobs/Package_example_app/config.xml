@@ -20,8 +20,7 @@
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
         <name>develop-echo</name>
-        <url>git@github.com:kenzanmedia/echo.git</url>
-        <credentialsId>5d25eecb-00b2-4096-8166-9b59f5519969</credentialsId>
+        <url>https://github.com/kenzanmedia/hello-karyon-rxnetty.git</url>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
@@ -44,12 +43,13 @@
     </com.cloudbees.jenkins.GitHubPushTrigger>
   </triggers>
   <concurrentBuild>false</concurrentBuild>
-  <builders>
+    <builders>
     <hudson.tasks.Shell>
       <command>localbuildver=`grep &quot;^version=&quot; ${WORKSPACE}/gradle.properties | awk -F&apos;[=-]&apos; &apos;{print $2}&apos;`.${BUILD_NUMBER}
         sed -i -e &quot;s/^version=.*/version=${localbuildver}/g&quot; ${WORKSPACE}/gradle.properties
 #./gradlew buildRpm
-./gradlew buildDeb</command>
+#./gradlew buildDeb
+./gradlew clean jar</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers>
@@ -64,7 +64,9 @@
     <org.jenkinsci.plugins.postbuildscript.PostBuildScript plugin="postbuildscript@0.17">
       <buildSteps>
         <hudson.tasks.Shell>
-          <command>/bin/cp -f ${WORKSPACE}/echo-web/build/distributions/*\.deb /opt/deb_repo/binary/</command>
+          <command>#/bin/cp -f ${WORKSPACE}/echo-web/build/distributions/*\.deb /opt/deb_repo/binary/
+#cd /opt/deb_repo/
+#/usr/bin/dpkg-scanpackages binary /dev/null | gzip -9c &gt; binary/Packages.gz</command>
         </hudson.tasks.Shell>
       </buildSteps>
       <scriptOnlyIfSuccess>true</scriptOnlyIfSuccess>
