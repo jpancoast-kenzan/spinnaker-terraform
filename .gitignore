@@ -43,8 +43,8 @@ Temporary Items
 .terraform
 
 # Terraform state (for now)
-#terraform.tfstate
-#terraform.tfstate.*
+terraform.tfstate
+terraform.tfstate.*
 
 # Random editors
 .edit*

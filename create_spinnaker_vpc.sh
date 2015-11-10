@@ -1,14 +1,100 @@
 #!/bin/bash
 
-if [ "x$1" == "x" ]; then
-	echo "usage: $0 <cloud provider (aws only for now)> <plan|apply|destroy> <log (optional)>" 
-	exit 1
+#if [ "x$1" == "x" ]; then
+#	echo "usage: $0 <cloud provider (aws only for now)> <plan|apply|destroy> <log (optional)>" 
+#	exit 1
+#fi
+#
+#if [ "x$2" == "x" ]; then
+#	echo "usage: $0 <cloud provider (aws only for now)> <plan|apply|destroy> <log (optional)>" 
+#	exit 1
+#fi
+
+
+
+available_cloud_providers=(aws)
+available_actions=(plan apply destroy)
+
+while  [[ $# > 0 ]]
+do
+    key="$1"
+
+    case $key in
+        -c|--cloud_provider)
+        CLOUD_PROVIDER="$2"
+        shift
+        ;;
+        -a|--action)
+        ACTION="$2"
+        shift
+        ;;
+        -s|--statepath)
+        STATEPATH="$2"
+        shift
+        ;;
+        -l|--log)
+        LOG="YES"
+        ;;
+    esac
+    shift
+done
+
+
+SCRIPT_DIR=$(pwd)
+
+CURRENT_DATE=$(date +%Y-%m-%d-%H-%M)
+echo "Running on " $CURRENT_DATE
+
+
+if [ "x$CLOUD_PROVIDER" == "x" ]; then
+    echo "usage: $0 -c <cloud provider (aws only for now)> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional)"
+    exit 1
 fi
 
-if [ "x$2" == "x" ]; then
-	echo "usage: $0 <cloud provider (aws only for now)> <plan|apply|destroy> <log (optional)>" 
-	exit 1
+if [ "x$ACTION" == "x" ]; then
+    echo "usage: $0 -c <cloud provider (aws only for now)> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional)"
+    exit 1
 fi
+
+if [ "x$STATEPATH" == "x" ]; then
+    #default to PWD
+    STATEPATH=$SCRIPT_DIR/$CLOUD_PROVIDER/terraform.tfstate
+fi
+
+cp_match=0
+for cp in "${available_cloud_providers[@]}"; do
+    if [[ $cp = $CLOUD_PROVIDER ]]; then
+        cp_match=1
+        break
+    fi
+done
+
+if [[ $cp_match = 0 ]]; then
+    echo "$CLOUD_PROVIDER is not a valid cloud provider choice. The choices are:"
+
+    for cp in "${available_cloud_providers[@]}"; do
+        echo "    $cp"
+    done
+fi
+
+
+action_match=0
+for available_action in "${available_actions[@]}"; do
+    if [[ $available_action = $ACTION ]]; then
+        action_match=1
+        break
+    fi
+done
+
+if [[ $action_match = 0 ]]; then
+    echo "$ACTION is not a valid action choice. The choices are:"
+
+    for available_action in "${available_actions[@]}"; do
+        echo "    $available_action"
+    done
+fi
+
+
 
 
 echo "Checking for pre-requisites"
@@ -46,16 +132,6 @@ echo "here is where we could do some checks to make sure the environment is clea
 echo
 
 
-CLOUD_PROVIDER=$1
-ACTION=$2
-
-SCRIPT_DIR=$(pwd)
-
-CURRENT_DATE=$(date +%Y-%m-%d-%H-%M)
-echo "Running on " $CURRENT_DATE
-
-
-
 if [ "$ACTION" != "destroy" ]; then
 	cd $SCRIPT_DIR/$CLOUD_PROVIDER
 
@@ -65,8 +141,6 @@ if [ "$ACTION" != "destroy" ]; then
 
 	#
 	#	This is looking for a 'kenzan_spinnaker_get_info.py' script, which comes from the module
-	#	
-	#	TODO: if this fails, do not continue
 	#
 	for makefile in $(find .terraform/modules -name kenzan_spinnaker_get_info.py -print)
 	do
@@ -91,13 +165,13 @@ fi
 
 cd $SCRIPT_DIR/$CLOUD_PROVIDER
 
-if [ "$ACTION" != "destroy" ] && [ "$3" == "log" ]; then
+if [ "$ACTION" != "destroy" ] && [ "$LOG" == "YES" ]; then
 	#
 	#	Where to log the 'apply' and 'plan' output
 	#
 	LOG_TARGET=/tmp/$CLOUD_PROVIDER.SPINNAKER.$ACTION.$(date +%Y-%m-%d-%H-%M-%S)
 	echo "Logging to: $LOG_TARGET"
-	terraform $ACTION > $LOG_TARGET 2>&1
+	terraform $ACTION -no-color -state=$STATEPATH -backup=$STATEPATH.backup > $LOG_TARGET 2>&1
 else
-	terraform $ACTION
+	terraform $ACTION -state=$STATEPATH -backup=$STATEPATH.backup
 fi
