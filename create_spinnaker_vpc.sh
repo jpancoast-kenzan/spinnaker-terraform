@@ -1,17 +1,5 @@
 #!/bin/bash
 
-#if [ "x$1" == "x" ]; then
-#	echo "usage: $0 <cloud provider (aws only for now)> <plan|apply|destroy> <log (optional)>" 
-#	exit 1
-#fi
-#
-#if [ "x$2" == "x" ]; then
-#	echo "usage: $0 <cloud provider (aws only for now)> <plan|apply|destroy> <log (optional)>" 
-#	exit 1
-#fi
-
-
-
 available_cloud_providers=(aws)
 available_actions=(plan apply destroy)
 
@@ -43,7 +31,6 @@ done
 SCRIPT_DIR=$(pwd)
 
 CURRENT_DATE=$(date +%Y-%m-%d-%H-%M)
-echo "Running on " $CURRENT_DATE
 
 
 if [ "x$CLOUD_PROVIDER" == "x" ]; then
@@ -95,6 +82,7 @@ if [[ $action_match = 0 ]]; then
 fi
 
 
+echo "Running on " $CURRENT_DATE
 
 
 echo "Checking for pre-requisites"

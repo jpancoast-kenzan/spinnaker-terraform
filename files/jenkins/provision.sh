@@ -146,5 +146,5 @@ update-rc.d nginx enable
 #
 #	clean up /tmp/terraform/
 #
-rm -rf /tmp/terraform/
+rm -rf /tmp/terraform*
 

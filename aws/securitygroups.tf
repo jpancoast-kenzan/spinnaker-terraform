@@ -327,7 +327,7 @@ resource "aws_security_group" "infra_spinnaker" {
     from_port="80"
     to_port="80"
     protocol="tcp"
-    cidr_blocks=["${split(",",var.infra_spinnaker_incoming_cidrs)}"]
+    security_groups=["${aws_security_group.adm_bastion.id}"]
   }
 }
 

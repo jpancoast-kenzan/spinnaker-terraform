@@ -125,9 +125,9 @@ resource "aws_iam_user" "spinnaker" {
   path = "/system/"
 }
 
-resource "aws_iam_access_key" "spinnaker" {
-    user = "${aws_iam_user.spinnaker.name}"
-}
+#resource "aws_iam_access_key" "spinnaker" {
+#    user = "${aws_iam_user.spinnaker.name}"
+#}
 
 resource "aws_iam_user_policy" "spinnaker" {
     name = "spinnaker"

@@ -1,0 +1,16 @@
+services:
+  jenkins:
+    # If you are integrating Jenkins, set its location here using the baseUrl
+    # field and provide the username/password credentials.
+    # You must also enable the "igor" service listed seperately.
+    #
+    # If you have multiple jenkins servers, you will need to list
+    # them in an igor-local.yml. See jenkins.masters in config/igor.yml.
+    #
+    # Note that jenkins is not installed with Spinnaker so you must obtain this
+    # on your own if you are interested.
+    defaultMaster:
+      name: Jenkins # The display name for this server
+      baseUrl: JENKINS_URL
+      username: JENKINS_USERNAME
+      password: JENKINS_PASSWORD
