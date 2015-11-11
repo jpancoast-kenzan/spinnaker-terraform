@@ -89,8 +89,7 @@ resource "aws_instance" "jenkins" {
 
 /* Spinnaker instance */
 resource "aws_instance" "spinnaker" {
-  #ami = "${module.tf_kenzan.ami_id}"
-  ami = "ami-84baade5"
+  ami = "${module.tf_kenzan.ami_id}"
   instance_type = "${var.spinnaker_instance_type}"
   subnet_id = "${aws_subnet.public_subnet.5.id}"
   vpc_security_group_ids = ["${aws_security_group.infra_spinnaker.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]
