@@ -323,12 +323,6 @@ resource "aws_security_group" "infra_spinnaker" {
     allocated_on="none"
     owner="none"
   }
-  ingress {
-    from_port="80"
-    to_port="80"
-    protocol="tcp"
-    security_groups=["${aws_security_group.adm_bastion.id}"]
-  }
 }
 
 

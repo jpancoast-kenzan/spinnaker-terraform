@@ -33,10 +33,9 @@ internal_dns_zone = "kenzan.int"
 adm_bastion_incoming_cidrs = "38.75.226.18/32,67.190.184.208/32"
 
 #
-#	infra_jenkins and infra_spinnaker are inbound to port 80
+#	infra_jenkins are inbound to port 80
 #
 infra_jenkins_incoming_cidrs = "38.75.226.18/32,67.190.184.208/32"
-infra_spinnaker_incoming_cidrs = "38.75.226.18/32,67.190.184.208/32"
 
 
 #

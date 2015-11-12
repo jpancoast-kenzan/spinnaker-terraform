@@ -79,7 +79,7 @@ resource "aws_instance" "spinnaker" {
   instance_type = "${var.spinnaker_instance_type}"
   subnet_id = "${aws_subnet.public_subnet.5.id}"
   vpc_security_group_ids = ["${aws_security_group.infra_spinnaker.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]
-  associate_public_ip_address=false
+  associate_public_ip_address=true
   key_name = "${var.ssh_key_name}"
   iam_instance_profile = "${aws_iam_instance_profile.spinnaker_instance_profile.id}"
 
@@ -111,51 +111,8 @@ resource "aws_instance" "spinnaker" {
     ]
   }
 
-  #
-  # This may seem a little weird, and it is. For the tunnel command to work that is output at the end, the bastion host needs to have already accepted
-  #   the keys from the spinnaker host.
-  #
-  #provisioner "local-exec" {
-  #  command = "ssh -o IdentitiesOnly=yes -i ${var.ssh_private_key_location} ${var.ssh_user}@${aws_instance.bastion.public_ip} 'ssh-keyscan -H ${aws_instance.spinnaker.private_ip} > ~/.ssh/known_hosts'"
-  #}
-
   tags = {
     Name = "Spinnaker host"
     created_by = "${var.created_by}"
   }
 }
-
-
-#
-# The following two instance(s) are for test purposes only and should be removed before we make this public
-#
-#/* TEST bastion instance */
-#resource "aws_instance" "bastion_test" {
-#  ami = "${module.tf_kenzan.ami_id}"
-#  instance_type = "${var.bastion_instance_type}"
-#  subnet_id = "${aws_subnet.public_subnet.3.id}"
-#  vpc_security_group_ids = ["${aws_security_group.adm_bastion.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]
-#  associate_public_ip_address=true
-#  key_name = "${var.ssh_key_name}"
-#  tags = {
-#    Name = "bastion TEST host"
-#    created_by = "${var.created_by}"
-#  }
-#
-#  connection {
-#    user = "${var.ssh_user}"
-#    key_file = "${var.ssh_private_key_location}"
-#    agent = false
-#  }
-#
-#  provisioner "file" {
-#    source = "${var.ssh_private_key_location}"
-#    destination = "/home/${var.ssh_user}/.ssh/id_rsa"
-#  }
-#
-#  provisioner "remote-exec" {
-#    inline = [
-#      "chmod 0600 /home/${var.ssh_user}/.ssh/id_rsa"
-#    ]
-#  }
-#}
