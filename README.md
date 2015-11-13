@@ -1,4 +1,4 @@
-# aws-vpcizer
+# Creating the Spinnaker VPC
 
 To use:
 * Install Terraform (https://terraform.io/downloads.html)
@@ -54,4 +54,11 @@ ssh -o IdentitiesOnly=yes -i /Users/jpancoast/.ssh/id_rsa_spinnaker_terraform -L
 ```
 
 * With the tunnel running you can go to http://localhost:8080/ to access Spinnaker.
-* NOTE: Jenkins does NOT have to be accessed through the tunnel, and you should be able to login to it with the username/password in terraform.tfvars
+* NOTE: Jenkins does NOT have to be accessed through the tunnel, and you should be able to login to it using the public IP (if you set infra_jenkins_incoming_cidrs correctly) with the username/password in terraform.tfvars
+
+# Creating a pipeline for the example app:
+* You'll see a line in the example output above that looks like this:
+```
+cd support ; ./create_application_and_pipeline.py -a appname -p appnamepipeline -g sg-30165d54 -v sg-31165d55 -m sg-3c165d58
+```
+Execute it, and it _SHOULD_ create a pipeline.
