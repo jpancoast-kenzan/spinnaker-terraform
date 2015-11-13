@@ -326,6 +326,7 @@ resource "aws_security_group" "infra_spinnaker" {
 }
 
 
+
 resource "aws_security_group_rule" "infra_spinnaker_self_referential_rules" {
   type = "ingress"
   from_port = 0
@@ -367,5 +368,21 @@ resource "aws_security_group" "infra_jenkins" {
     to_port="80"
     protocol="tcp"
     security_groups=["${aws_security_group.infra_spinnaker.id}"]
+  }
+}
+
+
+/* SG for example application */
+resource "aws_security_group" "example_app" {
+  vpc_id = "${aws_vpc.main.id}"
+  name="EXAMPLE_SG"
+  description="Spinnaker Security group for ${aws_vpc.main.id}"
+  tags {
+    Name="EXAMPLE_SG"
+    created_by="${var.created_by}"
+    application="none"
+    allocated="false"
+    allocated_on="none"
+    owner="none"
   }
 }

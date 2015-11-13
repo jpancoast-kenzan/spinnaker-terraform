@@ -8,11 +8,10 @@
 
 #
 #   We just grab this script and it does everything!
-#
-curl -L "https://dl.bintray.com/kenzanlabs/spinnaker_scripts/InstallSpinnaker.sh" -o /tmp/terraform/InstallSpinnaker.sh
-chmod a+x /tmp/terraform/InstallSpinnaker.sh
-#Will have to change the following line when Sean's changes to InstallSpinnaker.sh are merged.
-/tmp/terraform/InstallSpinnaker.sh --cloud_provider amazon --default_region $1
+#	Change the download URL with InstallSpinnakerRoscoRush.sh is working...
+curl -L "https://dl.bintray.com/kenzanlabs/spinnaker_scripts/InstallSpinnaker.sh" -o /tmp/terraform/InstallSpinnakerRoscoRush.sh
+chmod a+x /tmp/terraform/InstallSpinnakerRoscoRush.sh
+/tmp/terraform/InstallSpinnakerRoscoRush.sh --cloud_provider amazon --default_region $1
 
 #
 #   Rosco isn't starting up right either.
@@ -33,14 +32,14 @@ sed -i.bak -e "s/igor_enabled\: false/igor_enabled\: true/" /opt/spinnaker/confi
 #
 #	hack hack hack
 #
-mv /var/www /var/www_old
-wget https://bintray.com/artifact/download/spinnaker/ospackages/deck_2.352-3_all.deb
-dpkg -i deck_2.352-3_all.deb
-
-mv /tmp/terraform/settings.js /var/www/settings.js
+#mv /var/www /var/www_old
+#wget https://bintray.com/artifact/download/spinnaker/ospackages/deck_2.352-3_all.deb
+#dpkg -i deck_2.352-3_all.deb
+#
+#mv /tmp/terraform/settings.js /var/www/settings.js
+# end hack 
 
 service igor start
-# end hack 
 
 #
 #   clean up /tmp/terraform/

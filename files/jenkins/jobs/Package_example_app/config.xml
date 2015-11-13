@@ -43,16 +43,16 @@
     </com.cloudbees.jenkins.GitHubPushTrigger>
   </triggers>
   <concurrentBuild>false</concurrentBuild>
-    <builders>
+  <builders>
     <hudson.tasks.Shell>
       <command>localbuildver=`grep &quot;^version=&quot; ${WORKSPACE}/gradle.properties | awk -F&apos;[=-]&apos; &apos;{print $2}&apos;`.${BUILD_NUMBER}
 sed -i -e &quot;s/^version=.*/version=${localbuildver}/g&quot; ${WORKSPACE}/gradle.properties
-./gradlew buildDeb</command>
+./gradlew clean packDeb</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers>
     <hudson.tasks.ArtifactArchiver>
-      <artifacts>echo-web/build/distributions/echo*</artifacts>
+      <artifacts>build/distributions/*.deb</artifacts>
       <allowEmptyArchive>false</allowEmptyArchive>
       <onlyIfSuccessful>false</onlyIfSuccessful>
       <fingerprint>false</fingerprint>
@@ -62,9 +62,10 @@ sed -i -e &quot;s/^version=.*/version=${localbuildver}/g&quot; ${WORKSPACE}/grad
     <org.jenkinsci.plugins.postbuildscript.PostBuildScript plugin="postbuildscript@0.17">
       <buildSteps>
         <hudson.tasks.Shell>
-          <command>#/bin/cp -f ${WORKSPACE}/echo-web/build/distributions/*\.deb /opt/deb_repo/binary/
-#cd /opt/deb_repo/
-#/usr/bin/dpkg-scanpackages binary /dev/null | gzip -9c &gt; binary/Packages.gz</command>
+          <command>
+/bin/cp -f ${WORKSPACE}/build/distributions/*.deb /opt/deb_repo/binary/
+cd /opt/deb_repo
+/usr/bin/dpkg-scanpackages binary /dev/null | gzip -9c &gt; binary/Packages.gz</command>
         </hudson.tasks.Shell>
       </buildSteps>
       <scriptOnlyIfSuccess>true</scriptOnlyIfSuccess>

@@ -38,7 +38,7 @@
           "securityGroups": [
             "sg-e1a7ee85"
           ],
-          "freeFormDetails": "Free Form Details",
+          "freeFormDetails": "Free.form.details",
           "terminationPolicies": [
             "Default"
           ],

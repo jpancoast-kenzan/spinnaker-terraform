@@ -29,7 +29,7 @@ apt-get -y install jenkins nginx unzip git openjdk-7-jdk openjdk-8-jdk htop
 #
 #	Create/move/copy/fix permissions on all the configs that are needed
 #
-mv /tmp/terraform/config.xml /var/lib/jenkins/config.xml
+mv /tmp/terraform/jenkins_config.xml /var/lib/jenkins/config.xml
 chown jenkins:jenkins /var/lib/jenkins/config.xml
 
 mkdir -p /var/lib/jenkins/users/tempaccount/

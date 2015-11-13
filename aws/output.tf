@@ -9,6 +9,9 @@ resource "template_file" "output" {
 		private_key = "${var.ssh_private_key_location}"
 		spinnaker_ip = "${aws_instance.spinnaker.private_ip}"
 		ssh_user = "${var.ssh_user}"
+		sg_id = "${aws_security_group.example_app.id}"
+		vpc_sg_id = "${aws_security_group.vpc_sg.id}"
+		mgmt_sg_id = "${aws_security_group.mgmt_sg.id}"
 	}
 }
 
