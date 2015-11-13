@@ -62,3 +62,4 @@ ssh -o IdentitiesOnly=yes -i /Users/jpancoast/.ssh/id_rsa_spinnaker_terraform -L
 cd support ; ./create_application_and_pipeline.py -a appname -p appnamepipeline -g sg-30165d54 -v sg-31165d55 -m sg-3c165d58
 ```
 Execute it, and it _SHOULD_ create a pipeline.
+* With a working pipeline, all you should have to do is go to the 'Package_example_app' job on jenkins and build it.
