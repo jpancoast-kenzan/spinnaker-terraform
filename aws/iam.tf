@@ -20,6 +20,11 @@ resource "aws_iam_role" "base_iam_role" {
 EOF
 }
 
+resource "aws_iam_instance_profile" "base_iam_profile" {
+  name = "BaseIAMRole"
+  roles = ["${aws_iam_role.base_iam_role.id}"]
+}
+
 #
 # Jenkins role
 #

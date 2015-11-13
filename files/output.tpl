@@ -13,10 +13,13 @@ Now, start up a tunnel:
 
 SSH CLI command:
 	--- cut ---
-	ssh -o IdentitiesOnly=yes -i ${private_key} -L 8080:localhost:8080 -L 8084:localhost:8084 ${ssh_user}@${bastion_public_ip} 'ssh -o IdentitiesOnly=yes -i /home/${ssh_user}/.ssh/id_rsa -L 8080:localhost:80 -L 8084:localhost:8084 -A ${ssh_user}@${spinnaker_ip}'
+	ssh -o IdentitiesOnly=yes -i ${private_key} -L 8080:localhost:8080 -L 8084:localhost:8084 -L 8087:localhost:8087 ${ssh_user}@${bastion_public_ip} 'ssh -o IdentitiesOnly=yes -i /home/${ssh_user}/.ssh/id_rsa -L 8080:localhost:80 -L 8084:localhost:8084 -L 8087:localhost:8087 -A ${ssh_user}@${spinnaker_ip}'
 	--- end cut ---
 
 To create an example pipeline:
     --- cut ---
     cd support ; ./create_application_and_pipeline.py -a appname -p appnamepipeline -g ${sg_id} -v ${vpc_sg_id} -m ${mgmt_sg_id}
     --- end cut ---
+
+
+    
