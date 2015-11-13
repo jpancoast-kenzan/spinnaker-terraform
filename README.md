@@ -11,4 +11,7 @@ To use:
   * set ssh_public_key to be the value of the public key.
   * set adm_bastion_incoming_cidrs and infra_jenkins_incoming_cidrs to a comma separated list of CIDRS that need to access those services.
   * for now, do not change ssh_key_name
-
+* run the script:
+```
+./create_spinnaker_vpc.sh -a apply -c aws
+```
