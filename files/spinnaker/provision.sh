@@ -21,19 +21,6 @@ chmod a+x /tmp/terraform/InstallSpinnaker.sh
 cp /tmp/terraform/igor-local.yml /opt/spinnaker/config/
 sed -i.bak -e "s/JENKINS_URL/http:\/\/jenkins.$2\//" -e "s/JENKINS_USERNAME/$3/" -e "s/JENKINS_PASSWORD/$4/" /opt/spinnaker/config/igor-local.yml
 
-#
-#	Supposedly aws credentials are not needed... we'll see about that!
-#
-##Change the ofllowing username to spinnaker when we get the spinnaker meta package working.
-#spinnaker_user="ubuntu"
-#mkdir -p /home/$spinnaker_user/.aws/
-#echo "[default]" > /home/$spinnaker_user/.aws/credentials
-#echo "aws_access_key_id = $3" >> /home/$spinnaker_user/.aws/credentials
-#echo "aws_secret_access_key = $4" >> /home/$spinnaker_user/.aws/credentials
-#
-#chown $spinnaker_user /home/$spinnaker_user/.aws/
-#chown $spinnaker_user /home/$spinnaker_user/.aws/*
-
 echo "deb http://jenkins.$2:8000/ binary/" > /etc/apt/sources.list.d/deb-internal.list
 
 
@@ -42,7 +29,18 @@ echo "deb http://jenkins.$2:8000/ binary/" > /etc/apt/sources.list.d/deb-interna
 #
 sed -i.bak -e "s/igor_enabled\: false/igor_enabled\: true/" /opt/spinnaker/config/spinnaker-local.yml
 
+
+#
+#	hack hack hack
+#
+mv /var/www /var/www_old
+wget https://bintray.com/artifact/download/spinnaker/ospackages/deck_2.352-3_all.deb
+dpkg -i deck_2.352-3_all.deb
+
+mv /tmp/terraform/settings.js /var/www/settings.js
+
 service igor start
+# end hack 
 
 #
 #   clean up /tmp/terraform/

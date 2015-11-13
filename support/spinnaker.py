@@ -106,19 +106,6 @@ class spinnaker():
             return False
 
 
-    '''
-    curl 'http://ec2-52-26-72-234.us-west-2.compute.amazonaws.com/8084/applications/appnme/tasks' 
-        -H 'Origin: http://ec2-52-26-72-234.us-west-2.compute.amazonaws.com' 
-        -H 'Accept-Encoding: gzip, deflate' 
-        -H 'Accept-Language: en-US,en;q=0.8' 
-        -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36' 
-        -H 'Content-Type: application/json;charset=UTF-8' 
-        -H 'Accept: application/json, text/plain, */*' 
-        -H 'Referer: http://ec2-52-26-72-234.us-west-2.compute.amazonaws.com/' 
-        -H 'Connection: keep-alive' 
-        -H 'DNT: 1' 
-        --data-binary '{"suppressNotification":true,"job":[{"type":"createApplication","account":"my-aws-account","application":{"name":"appnme","description":"description","email":"jpancoast@kenzan.com","pdApiKey":"pagerduty","repoProjectKey":"repoproject","repoSlug":"reponame","repoType":"github","cloudProviders":"","platformHealthOnly":false,"platformHealthOnlyShowOverride":false},"user":"[anonymous]"}],"application":"appnme","description":"Create Application: appnme"}' --compressed
-    '''
     def create_application(self, application):
         print "Create Application"
 
@@ -145,7 +132,7 @@ class spinnaker():
         job['application']['repoProjectKey'] = application['repo_project_key']
         job['application']['repoSlug'] = application['repo_name']
         job['application']['repoType'] = application['repo_type']
-        job['application']['cloudProviders'] = ''
+        job['application']['cloudProviders'] = 'aws'
         job['application']['platformHealthOnly'] = True
         job['application']['platformHealthOnlyShowOverride'] = True
 

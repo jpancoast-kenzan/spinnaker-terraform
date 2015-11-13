@@ -16,13 +16,21 @@ Options:
 
 VERSION = '0.1'
 SPINNAKER_HOST = 'localhost'
-SPINNAKER_PORT = '8080' #I could probably put these in a yaml config file or something.
+SPINNAKER_PORT = '8080'
 GATE_PORT = '8084'
 
 import sys
 import os
 
+from pprint import pprint
 from spinnaker import spinnaker
+
+try:
+    import json
+except ImportError, e:
+    print "Missing json module. Install with: sudo pip install json"
+    print "If you don't have pip, do this first: sudo easy_install pip"
+    exit(2)
 
 try:
     from docopt import docopt
@@ -31,49 +39,9 @@ except ImportError, e:
     print "If you don't have pip, do this first: sudo easy_install pip"
     exit(2)
 
-'''
-curl 'http://localhost:8084/pipelines' 
-    -H 'Origin: http://localhost:8080' 
-    -H 'Accept-Encoding: gzip, deflate' 
-    -H 'Accept-Language: en-US,en;q=0.8' 
-    -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36' 
-    -H 'Content-Type: application/json;charset=UTF-8' 
-    -H 'Accept: application/json, text/plain, */*' 
-    -H 'Referer: http://localhost:8080/' 
-    -H 'Cookie: PLAY_SESSION=01d09ca7710d8ea9c16349e16d578065c86f7677-sessionid=b140299f82252baeca13b5e4b40308c21199303dec55c4e909e08a9415e17df99412aeb84cadb4397e3dc5e2c4cba38d' 
-    -H 'Connection: keep-alive' -H 'DNT: 1' 
-    --data-binary '{"index":0,"name":"appnamepipeline","stageCounter":1,"triggers":[{"type":"jenkins","job":"Package_example_app","enabled":true,"propertyFile":"propertyFile","master":"Jenkins"}],"application":"appname","stages":[{"requisiteStageRefIds":[],"refId":"1","type":"bake","name":"Bake","cloudProviderType":"aws","regions":["us-west-2"],"user":"[anonymous]","vmType":"hvm","storeType":"ebs","baseOs":"trusty","baseLabel":"unstable","showAdvancedOptions":true,"sendNotifications":false,"enhancedNetworking":false,"baseAmi":"ami-46a3b427","package":"hello-karyon-rxnetty"}],"parallel":true,"id":"5373ab60-88d1-11e5-bf5b-9d3eb09d9db6"}' --compressed
-'''
-'''
-"stages": [
-        {
-            "requisiteStageRefIds": [],
-            "refId": "1",
-            "type": "bake",
-            "name": "Bake",
-            "cloudProviderType": "aws",
-            "regions": [
-                "us-west-2"
-            ],
-            "user": "[anonymous]",
-            "vmType": "hvm",
-            "storeType": "ebs",
-            "baseOs": "trusty",
-            "baseLabel": "unstable",
-            "showAdvancedOptions": true,
-            "sendNotifications": false,
-            "enhancedNetworking": false,
-            "baseAmi": "ami-46a3b427",
-            "package": "hello-karyon-rxnetty"
-        }
-    ],
-'''
-#
-# def create_application(self, app_name, description, email, pd_api_key,
-# repo_project_key, repo_name, repo_type):
-#
 def main(argv):
-    arguments = docopt(__doc__, version=str(os.path.basename(__file__)) + " " + VERSION, options_first=False)
+    arguments = docopt(__doc__, version=str(
+        os.path.basename(__file__)) + " " + VERSION, options_first=False)
 
     if arguments['--spinnaker_address'] is not None:
         spinnaker_address = arguments['--spinnaker_address']
@@ -83,20 +51,16 @@ def main(argv):
     app_name = arguments['--app_name']
     pipeline_name = arguments['--pipeline_name']
 
-    spin_tools = spinnaker(spinnaker_address=spinnaker_address, spinnaker_port=SPINNAKER_PORT, gate_port=GATE_PORT)
+
+    pipeline_json_file = 'pipeline.json'
+    app_json_file = 'application.json'
 
 
-    pipeline = {}
+    spin_tools = spinnaker(spinnaker_address=spinnaker_address,
+                           spinnaker_port=SPINNAKER_PORT, gate_port=GATE_PORT)
+    
+    '''
     application = {}
-    stage_1 = {}
-    stage_2 = {}
-
-    triggers = []
-    stages = []
-
-
-
-
     application['app_name'] = app_name
     application['description'] = "this is a test description"
     application['email'] = 'jpancoast@kenzan.com'
@@ -104,6 +68,29 @@ def main(argv):
     application['repo_project_key'] = 'Repo Project Name'
     application['repo_name'] = 'Repository Name'
     application['repo_type'] = 'stash'  # stash or github
+    '''
+
+    with open(pipeline_json_file) as pipeline_file:
+        pipeline = json.load(pipeline_file)
+
+    pipeline['name'] = pipeline_name
+    pipeline['application'] = app_name
+
+    with open(app_json_file) as app_file:
+        application = json.load(app_file)
+
+    application['app_name'] = app_name
+
+
+#    pprint(pipeline)
+
+    '''
+    pipeline = {}
+    stage_1 = {}
+    stage_2 = {}
+
+    triggers = []
+    stages = []
 
 
     stage_1['requisiteStageRefIds'] = []
@@ -124,8 +111,50 @@ def main(argv):
     stage_1['package'] = 'hello-karyon-rxnetty'
 
 
+    stage_2['requisiteStageRefIds'] = ["1"]
+    stage_2['refId'] = "2"
+    stage_2['type'] = "deploy"
+    stage_2['name'] = "Deploy"
+
+    clusters = []
+    cluster_1 = {}
+    cluster_1['application'] = app_name
+    cluster_1['strategy'] = "highlander"
+    cluster_1['capacity'] = { "min": 1, "max": 1, "desired": 1 }
+    
+    cluster_1['targetHealthyDeployPercentage'] = ''
+    cluster_1['cooldown'] = 10
+    cluster_1['healthCheckType'] = "EC2"
+    cluster_1['healthCheckGracePeriod'] = 600
+    cluster_1['instanceMonitoring'] = False
+    cluster_1['ebsOptimized'] = False
+    cluster_1['iamRole'] = 'BaseIAMRole'
+
+    cluster_1['terminationPolicies'] = ["Default"]
+
+    cluster_1['availabilityZones'] = { "us-west-2": [ "us-west-2a", "us-west-2b", "us-west-2c"]}
+
+    cluster_1['keyPair'] = 'my-aws-account-keypair'
+
+    cluster_1['suspendedProcesses'] = []
+    cluster_1['securityGroups'] = ["sg-e1a7ee85"]
+    cluster_1['interestingHealthProviderNames'] = [ "Amazon" ]
+
+    cluster_1['subnetType'] = 'ec2'
+    cluster_1['virtualizationType'] = None
+    cluster_1['instanceType'] = "t2.small"
+    cluster_1['stack'] = 'stack'
+    cluster_1['freeFormDetails'] = 'Free Form Details'
+    cluster_1['provider'] = 'aws'
+    cluster_1['cloudProvider'] = 'aws'
+    cluster_1['account'] = 'my-aws-account'
+
+    clusters.append(cluster_1)
+
+    stage_2['clusters'] = clusters
+
     stages.append(stage_1)
-#    stages.append(stage_2)
+    stages.append(stage_2)
 
     trigger_1 = {}
     trigger_1['enabled'] = True
@@ -135,18 +164,17 @@ def main(argv):
     trigger_1['propertyFile'] = ""
 
     triggers.append(trigger_1)
-    
+
     pipeline['name'] = pipeline_name
     pipeline['stages'] = stages
     pipeline['triggers'] = triggers
     pipeline['application'] = app_name
     pipeline['stageCounter'] = 0
-    pipeline['parallel'] = True 
+    pipeline['parallel'] = True
     pipeline['index'] = 0
-
+    '''
 
     spin_tools.create_application(application)
-
 
     spin_tools.create_pipeline(pipeline)
 

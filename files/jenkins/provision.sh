@@ -112,6 +112,7 @@ java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ login --usern
 #
 for job_xml in $(find /tmp/terraform/jobs/ -name config.xml -print)
 do
+	sleep 2
 	job_name=$(echo $job_xml | sed -e 's/\/tmp\/terraform\/jobs\///' | sed -e 's/\/config.xml//')
 
 	/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ create-job $job_name < $job_xml

@@ -46,10 +46,8 @@
     <builders>
     <hudson.tasks.Shell>
       <command>localbuildver=`grep &quot;^version=&quot; ${WORKSPACE}/gradle.properties | awk -F&apos;[=-]&apos; &apos;{print $2}&apos;`.${BUILD_NUMBER}
-        sed -i -e &quot;s/^version=.*/version=${localbuildver}/g&quot; ${WORKSPACE}/gradle.properties
-#./gradlew buildRpm
-#./gradlew buildDeb
-./gradlew clean jar</command>
+sed -i -e &quot;s/^version=.*/version=${localbuildver}/g&quot; ${WORKSPACE}/gradle.properties
+./gradlew buildDeb</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers>
