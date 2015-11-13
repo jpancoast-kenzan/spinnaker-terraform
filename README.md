@@ -52,3 +52,6 @@ ssh -o IdentitiesOnly=yes -i /Users/jpancoast/.ssh/id_rsa_spinnaker_terraform ub
 ```
 ssh -o IdentitiesOnly=yes -i /Users/jpancoast/.ssh/id_rsa_spinnaker_terraform -L 8080:localhost:8080 -L 8084:localhost:8084 ubuntu@52.32.185.147 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 8080:localhost:80 -L 8084:localhost:8084 -A ubuntu@192.168.3.189'
 ```
+
+* With the tunnel running you can go to http://localhost:8080/ to access Spinnaker.
+* NOTE: Jenkins does NOT have to be accessed through the tunnel, and you should be able to login to it with the username/password in terraform.tfvars
