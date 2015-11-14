@@ -10,7 +10,9 @@
 #   We just grab this script and it does everything!
 #	Change the download URL with InstallSpinnakerRoscoRush.sh is working...
 curl -L "https://dl.bintray.com/kenzanlabs/spinnaker_scripts/InstallSpinnaker.sh" -o /tmp/terraform/InstallSpinnakerRoscoRush.sh
+#curl -L "https://dl.bintray.com/kenzanlabs/spinnaker_scripts/InstallSpinnakerRoscoRush.sh" -o /tmp/terraform/InstallSpinnakerRoscoRush.sh
 chmod a+x /tmp/terraform/InstallSpinnakerRoscoRush.sh
+sed -i.bak -e "s/\ \#\!\/bin\/bash/\#\!\/bin\/bash/" /tmp/terraform/InstallSpinnakerRoscoRush.sh
 /tmp/terraform/InstallSpinnakerRoscoRush.sh --cloud_provider amazon --default_region $1
 
 #
