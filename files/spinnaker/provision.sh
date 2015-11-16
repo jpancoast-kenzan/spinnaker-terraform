@@ -1,23 +1,23 @@
 #!/bin/sh
 
 
+##
+##	If we need aws keys:
+##		"sudo /tmp/terraform/provision.sh ${var.region} ${aws_iam_access_key.spinnaker.id} ${aws_iam_access_key.spinnaker.secret} ${var.internal_dns_zone}"
+##"sudo /tmp/terraform/provision.sh ${var.region} ${var.internal_dns_zone}"
 #
-#	If we need aws keys:
-#		"sudo /tmp/terraform/provision.sh ${var.region} ${aws_iam_access_key.spinnaker.id} ${aws_iam_access_key.spinnaker.secret} ${var.internal_dns_zone}"
-#"sudo /tmp/terraform/provision.sh ${var.region} ${var.internal_dns_zone}"
-
-#
-#   We just grab this script and it does everything!
-#	Change the download URL with InstallSpinnakerRoscoRush.sh is working...
-#curl -L "https://dl.bintray.com/kenzanlabs/spinnaker_scripts/InstallSpinnaker.sh" -o /tmp/terraform/InstallSpinnakerRoscoRush.sh
-curl -L "https://dl.bintray.com/kenzanlabs/spinnaker_scripts/InstallSpinnaker.sh" -o /tmp/terraform/InstallSpinnaker.sh
-chmod a+x /tmp/terraform/InstallSpinnaker.sh
-#The following is a hack until the script gets fixed.
-sed -i.bak -e "s/\ \#\!\/bin\/bash/\#\!\/bin\/bash/" /tmp/terraform/InstallSpinnaker.sh
-#This is giving an error, module aufs not found
-#*** System restart required ***
-#Spinnaker is coming up with a cluster already configured, no idea where that came from.
-/tmp/terraform/InstallSpinnaker.sh --cloud_provider amazon --aws_region $1
+##
+##   We just grab this script and it does everything!
+##	Change the download URL with InstallSpinnakerRoscoRush.sh is working...
+##curl -L "https://dl.bintray.com/kenzanlabs/spinnaker_scripts/InstallSpinnaker.sh" -o /tmp/terraform/InstallSpinnakerRoscoRush.sh
+#curl -L "https://dl.bintray.com/kenzanlabs/spinnaker_scripts/InstallSpinnaker.sh" -o /tmp/terraform/InstallSpinnaker.sh
+#chmod a+x /tmp/terraform/InstallSpinnaker.sh
+##The following is a hack until the script gets fixed.
+#sed -i.bak -e "s/\ \#\!\/bin\/bash/\#\!\/bin\/bash/" /tmp/terraform/InstallSpinnaker.sh
+##This is giving an error, module aufs not found
+##*** System restart required ***
+##Spinnaker is coming up with a cluster already configured, no idea where that came from.
+#/tmp/terraform/InstallSpinnaker.sh --cloud_provider amazon --aws_region $1
 
 #
 #   Rosco isn't starting up right either.

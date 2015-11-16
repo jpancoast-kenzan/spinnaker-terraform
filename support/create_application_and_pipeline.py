@@ -19,7 +19,7 @@ Options:
 
 VERSION = '0.1'
 SPINNAKER_HOST = 'localhost'
-SPINNAKER_PORT = '8080'
+SPINNAKER_PORT = '9000'
 GATE_PORT = '8084'
 
 import sys
