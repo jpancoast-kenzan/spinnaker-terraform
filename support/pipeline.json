@@ -42,7 +42,7 @@
           "terminationPolicies": [
             "Default"
           ],
-          "targetHealthyDeployPercentage": "",
+          "targetHealthyDeployPercentage": 100,
           "healthCheckGracePeriod": 600,
           "instanceType": "t2.small",
           "capacity": {
@@ -56,7 +56,7 @@
           "keyPair": "my-aws-account-keypair",
           "provider": "aws",
           "virtualizationType": null,
-          "subnetType": "ec2",
+          "subnetType": "ec2_public (vpc_X)",
           "availabilityZones": {
             "us-west-2": [
               "us-west-2a",

@@ -12,6 +12,7 @@ resource "template_file" "output" {
 		sg_id = "${aws_security_group.example_app.id}"
 		vpc_sg_id = "${aws_security_group.vpc_sg.id}"
 		mgmt_sg_id = "${aws_security_group.mgmt_sg.id}"
+		vpc_name = "${var.vpc_name}"
 	}
 }
 

@@ -114,7 +114,7 @@ resource "aws_instance" "spinnaker" {
     inline = [
       "chmod a+x /home/ubuntu/.init-region",
       "/home/ubuntu/.init-region",
-      "sleep 5",
+      "echo init region done.",
       "sudo service spinnaker restart"
     ]
   }
