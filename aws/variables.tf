@@ -29,12 +29,6 @@ variable "trusty_amis" {
   default = {}
 }
 
-#variable "azs_per_region" {
-#  default = 3
-#}
-
-
-
 module "tf_kenzan" {
   source = "github.com/jpancoast-kenzan/tf_kenzan_spinnaker"
   region = "${var.region}"
@@ -73,6 +67,20 @@ variable "public_subnet_block" {
   }
 } 
 
+variable "spinnaker_ami" {
+  default = {
+    "us-west-1" = "ami-76583616"
+    "eu-west-1" = "ami-5f954f2c"
+    "eu-central-1" = "ami-a36476cf"
+    "ap-southeast-1" = "ami-ab589ec8"
+    "ap-southeast-2" = "ami-f6045d95"
+    "ap-northeast-1" = "ami-a2b797cc"
+    "sa-east-1" = "ami-8173c9ed"
+    "us-west-2" = "ami-04e1f065"
+    "us-east-1" = "ami-e5b9c38f"
+  }
+}
+
 # 
 # loop count for setting up muliple private subnets
 #   This should match the number of entries in the 'private_subnet_block' map
@@ -91,11 +99,3 @@ variable "private_subnet_block" {
   }
 } 
 
-
-#variable "azs" {
-#  default = {
-#    "us-west-2" = "a:b:c"
-#    "us-east-1" = "b:c:d"
-#    "us-west-1" = "a:b:c"
-#  }
-#}

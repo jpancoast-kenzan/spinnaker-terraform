@@ -20,7 +20,6 @@ resource "aws_subnet" "private_subnets" {
   availability_zone    = "${var.region}${element(split (":", "${module.tf_kenzan.azs_per_region}"), count.index%module.tf_kenzan.az_counts_per_region)}"
     tags {
       Name               = "${var.vpc_name}.${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 1)}.${var.region}${element(split (":", "${module.tf_kenzan.azs_per_region}"), count.index%module.tf_kenzan.az_counts_per_region)}"
-      immutable_metadata = "${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 2)}"
     }
   vpc_id = "${aws_vpc.main.id}"
 }
@@ -37,7 +36,6 @@ resource "aws_subnet" "public_subnet" {
   depends_on = ["aws_internet_gateway.gw"]
     tags {
       Name               = "${var.vpc_name}.${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 1)}.${var.region}${element(split (":", "${module.tf_kenzan.azs_per_region}"), count.index%module.tf_kenzan.az_counts_per_region)}"
-      immutable_metadata = "${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 2)}"
     }
   vpc_id = "${aws_vpc.main.id}"
 }

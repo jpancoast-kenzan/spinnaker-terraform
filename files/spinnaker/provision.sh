@@ -38,14 +38,23 @@ sed -i.bak -e "s/igor_enabled\: false/igor_enabled\: true/" /opt/spinnaker/confi
 service igor start
 
 
+#chmod a+x /home/ubuntu/.init-region
+#/home/ubuntu/.init-region
+
+
+
+#http://jenkins.kenzan.int:8000/ binary/
+sed -i.bak -e "s/debianRepository: .*/debianRepository: http\:\/\/debianrepo.${2}:8000\/ binary\//" /opt/rosco/config/rosco.yml
+
+
 #
 #   hack hack hack. I need to put specific values into the aws-ebs.json file for vpc id and subnet id
 #
-MAC_ADDR=$(curl -s http://169.254.169.254/latest/meta-data/mac)
+#MAC_ADDR=$(curl -s http://169.254.169.254/latest/meta-data/mac)
 # VPC to launch instance in
-VPC_ID=$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/${MAC_ADDR}/vpc-id)
+#VPC_ID=$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/${MAC_ADDR}/vpc-id)
 # Subnet ID to launch instance in (Required in VPC)
-SUBNET_ID=$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/${MAC_ADDR}/subnet-id)
+#SUBNET_ID=$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/${MAC_ADDR}/subnet-id)
 
 
 #sed -i.bak -e "s/vpc-a6e5a5c3/${VPC_ID}/" -e "s/subnet-ed56219a/${SUBNET_ID}/" /opt/rosco/docker/aws-ebs.json
@@ -63,10 +72,12 @@ SUBNET_ID=$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/m
 #docker tag -f $DOCKER_IMAGE_NAME $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME
 #docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME
 
-service rosco restart
-service rush restart
+#service rosco restart
+#service rush restart
 
 #
 #   clean up /tmp/terraform/
 #
 rm -rf /tmp/terraform*
+
+sleep 5

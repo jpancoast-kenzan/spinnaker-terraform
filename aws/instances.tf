@@ -75,8 +75,7 @@ resource "aws_instance" "jenkins" {
 
 /* Spinnaker instance */
 resource "aws_instance" "spinnaker" {
-#  ami = "${module.tf_kenzan.ami_id}"
-  ami = "ami-d8c9d8b9"
+  ami = "${lookup(var.spinnaker_ami, var.region)}"
   instance_type = "${var.spinnaker_instance_type}"
   subnet_id = "${aws_subnet.public_subnet.5.id}"
   vpc_security_group_ids = ["${aws_security_group.infra_spinnaker.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]
@@ -108,6 +107,15 @@ resource "aws_instance" "spinnaker" {
     inline = [
       "chmod a+x /tmp/terraform/provision.sh",
       "sudo /tmp/terraform/provision.sh ${var.region} ${var.internal_dns_zone} ${var.jenkins_admin_username} ${var.jenkins_admin_password}"
+    ]
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod a+x /home/ubuntu/.init-region",
+      "/home/ubuntu/.init-region",
+      "sleep 5",
+      "sudo service spinnaker restart"
     ]
   }
 
