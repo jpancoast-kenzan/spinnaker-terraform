@@ -4,7 +4,7 @@
 Create an application in spinnaker
 
 Usage:
-    ./create_application.py (--app_name=<app_name>) (--pipeline_name=<pipeline_name>) (--sg_id=<sg_id>) (--vpc_name=<vpc_name>) (--vpc_sg_id=<vpc_sg_id>) (--mgmt_sg_id=<mgmt_sg_id>) [(--spinnaker_address=<spinnaker_address>)]
+    ./create_application.py (--app_name=<app_name>) (--pipeline_name=<pipeline_name>) (--sg_id=<sg_id>) (--aws_region=<aws_region>) (--vpc_name=<vpc_name>) (--vpc_sg_id=<vpc_sg_id>) (--mgmt_sg_id=<mgmt_sg_id>) [(--spinnaker_address=<spinnaker_address>)]
 
 Options:
     --help Show this screen
@@ -16,6 +16,7 @@ Options:
     -v, --vpc_sg_id=<vpc_sg_id> ID of the VPC SG to attach
     -m, --mgmt_sg_id=<mgmt_sg_id> ID of the MGMT SG to attach
     -n, --vpc_name=<vpc_name> Name of the VPC
+    -r, --aws_region=<aws_region> AWS region
 """
 
 VERSION = '0.1'
@@ -64,6 +65,7 @@ def main(argv):
     vpc_sg_id = arguments['--vpc_sg_id']
     mgmt_sg_id = arguments['--mgmt_sg_id']
     vpc_name = arguments['--vpc_name']
+    aws_region = arguments['--aws_region']
 
     pipeline_json_file = 'pipeline.json'
     app_json_file = 'application.json'
@@ -79,6 +81,8 @@ def main(argv):
     pipeline['subnetType'] = "ec2_public (" + vpc_name + ")"
 
     pipeline['stages'][1]['clusters'][0]['securityGroups'] = [sg_id, vpc_sg_id, mgmt_sg_id]
+    pipeline['stages'][0]['regions'] = [aws_region]
+
     with open(app_json_file) as app_file:
         application = json.load(app_file)
 

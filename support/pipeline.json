@@ -20,7 +20,7 @@
       "baseAmi": "ami-46a3b427",
       "package": "hello-karyon-rxnetty",
       "regions": [
-        "us-west-2"
+        "us-east-1"
       ],
       "vmType": "hvm",
       "showAdvancedOptions": true,

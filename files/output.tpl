@@ -18,7 +18,7 @@ Execute the following steps, in this order, to create a tunnel to the spinnaker 
 
 3.	In a separate window, cd to where you cloned the terraform scripts and run the following command:
     --- cut ---
-    cd support ; ./create_application_and_pipeline.py -a appname -p appnamepipeline -g ${sg_id} -v ${vpc_sg_id} -m ${mgmt_sg_id} -n ${vpc_name}
+    cd support ; ./create_application_and_pipeline.py -a appname -p appnamepipeline -g ${sg_id} -v ${vpc_sg_id} -m ${mgmt_sg_id} -n ${vpc_name} -r ${aws_region}
     --- end cut ---
 
 4.	Go to http://${jenkins_public_ip} (This is Jenkins) in your browser and login with the credentials you set in terraform.tfvars.
