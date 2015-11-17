@@ -20,6 +20,12 @@ service igor start
 sed -i.bak -e "s/debianRepository: .*/debianRepository: http\:\/\/debianrepo.${2}:8000\/ binary\//" /opt/rosco/config/rosco.yml
 
 #
+#	Set the default region in settings.js and restart apache
+#
+sed -i.bak -e "s/let awsDefaultRegion = '.*'\;/let awsDefaultRegion = '$1'\;/" /var/www/settings.js
+sudo service apache2 restart
+
+#
 #   clean up /tmp/terraform/
 #
 rm -rf /tmp/terraform*

@@ -14,6 +14,7 @@ resource "template_file" "output" {
 		mgmt_sg_id = "${aws_security_group.mgmt_sg.id}"
 		vpc_name = "${var.vpc_name}"
 		aws_region = "${var.region}"
+		vpc_id = "${aws_vpc.main.id}"
 	}
 }
 

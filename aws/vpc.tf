@@ -17,9 +17,9 @@ resource "aws_subnet" "private_subnets" {
   count = "${var.count_private_subnet_block}"
   
   cidr_block           = "${element(split (".", var.vpc_cidr), 0)}.${element(split (".", var.vpc_cidr), 1)}.${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 0)}"
-  availability_zone    = "${var.region}${element(split (":", "${module.tf_kenzan.azs_per_region}"), count.index%module.tf_kenzan.az_counts_per_region)}"
+  availability_zone    = "${var.region}${element(split (":", "${module.tf_aws_kenzan_spinnaker.azs_per_region}"), count.index%module.tf_aws_kenzan_spinnaker.az_counts_per_region)}"
     tags {
-      Name               = "${var.vpc_name}.${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 1)}.${var.region}${element(split (":", "${module.tf_kenzan.azs_per_region}"), count.index%module.tf_kenzan.az_counts_per_region)}"
+      Name               = "${var.vpc_name}.${element(split (";", "${lookup(var.private_subnet_block, count.index)}"), 1)}.${var.region}"
     }
   vpc_id = "${aws_vpc.main.id}"
 }
@@ -31,11 +31,11 @@ resource "aws_subnet" "public_subnet" {
   count = "${var.count_public_subnet_block}"
 
   cidr_block           = "${element(split (".", var.vpc_cidr), 0)}.${element(split (".", var.vpc_cidr), 1)}.${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 0)}"
-  availability_zone   = "${var.region}${element(split (":", "${module.tf_kenzan.azs_per_region}"), count.index%module.tf_kenzan.az_counts_per_region)}"
+  availability_zone   = "${var.region}${element(split (":", "${module.tf_aws_kenzan_spinnaker.azs_per_region}"), count.index%module.tf_aws_kenzan_spinnaker.az_counts_per_region)}"
   map_public_ip_on_launch = true
   depends_on = ["aws_internet_gateway.gw"]
     tags {
-      Name               = "${var.vpc_name}.${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 1)}.${var.region}${element(split (":", "${module.tf_kenzan.azs_per_region}"), count.index%module.tf_kenzan.az_counts_per_region)}"
+      Name               = "${var.vpc_name}.${element(split (";", "${lookup(var.public_subnet_block, count.index)}"), 1)}.${var.region}"
     }
   vpc_id = "${aws_vpc.main.id}"
 }

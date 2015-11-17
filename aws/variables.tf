@@ -7,13 +7,13 @@ variable "ssh_public_key" {}
 variable "ssh_key_name" {}
 variable "ssh_private_key_location" {}
 variable "ssh_user" {}
-variable "aptly_repo_key" {}
+#variable "aptly_repo_key" {}
 variable "ppa_repo_key" {}
 variable "jenkins_admin_username" {}
 variable "jenkins_admin_password" {}
 variable "packer_url" {}
 variable "created_by" {}
-variable "docker_repo_key" {}
+#variable "docker_repo_key" {}
 
 variable "jenkins_instance_type" {}
 variable "bastion_instance_type" {}
@@ -25,12 +25,12 @@ variable "adm_bastion_incoming_cidrs" {}
 variable "infra_jenkins_incoming_cidrs" {}
 
 
-variable "trusty_amis" {
-  default = {}
-}
+#variable "trusty_amis" {
+#  default = {}
+#}
 
-module "tf_kenzan" {
-  source = "github.com/jpancoast-kenzan/tf_kenzan_spinnaker"
+module "tf_aws_kenzan_spinnaker" {
+  source = "github.com/kenzanlabs/tf_aws_kenzan_spinnaker"
   region = "${var.region}"
   distribution = "trusty"
   architecture = "amd64"

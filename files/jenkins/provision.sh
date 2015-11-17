@@ -8,8 +8,8 @@ DEBIAN_FRONTEND=noninteractive apt-get -yq upgrade
 #
 #	Download the keys for the apt repositories we're going to add in just a bit.
 #
-apt-key adv --keyserver keys.gnupg.net --recv-keys $1
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys $4
+#apt-key adv --keyserver keys.gnupg.net --recv-keys $1
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys $3
 wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
 
 
@@ -58,7 +58,7 @@ chmod a+x /usr/bin/provision_base_ami
 #
 #	Install packer
 #
-curl -L $5 > /tmp/terraform/packer.zip
+curl -L $4 > /tmp/terraform/packer.zip
 sudo unzip /tmp/terraform/packer.zip -d /usr/bin
  
 
@@ -134,7 +134,7 @@ sleep 60
 #
 #	Create admin user, delete tempaccount, and reload jenkins config
 #
-echo "jenkins.model.Jenkins.instance.securityRealm.createAccount(\"$2\", \"$3\")" | java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ groovy =
+echo "jenkins.model.Jenkins.instance.securityRealm.createAccount(\"$1\", \"$2\")" | java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ groovy =
 /usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ build dsl-ami-provisioning
 
 rm -rf /var/lib/jenkins/users/tempaccount/

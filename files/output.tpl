@@ -18,7 +18,7 @@ Execute the following steps, in this order, to create a tunnel to the spinnaker 
 
 3.	In a separate window, cd to where you cloned the terraform scripts and run the following command:
     --- cut ---
-    cd support ; ./create_application_and_pipeline.py -a appname -p appnamepipeline -g ${sg_id} -v ${vpc_sg_id} -m ${mgmt_sg_id} -n ${vpc_name} -r ${aws_region}
+    cd support ; ./create_application_and_pipeline.py -a testappname -p testappnamepipeline -g ${sg_id} -i ${vpc_id} -v ${vpc_sg_id} -m ${mgmt_sg_id} -n ${vpc_name} -r ${aws_region}
     --- end cut ---
 
 4.	Go to http://${jenkins_public_ip} (This is Jenkins) in your browser and login with the credentials you set in terraform.tfvars.
@@ -26,6 +26,7 @@ Execute the following steps, in this order, to create a tunnel to the spinnaker 
 5.	Go to http://localhost:9000/ in a separate tab in your browser. This is the tunnel to the new Spinnaker instance.
 
 6.	On Jenkins, choose the job "Package_example_app" and "build now"
+	NOTE: sometimes the build fails with gradle errors about being unable to download dependencies.
 
 7.	When the Jenkins build is done, go to the spinnaker instance in your browser, select 'appname', and then 'Pipelines'. The pipeline should automatically start after the jenkins job is complete.
 	It will bake an AMI, then deploy that AMI.

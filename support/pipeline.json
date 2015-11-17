@@ -17,7 +17,7 @@
       "sendNotifications": false,
       "baseOs": "trusty",
       "requisiteStageRefIds": [],
-      "baseAmi": "ami-46a3b427",
+      "baseAmi": "",
       "package": "hello-karyon-rxnetty",
       "regions": [
         "us-east-1"
@@ -36,7 +36,7 @@
           "suspendedProcesses": [],
           "cooldown": 10,
           "securityGroups": [
-            "sg-e1a7ee85"
+            "DUMMY_INFO_REPLACED_BY_SCRIPT"
           ],
           "freeFormDetails": "Free.form.details",
           "terminationPolicies": [
@@ -57,13 +57,7 @@
           "provider": "aws",
           "virtualizationType": null,
           "subnetType": "ec2_public (vpc_X)",
-          "availabilityZones": {
-            "us-west-2": [
-              "us-west-2a",
-              "us-west-2b",
-              "us-west-2c"
-            ]
-          },
+          "availabilityZones": {},
           "stack": "stack",
           "account": "my-aws-account",
           "interestingHealthProviderNames": [

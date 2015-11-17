@@ -4,7 +4,7 @@
 Create an application in spinnaker
 
 Usage:
-    ./create_application.py (--app_name=<app_name>) (--pipeline_name=<pipeline_name>) (--sg_id=<sg_id>) (--aws_region=<aws_region>) (--vpc_name=<vpc_name>) (--vpc_sg_id=<vpc_sg_id>) (--mgmt_sg_id=<mgmt_sg_id>) [(--spinnaker_address=<spinnaker_address>)]
+    ./create_application.py (--app_name=<app_name>) (--pipeline_name=<pipeline_name>) (--vpc_id=<vpc_id>) (--sg_id=<sg_id>) (--aws_region=<aws_region>) (--vpc_name=<vpc_name>) (--vpc_sg_id=<vpc_sg_id>) (--mgmt_sg_id=<mgmt_sg_id>) [(--spinnaker_address=<spinnaker_address>)]
 
 Options:
     --help Show this screen
@@ -16,6 +16,7 @@ Options:
     -v, --vpc_sg_id=<vpc_sg_id> ID of the VPC SG to attach
     -m, --mgmt_sg_id=<mgmt_sg_id> ID of the MGMT SG to attach
     -n, --vpc_name=<vpc_name> Name of the VPC
+    -i, --vpc_id=<vpc_id> VPC ID.
     -r, --aws_region=<aws_region> AWS region
 """
 
@@ -26,6 +27,9 @@ GATE_PORT = '8084'
 
 import sys
 import os
+import re
+
+import boto.vpc
 
 from pprint import pprint
 from spinnaker import spinnaker
@@ -50,6 +54,7 @@ Note:
 right now, some stuff is hardcoded in the .json files (like security groups), Those need to be passed in.
 '''
 
+
 def main(argv):
     arguments = docopt(__doc__, version=str(
         os.path.basename(__file__)) + " " + VERSION, options_first=False)
@@ -62,13 +67,16 @@ def main(argv):
     app_name = arguments['--app_name']
     pipeline_name = arguments['--pipeline_name']
     sg_id = arguments['--sg_id']
+    aws_region = arguments['--aws_region']
+    vpc_id = arguments['--vpc_id']
     vpc_sg_id = arguments['--vpc_sg_id']
     mgmt_sg_id = arguments['--mgmt_sg_id']
     vpc_name = arguments['--vpc_name']
-    aws_region = arguments['--aws_region']
 
     pipeline_json_file = 'pipeline.json'
     app_json_file = 'application.json'
+
+    aws_conn = boto.vpc.connect_to_region(aws_region)
 
     spin_tools = spinnaker(spinnaker_address=spinnaker_address,
                            spinnaker_port=SPINNAKER_PORT, gate_port=GATE_PORT)
@@ -76,17 +84,33 @@ def main(argv):
     with open(pipeline_json_file) as pipeline_file:
         pipeline = json.load(pipeline_file)
 
+    subnet_type = pipeline['stages'][1]['clusters'][0]['subnetType']
+
+    tag_name_filter = vpc_name + "." + \
+        re.sub("\ \(" + vpc_name + "\)", '', subnet_type) + "." + aws_region
+
+    all_subnets = aws_conn.get_all_subnets(
+        filters={'vpc_id': vpc_id, 'tag:Name': tag_name_filter})
+
+    subnet_azs = [s.availability_zone for s in all_subnets]
+
     pipeline['name'] = pipeline_name
     pipeline['application'] = app_name
     pipeline['subnetType'] = "ec2_public (" + vpc_name + ")"
 
-    pipeline['stages'][1]['clusters'][0]['securityGroups'] = [sg_id, vpc_sg_id, mgmt_sg_id]
+    pipeline['stages'][1]['clusters'][0][
+        'securityGroups'] = [sg_id, vpc_sg_id, mgmt_sg_id]
+    pipeline['stages'][1]['clusters'][0]['application'] = app_name
+
     pipeline['stages'][0]['regions'] = [aws_region]
 
     with open(app_json_file) as app_file:
         application = json.load(app_file)
 
     application['app_name'] = app_name
+
+    pipeline['stages'][1]['clusters'][0][
+        'availabilityZones'][aws_region] = subnet_azs
 
     spin_tools.create_application(application)
 
