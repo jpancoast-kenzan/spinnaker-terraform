@@ -28,10 +28,11 @@ GATE_PORT = '8084'
 import sys
 import os
 import re
+import pprint
 
 import boto.vpc
 
-from pprint import pprint
+#from pprint import pprint
 from spinnaker import spinnaker
 
 try:
@@ -64,6 +65,8 @@ def main(argv):
     else:
         spinnaker_address = SPINNAKER_HOST
 
+    pp = pprint.PrettyPrinter(indent=4)
+
     app_name = arguments['--app_name']
     pipeline_name = arguments['--pipeline_name']
     sg_id = arguments['--sg_id']
@@ -75,6 +78,11 @@ def main(argv):
 
     pipeline_json_file = 'pipeline.json'
     app_json_file = 'application.json'
+    lb_json_file = 'loadbalancer.json'
+
+    pipeline = {}
+    application = {}
+    loadbalancer = {}
 
     aws_conn = boto.vpc.connect_to_region(aws_region)
 
@@ -84,35 +92,85 @@ def main(argv):
     with open(pipeline_json_file) as pipeline_file:
         pipeline = json.load(pipeline_file)
 
+    with open(app_json_file) as app_file:
+        application = json.load(app_file)
+
+    with open(lb_json_file) as lb_file:
+        loadbalancer = json.load(lb_file)
+
+    stack = 'teststack'
+    detail = 'testdetail'
+
+
+    '''
+    Get the subnet information
+    '''
     subnet_type = pipeline['stages'][1]['clusters'][0]['subnetType']
 
     tag_name_filter = vpc_name + "." + \
-        re.sub("\ \(" + vpc_name + "\)", '', subnet_type) + "." + aws_region
+        re.sub("\ \(.*\)", '', subnet_type) + "." + aws_region
 
+#    print tag_name_filter
     all_subnets = aws_conn.get_all_subnets(
         filters={'vpc_id': vpc_id, 'tag:Name': tag_name_filter})
 
     subnet_azs = [s.availability_zone for s in all_subnets]
 
-    pipeline['name'] = pipeline_name
-    pipeline['application'] = app_name
-    pipeline['subnetType'] = "ec2_public (" + vpc_name + ")"
 
+    '''
+    Configure the special load balancer vars
+    '''
+    loadbalancer['job'][0]['stack'] = stack
+    loadbalancer['job'][0]['detail'] = detail
+
+    loadbalancer['job'][0]['vpcId'] = vpc_id
+    loadbalancer['job'][0]['region'] = aws_region
+    loadbalancer['job'][0]['name'] = app_name + '-' + stack + '-' + detail
+    loadbalancer['job'][0]['subnetType'] = "eelb_public (" + vpc_name + ")"
+
+    loadbalancer['job'][0]['availabilityZones'][aws_region] = subnet_azs
+    loadbalancer['job'][0]['regionZones'] = subnet_azs
+
+    loadbalancer['application'] = app_name
+    loadbalancer['description'] = 'Create Load Balancer: ' + loadbalancer['job'][0]['name']
+
+    '''
+    Configure the special pipeline vars
+    '''
+
+    pipeline['name'] = pipeline_name
+
+    pipeline['stages'][1]['clusters'][0]['subnetType'] = "ec2_public (" + vpc_name + ")"
+    
     pipeline['stages'][1]['clusters'][0][
         'securityGroups'] = [sg_id, vpc_sg_id, mgmt_sg_id]
+
+    pipeline['stages'][1]['clusters'][0][
+        'loadBalancers'] = [ app_name + '-' + stack + '-' + detail]
+
     pipeline['stages'][1]['clusters'][0]['application'] = app_name
+    pipeline['stages'][1]['clusters'][0]['stack'] = stack
 
     pipeline['stages'][0]['regions'] = [aws_region]
-
-    with open(app_json_file) as app_file:
-        application = json.load(app_file)
-
-    application['app_name'] = app_name
 
     pipeline['stages'][1]['clusters'][0][
         'availabilityZones'][aws_region] = subnet_azs
 
-    spin_tools.create_application(application)
+
+    '''
+    Configure the special application vars
+    '''
+    application['app_name'] = app_name
+
+
+#    pp.pprint(subnet_azs)
+#    pp.pprint(loadbalancer)
+    print "============="
+    pp.pprint(pipeline)
+    print "-------------"
+#    spin_tools.create_application(application)
+#
+#    spin_tools.create_load_balancer(loadbalancer)
 
     spin_tools.create_pipeline(pipeline)
 

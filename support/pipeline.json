@@ -58,11 +58,12 @@
           "virtualizationType": null,
           "subnetType": "ec2_public (vpc_X)",
           "availabilityZones": {},
-          "stack": "stack",
+          "stack": "DUMMY_INFO_REPLACED_BY_SCRIPT",
           "account": "my-aws-account",
           "interestingHealthProviderNames": [
             "Amazon"
           ],
+          "loadBalancers": [],
           "healthCheckType": "EC2",
           "instanceMonitoring": false,
           "ebsOptimized": false

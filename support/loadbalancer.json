@@ -1,0 +1,43 @@
+{
+    "job": [
+        {
+            "stack": "DUMMY_INFO_REPLACED_BY_SCRIPT",
+            "detail": "DUMMY_INFO_REPLACED_BY_SCRIPT",
+            "credentials": "my-aws-account",
+            "region": "DUMMY_INFO_REPLACED_BY_SCRIPT",
+            "vpcId": "DUMMY_INFO_REPLACED_BY_SCRIPT",
+            "healthCheckProtocol": "HTTP",
+            "healthCheckPort": 7001,
+            "healthCheckPath": "/healthcheck",
+            "healthTimeout": 5,
+            "healthInterval": 10,
+            "healthyThreshold": 10,
+            "unhealthyThreshold": 2,
+            "regionZones": [
+                "us-west-2a",
+                "us-west-2b",
+                "us-west-2c"
+            ],
+            "securityGroups": [
+                "EELB"
+            ],
+            "listeners": [
+                {
+                    "internalProtocol": "HTTP",
+                    "internalPort": 7001,
+                    "externalProtocol": "HTTP",
+                    "externalPort": 80
+                }
+            ],
+            "name": "DUMMY_INFO_REPLACED_BY_SCRIPT",
+            "usePreferredZones": true,
+            "subnetType": "DUMMY_INFO_REPLACED_BY_SCRIPT",
+            "healthCheck": "HTTP:7001/healthcheck",
+            "type": "upsertLoadBalancer",
+            "availabilityZones": {},
+            "user": "[anonymous]"
+        }
+    ],
+    "application": "DUMMY_INFO_REPLACED_BY_SCRIPT",
+    "description": "DUMMY_INFO_REPLACED_BY_SCRIPT"
+}

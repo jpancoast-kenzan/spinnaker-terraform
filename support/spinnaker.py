@@ -105,6 +105,49 @@ class spinnaker():
             print e
             return False
 
+        print r.json()
+
+    '''
+    curl 'http://localhost:8084/applications/testappname/tasks'
+    '''
+    def create_load_balancer(self, loadbalancer):
+        print "Creating load_balancer: " + loadbalancer['application']
+        lb_create_success = False
+        num_tries = 0
+
+        url = 'http://' + self.spinnaker_address + ':' + self.gate_port + \
+            '/applications/testappname/tasks'
+
+        try:
+            r = requests.post(url, json=loadbalancer)
+        except requests.exceptions.RequestException, e:
+            print e
+            return False
+
+        ref = r.json()['ref']
+
+        check_url = 'http://' + self.spinnaker_address + ':' + self.gate_port + \
+            '/applications/' + loadbalancer['application'] + ref
+
+        '''
+        busy waiting is the awesomest. Since I sorta do actually want this to block.
+        TODO: put this in a method
+        '''
+        while not lb_create_success and num_tries < self.retries:
+            r = requests.get(check_url)
+            num_tries += 1
+
+            print "Checking for LB creation success... " + str(num_tries)
+
+            if r.json()['status'] == 'SUCCEEDED':
+                print "\tSuccess!"
+                lb_create_success = True
+            else:
+                time.sleep(self.retry_interval)
+
+        return lb_create_success
+
+
 
     def create_application(self, application):
         print "Create Application"
