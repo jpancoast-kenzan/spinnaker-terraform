@@ -110,12 +110,25 @@ def main(argv):
     tag_name_filter = vpc_name + "." + \
         re.sub("\ \(.*\)", '', subnet_type) + "." + aws_region
 
-#    print tag_name_filter
+    '''
+    print "Tag Name Filter: " + tag_name_filter
+    print "VPC_ID: " + vpc_id
+    '''
+    
     all_subnets = aws_conn.get_all_subnets(
         filters={'vpc_id': vpc_id, 'tag:Name': tag_name_filter})
 
     subnet_azs = [s.availability_zone for s in all_subnets]
 
+    if len(subnet_azs) == 1:
+        print "No subnets found!"
+        exit(1)
+
+    '''
+    print "Subnet AZs:" 
+    pp.pprint(all_subnets)
+    pp.pprint(subnet_azs)
+    '''
 
     '''
     Configure the special load balancer vars
@@ -156,6 +169,9 @@ def main(argv):
     pipeline['stages'][1]['clusters'][0][
         'availabilityZones'][aws_region] = subnet_azs
 
+    pipeline['name'] = pipeline_name
+    pipeline['application'] = app_name
+
 
     '''
     Configure the special application vars
@@ -163,16 +179,22 @@ def main(argv):
     application['app_name'] = app_name
 
 
-#    pp.pprint(subnet_azs)
-#    pp.pprint(loadbalancer)
-    print "============="
-    pp.pprint(pipeline)
-    print "-------------"
-#    spin_tools.create_application(application)
-#
-#    spin_tools.create_load_balancer(loadbalancer)
-
-    spin_tools.create_pipeline(pipeline)
+    
+    if spin_tools.create_application(application):
+        if spin_tools.create_load_balancer(loadbalancer):
+            if spin_tools.create_pipeline(pipeline):
+                print "Everything created successfully."
+            else:
+                print "Pipeline creation failed."
+                pp.pprint(pipeline)
+                print spin_tools.error_response
+        else:
+            print "Load Balancer Creation failed, not continuing."
+            pp.pprint(loadbalancer)
+    else:
+        print "Application creation failed, not continuing."
+        pp.pprint(application)
+    
 
 if __name__ == "__main__":
     main(sys.argv)

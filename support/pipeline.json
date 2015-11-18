@@ -1,4 +1,6 @@
 {
+  "name": "DUMMY_INFO_REPLACED_BY_SCRIPT",
+  "application": "DUMMY_INFO_REPLACED_BY_SCRIPT",
   "triggers": [
     {
       "type": "jenkins",
@@ -77,7 +79,8 @@
       "name": "Deploy"
     }
   ],
-  "parallel": false,
-  "stageCounter": 0,
-   "index": 0
+  "parallel": true,
+  "limitConcurrent": true,
+  "stageCounter": 2,
+  "index": 0
 }

@@ -25,6 +25,7 @@ class spinnaker():
         self.pp = pprint.PrettyPrinter(indent=4)
         self.retries = 5
         self.retry_interval = 2  # in seconds...
+        self.error_response = None
 
     
 
@@ -102,10 +103,11 @@ class spinnaker():
         try:
             r = requests.post(url, json=pipeline)
         except requests.exceptions.RequestException, e:
+            self.error_response = r
             print e
             return False
 
-        print r.json()
+        return True
 
     '''
     curl 'http://localhost:8084/applications/testappname/tasks'
@@ -144,6 +146,9 @@ class spinnaker():
                 lb_create_success = True
             else:
                 time.sleep(self.retry_interval)
+
+        if not lb_create_success:
+            self.error_response = r
 
         return lb_create_success
 
@@ -211,6 +216,9 @@ class spinnaker():
                 app_create_success = True
             else:
                 time.sleep(self.retry_interval)
+
+        if not app_create_success:
+            self.error_response = r
 
         return app_create_success
 
