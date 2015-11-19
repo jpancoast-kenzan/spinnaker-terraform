@@ -3,6 +3,7 @@
 ## Several things to Note:
 * Store your terraform state file and it's backup in a secure place. It's not a good idea to push it to a public repository.
 * Currently, the script is designed to be run on the same host as where you would be creating the SSH tunnel and browsing spinnaker from.
+* Only supports AWS right now.
 
 ## To use:
 * Install Terraform (https://terraform.io/downloads.html) and make sure it's in your $PATH
