@@ -24,9 +24,9 @@ variable "internal_dns_zone" {}
 variable "adm_bastion_incoming_cidrs" {}
 variable "infra_jenkins_incoming_cidrs" {}
 
-variable "spinnaker_ami" {
-  default = {}
-}
+#variable "spinnaker_ami" {
+#  default = {}
+#}
 
 #variable "trusty_amis" {
 #  default = {}

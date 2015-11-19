@@ -1,20 +1,30 @@
 # Creating the Spinnaker VPC
 
+Several things to Note:
+* Store your terraform state file and it's backup in a secure place. Probably not a good idea to push it to a public repository.
+* Currently, the script is designed to be run on the same host as where you would be creating the SSH tunnel and browsing spinnaker from.
+
 To use:
 * Install Terraform (https://terraform.io/downloads.html)
 * Set your AWS ENV Variables.
 * Clone this repo
 * checkout 'spinnaker' branch
-* generate ssh key
+* generate ssh key. This should probably not be your default ssh key.
 * Look at terraform.tfvars and change anything you think might need changing (region, vpc_name, vpc_cidr)
   * set ssh_private_key_location with the filesystem location of the ssh private key you created.
   * set ssh_public_key to be the value of the public key.
-  * set adm_bastion_incoming_cidrs and infra_jenkins_incoming_cidrs to a comma separated list of CIDRS that need to access those services.
+  * set adm_bastion_incoming_cidrs and infra_jenkins_incoming_cidrs to a comma separated list of CIDRS that need to access those services. 22 is open to these IPs on the bastion host, and 80 is open to these IPs on the jenkins host.
   * for now, do not change ssh_key_name
 * run the script:
 ```
 ./create_spinnaker_vpc.sh -a apply -c aws
 ```
+There are two optional flags you can pass to the create_spinnaker_vpc.sh script
+```
+-l Tells the script to log the terraform output to a file. Location of file will be printed.
+-i <path where to store tf state files>. If you don't want the tfstate files to be stored in the default location ('./')
+```
+
 * ... wait 12 minutes or so ...
 * Pay careful attention to the output at the end, example:
 ```
