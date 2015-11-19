@@ -1,15 +1,15 @@
 # Creating the Spinnaker VPC
 
 ## Several things to Note:
-* Store your terraform state file and it's backup in a secure place. Probably not a good idea to push it to a public repository.
+* Store your terraform state file and it's backup in a secure place. It's not a good idea to push it to a public repository.
 * Currently, the script is designed to be run on the same host as where you would be creating the SSH tunnel and browsing spinnaker from.
 
 ## To use:
-* Install Terraform (https://terraform.io/downloads.html)
+* Install Terraform (https://terraform.io/downloads.html) and make sure it's in your $PATH
 * Set your AWS ENV Variables.
 * Clone this repo
 * checkout 'spinnaker' branch
-* generate ssh key. This should probably not be your default ssh key.
+* generate ssh key. This should not be your default ssh key.
 * Look at terraform.tfvars and change anything you think might need changing (region, vpc_name, vpc_cidr)
   * set ssh_private_key_location with the filesystem location of the ssh private key you created.
   * set ssh_public_key to be the value of the public key.
@@ -25,8 +25,8 @@ There are two optional flags you can pass to the create_spinnaker_vpc.sh script
 -i <path where to store tf state files>. If you don't want the tfstate files to be stored in the default location ('./')
 ```
 
-* ... wait 12 minutes or so ...
-* Pay careful attention to the output at the end, example:
+... wait 12 minutes or so ...
+Pay careful attention to the output at the end, example:
 ```
 Outputs:
 
@@ -53,12 +53,13 @@ To create an example pipeline:
     cd support ; ./create_application_and_pipeline.py -a appname -p appnamepipeline -g sg-30165d54 -v sg-31165d55 -m sg-3c165d58
     --- end cut ---
 ```
-* To create the tunnel, you need to do two things (from the example output above)
-  * The following sets up ssh keys nicely on the bastion host:
+
+To create the tunnel, you need to do two things (from the example output above)
+* The following sets up ssh keys nicely on the bastion host:
 ```
 ssh -o IdentitiesOnly=yes -i /Users/username/.ssh/id_rsa_spinnaker_terraform ubuntu@52.32.185.147 'ssh-keyscan -H 192.168.3.189 > ~/.ssh/known_hosts'
 ```
-  * The following creates the actual tunnel:
+* The following creates the actual tunnel:
 ```
 ssh -o IdentitiesOnly=yes -i /Users/username/.ssh/id_rsa_spinnaker_terraform -L 8080:localhost:8080 -L 8084:localhost:8084 ubuntu@52.32.185.147 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 8080:localhost:80 -L 8084:localhost:8084 -A ubuntu@192.168.3.189'
 ```
