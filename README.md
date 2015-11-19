@@ -8,8 +8,6 @@
 ## To use:
 * Install Terraform (https://terraform.io/downloads.html) and make sure it's in your $PATH
 * Set your AWS ENV Variables.
-* Clone this repo
-* checkout 'spinnaker' branch
 * generate ssh key. This should not be your default ssh key.
 * Look at ./aws/terraform.tfvars and change anything you think might need changing (region, vpc_name, vpc_cidr)
   * set ssh_private_key_location with the filesystem location of the ssh private key you created.
