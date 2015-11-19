@@ -67,10 +67,10 @@ ssh -o IdentitiesOnly=yes -i /Users/username/.ssh/id_rsa_spinnaker_terraform -L 
 * NOTE: Jenkins does NOT have to be accessed through the tunnel, and you should be able to login to it using the public IP (if you set infra_jenkins_incoming_cidrs correctly) with the username/password in terraform.tfvars
 
 # Creating a pipeline for the example app:
-* You'll see a line in the example output above that looks like this:
+You'll see a line in the example output above that looks like this:
 ```
 cd support ; ./create_application_and_pipeline.py -a appname -p appnamepipeline -g sg-30165d54 -v sg-31165d55 -m sg-3c165d58
 ```
 Execute it, and it will create a pipeline in Spinnaker. This requires that your AWS ENV vars be set.
 
-* With a working pipeline, all you should have to do is go to the 'Package_example_app' job on jenkins and build it. The Spinnaker pipeline will be trigged, an AMI baked, and an ASG deployed with a Load Balancer.
+With a working pipeline, all you should have to do is go to the 'Package_example_app' job on jenkins and build it. The Spinnaker pipeline will be trigged, an AMI baked, and an ASG deployed with a Load Balancer.
