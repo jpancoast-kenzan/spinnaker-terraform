@@ -25,7 +25,9 @@ There are two optional flags you can pass to the create_spinnaker_vpc.sh script
 -i <path where to store tf state files>. If you don't want the tfstate files to be stored in the default location ('./')
 ```
 
-... wait 12 minutes or so ...
+You can also put 'plan' in place of 'apply', and 'terraform plan' will be run, which will show you what terraform would do if you ran apply. It's a good way to test changes to any of the .tf files as most syntax errors will be caught.
+
+... wait 15 minutes or so ...
 Pay careful attention to the output at the end, example:
 ```
 Outputs:
@@ -67,7 +69,7 @@ ssh -o IdentitiesOnly=yes -i /Users/username/.ssh/id_rsa_spinnaker_terraform -L 
 * With the tunnel running you can go to http://localhost:8080/ to access Spinnaker.
 * NOTE: Jenkins does NOT have to be accessed through the tunnel, and you should be able to login to it using the public IP (if you set infra_jenkins_incoming_cidrs correctly) with the username/password in terraform.tfvars
 
-# Creating a pipeline for the example app:
+## Creating a pipeline for the example app:
 You'll see a line in the example output above that looks like this:
 ```
 cd support ; ./create_application_and_pipeline.py -a appname -p appnamepipeline -g sg-30165d54 -v sg-31165d55 -m sg-3c165d58
@@ -75,3 +77,17 @@ cd support ; ./create_application_and_pipeline.py -a appname -p appnamepipeline 
 Execute it, and it will create a pipeline in Spinnaker. This requires that your AWS ENV vars be set.
 
 With a working pipeline, all you should have to do is go to the 'Package_example_app' job on jenkins and build it. The Spinnaker pipeline will be trigged, an AMI baked, and an ASG deployed with a Load Balancer.
+
+# Destroying the spinnaker VPC
+Before running terraform destroy, you need to execute several manual steps to destroy the VPC that was created
+* Terminate any instances that were created by spinnaker.
+* Delete any ASGs that were created by spinnaker
+* Delete any Load Balancers that were created by spinnaker
+* Delete any Launch Configurations that were created by spinnaker
+
+If you do not do the previous steps terraform will not be able to completely destroy the VPC.
+
+Run this command:
+```
+./create_spinnaker_vpc.sh -a destroy -c aws
+```
