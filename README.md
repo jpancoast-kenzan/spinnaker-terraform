@@ -2,7 +2,7 @@
 
 ## Several things to Note:
 * Store your terraform state file and it's backup in a secure place. It's not a good idea to push it to a public repository.
-* Currently, the script is designed to be run on the same host as where you would be creating the SSH tunnel and browsing spinnaker from.
+* The script is designed to be run on the same host as where you would be creating the SSH tunnel and browsing spinnaker from.
 * Only supports AWS right now.
 
 ## To use:
@@ -11,7 +11,7 @@
 * Clone this repo
 * checkout 'spinnaker' branch
 * generate ssh key. This should not be your default ssh key.
-* Look at terraform.tfvars and change anything you think might need changing (region, vpc_name, vpc_cidr)
+* Look at ./aws/terraform.tfvars and change anything you think might need changing (region, vpc_name, vpc_cidr)
   * set ssh_private_key_location with the filesystem location of the ssh private key you created.
   * set ssh_public_key to be the value of the public key.
   * set adm_bastion_incoming_cidrs and infra_jenkins_incoming_cidrs to a comma separated list of CIDRS that need to access those services. 22 is open to these IPs on the bastion host, and 80 is open to these IPs on the jenkins host.
@@ -92,3 +92,4 @@ Run this command:
 ```
 ./create_spinnaker_vpc.sh -a destroy -c aws
 ```
+Congratulations, your spinnaker VPC is now gone!
