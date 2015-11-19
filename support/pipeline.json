@@ -1,0 +1,86 @@
+{
+  "name": "DUMMY_INFO_REPLACED_BY_SCRIPT",
+  "application": "DUMMY_INFO_REPLACED_BY_SCRIPT",
+  "triggers": [
+    {
+      "type": "jenkins",
+      "job": "Package_example_app",
+      "enabled": true,
+      "propertyFile": "",
+      "master": "Jenkins"
+    }
+  ],
+  "stages": [
+    {
+      "cloudProviderType": "aws",
+      "enhancedNetworking": false,
+      "name": "Bake",
+      "baseLabel": "unstable",
+      "sendNotifications": false,
+      "baseOs": "trusty",
+      "requisiteStageRefIds": [],
+      "baseAmi": "",
+      "package": "hello-karyon-rxnetty",
+      "regions": [
+        "us-east-1"
+      ],
+      "vmType": "hvm",
+      "showAdvancedOptions": true,
+      "user": "anonymous",
+      "storeType": "ebs",
+      "type": "bake",
+      "refId": "1"
+    },
+    {
+      "clusters": [
+        {
+          "iamRole": "BaseIAMRole",
+          "suspendedProcesses": [],
+          "cooldown": 10,
+          "securityGroups": [
+            "DUMMY_INFO_REPLACED_BY_SCRIPT"
+          ],
+          "freeFormDetails": "Free.form.details",
+          "terminationPolicies": [
+            "Default"
+          ],
+          "targetHealthyDeployPercentage": 100,
+          "healthCheckGracePeriod": 600,
+          "instanceType": "t2.small",
+          "capacity": {
+            "max": 1,
+            "desired": 1,
+            "min": 1
+          },
+          "cloudProvider": "aws",
+          "strategy": "highlander",
+          "application": "appname",
+          "keyPair": "my-aws-account-keypair",
+          "provider": "aws",
+          "virtualizationType": null,
+          "subnetType": "ec2_public (vpc_X)",
+          "availabilityZones": {},
+          "stack": "DUMMY_INFO_REPLACED_BY_SCRIPT",
+          "account": "my-aws-account",
+          "interestingHealthProviderNames": [
+            "Amazon"
+          ],
+          "loadBalancers": [],
+          "healthCheckType": "EC2",
+          "instanceMonitoring": false,
+          "ebsOptimized": false
+        }
+      ],
+      "type": "deploy",
+      "requisiteStageRefIds": [
+        "1"
+      ],
+      "refId": "2",
+      "name": "Deploy"
+    }
+  ],
+  "parallel": true,
+  "limitConcurrent": true,
+  "stageCounter": 2,
+  "index": 0
+}
