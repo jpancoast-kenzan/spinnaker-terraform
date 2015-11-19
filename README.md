@@ -5,6 +5,23 @@
 * The script is designed to be run on the same host as where you would be creating the SSH tunnel and browsing Spinnaker from.
 * Only supports AWS right now.
 
+## What does this do?
+This is a set of terraform files and scripts designed to create a cloud environment from scratch with an example Jenkins job and Spinnaker application and pipeline.
+
+The environment contains a Bastion host, a Spinnaker Host, and a Jenkins host.
+
+INSERT PRETTY DIAGRAM HERE WITH CONNECTIVITY.
+
+Bastion Host: what it's for
+
+Jenkins Host: what it's for
+
+Spinnaker Host: what it's for. Private IP only, all connectivity to Spinnaker is tunneled through the Bastion host.
+
+Other things the terraform does:
+* Creates an internal DNS zone 
+* Creates the necessary Security Groups and IAM profiles.
+
 ## To use:
 * Install Terraform (https://terraform.io/downloads.html) and make sure it's in your $PATH
 * Set your AWS ENV Variables.
@@ -90,3 +107,7 @@ Run this command:
 ./create_spinnaker_vpc.sh -a destroy -c aws
 ```
 Congratulations, your Spinnaker VPC is now gone!
+
+## TODO (Possible)
+* Remove unnecessary packages from the Bastion host.
+* Implement GCE and other Cloud Providers
