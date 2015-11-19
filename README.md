@@ -2,7 +2,7 @@
 
 ## Several things to Note:
 * Store your terraform state file and it's backup in a secure place. It's not a good idea to push it to a public repository.
-* The script is designed to be run on the same host as where you would be creating the SSH tunnel and browsing spinnaker from.
+* The script is designed to be run on the same host as where you would be creating the SSH tunnel and browsing Spinnaker from.
 * Only supports AWS right now.
 
 ## To use:
@@ -77,12 +77,11 @@ Execute it, and it will create a pipeline in Spinnaker. This requires that your 
 
 With a working pipeline, all you should have to do is go to the 'Package_example_app' job on jenkins and build it. The Spinnaker pipeline will be trigged, an AMI baked, and an ASG deployed with a Load Balancer.
 
-# Destroying the spinnaker VPC
+# Destroying the Spinnaker VPC
 Before running terraform destroy, you need to execute several manual steps to destroy the VPC that was created
-* Terminate any instances that were created by spinnaker.
-* Delete any ASGs that were created by spinnaker
-* Delete any Load Balancers that were created by spinnaker
-* Delete any Launch Configurations that were created by spinnaker
+* Delete any ASGs that were created by Spinnaker. This should also terminate any instances created by Spinnaker.
+* Delete any Load Balancers that were created by Spinnaker
+* Delete any Launch Configurations that were created by Spinnaker
 
 If you do not do the previous steps terraform will not be able to completely destroy the VPC.
 
@@ -90,4 +89,4 @@ Run this command:
 ```
 ./create_spinnaker_vpc.sh -a destroy -c aws
 ```
-Congratulations, your spinnaker VPC is now gone!
+Congratulations, your Spinnaker VPC is now gone!
