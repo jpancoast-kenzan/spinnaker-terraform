@@ -96,13 +96,15 @@ cd support ; ./create_application_and_pipeline.py -a appname -p appnamepipeline 
 ```
 Execute it, and it will create a pipeline in Spinnaker. This requires that your AWS ENV vars be set.
 
-With a working pipeline, all you should have to do is go to the 'Package_example_app' job on jenkins and build it. The Spinnaker pipeline will be trigged, an AMI baked, and an ASG deployed with a Load Balancer.
+With a working pipeline, all you should have to do is go to the 'Package_example_app' job on jenkins and build it. The Spinnaker pipeline will be trigged, an Image baked, and a Server Group deployed with a Load Balancer.
 
 # Destroying the Spinnaker VPC
 Before running terraform destroy, you need to execute several manual steps to destroy the VPC that was created
-* Delete any ASGs that were created by Spinnaker. This should also terminate any instances created by Spinnaker.
+* Delete any Server Groups that were created by Spinnaker. This should also terminate any instances created by Spinnaker.
 * Delete any Load Balancers that were created by Spinnaker
 * Delete any Launch Configurations that were created by Spinnaker
+Optional:
+* Deregister any Images that Spinnaker created.
 
 If you do not do the previous steps terraform will not be able to completely destroy the VPC.
 
