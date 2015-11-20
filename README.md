@@ -4,6 +4,7 @@
 * Store your terraform state file and it's backup in a secure place. It's not a good idea to push it to a public repository.
 * The script is designed to be run on the same host as where you would be creating the SSH tunnel and browsing Spinnaker from.
 * Only supports AWS right now.
+* Bakes only work in us-east-1 and us-west-2. 
 
 ## What does this do?
 This is a set of terraform files and scripts designed to create a cloud environment from scratch with an example Jenkins job and Spinnaker application and pipeline.
@@ -12,11 +13,11 @@ The environment contains a Bastion host, a Spinnaker Host, and a Jenkins host.
 
 INSERT PRETTY DIAGRAM HERE WITH CONNECTIVITY.
 
-Bastion Host: what it's for
+Bastion: Default instance type: t2.micro (can be changed in terraform.tfvars). All SSH connectivity and tunnels go through this host.
 
-Jenkins Host: what it's for
+Jenkins: Default instance type: t2.small (can be changed in terraform.tfvars). Where your Jenkins jobs reside, obviously.
 
-Spinnaker Host: what it's for. Private IP only, all connectivity to Spinnaker is tunneled through the Bastion host.
+Spinnaker: Default instance type: m4.2xlarge (can be changed in terraform.tfvars but this is the smallest recommended size due to Spinnakers memory requirements). Private IP only. Access to this host is tunneled/port forwarded through the bastion because it currently has no authorization or authentication available.
 
 Other things the terraform does:
 * Creates an internal DNS zone 
@@ -108,6 +109,6 @@ Run this command:
 ```
 Congratulations, your Spinnaker VPC is now gone!
 
-## TODO (Possible)
-* Remove unnecessary packages from the Bastion host.
+## TODO
+* Remove unnecessary packages and services from the Bastion host.
 * Implement GCE and other Cloud Providers
