@@ -24,7 +24,7 @@ Other things the terraform does:
 * Creates the necessary Security Groups and IAM profiles.
 
 ## To use:
-* Install Terraform (https://terraform.io/downloads.html) and make sure it's in your $PATH
+* Install Terraform (https://terraform.io/downloads.html) and put it in your $PATH
 * Set your AWS ENV Variables.
 * generate ssh key. This should not be your default ssh key.
 * Look at ./aws/terraform.tfvars and change anything you think might need changing (region, vpc_name, vpc_cidr)
