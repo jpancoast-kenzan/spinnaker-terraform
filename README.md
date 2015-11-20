@@ -17,7 +17,7 @@ Bastion: Default instance type: t2.micro (can be changed in terraform.tfvars). A
 
 Jenkins: Default instance type: t2.small (can be changed in terraform.tfvars). Where your Jenkins jobs reside, obviously.
 
-Spinnaker: Default instance type: m4.2xlarge (can be changed in terraform.tfvars but this is the smallest recommended size due to Spinnakers memory requirements). Private IP only. Access to this host is tunneled/port forwarded through the bastion because it currently has no authorization or authentication available.
+Spinnaker: Default instance type: m4.2xlarge (can be changed in terraform.tfvars but this is the smallest recommended size due to Spinnakers memory requirements). Access to this host is tunneled/port forwarded through the bastion because it currently has no authorization or authentication available.
 
 Other things the terraform does:
 * Creates an internal DNS zone 
