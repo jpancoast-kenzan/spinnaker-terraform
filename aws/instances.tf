@@ -1,7 +1,7 @@
 
 /* bastion instance */
 resource "aws_instance" "bastion" {
-  ami = "${module.tf_aws_kenzan_spinnaker.ami_id}"
+  ami = "${module.tf_aws_kenzan_spinnaker.ubuntu_ami_id}"
   instance_type = "${var.bastion_instance_type}"
   subnet_id = "${aws_subnet.public_subnet.3.id}"
   vpc_security_group_ids = ["${aws_security_group.adm_bastion.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]
@@ -32,7 +32,7 @@ resource "aws_instance" "bastion" {
 
 /* jenkins instance */
 resource "aws_instance" "jenkins" {
-  ami = "${module.tf_aws_kenzan_spinnaker.ami_id}"
+  ami = "${module.tf_aws_kenzan_spinnaker.ubuntu_ami_id}"
   instance_type = "${var.jenkins_instance_type}"
   subnet_id = "${aws_subnet.public_subnet.4.id}"
   vpc_security_group_ids = ["${aws_security_group.infra_jenkins.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]

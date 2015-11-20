@@ -2,7 +2,7 @@
 #
 #	Variables to be updated by each user
 #
-region = "us-east-1"
+region = "us-west-2"
 vpc_cidr = "192.168.0.0/16"
 vpc_name = "vpc_DIFFNAME"
 ssh_key_name = "my-aws-account-keypair"
@@ -15,7 +15,7 @@ jenkins_admin_password = "admin123"
 
 packer_url = "https://dl.bintray.com/mitchellh/packer/packer_0.8.6_linux_amd64.zip"
 jenkins_instance_type = "t2.small"
-bastion_instance_type = "t2.small"
+bastion_instance_type = "t2.micro"
 spinnaker_instance_type = "m4.2xlarge"
 
 created_by = "Kenzan Spinnaker Terraform"

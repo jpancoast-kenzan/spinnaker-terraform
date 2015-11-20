@@ -4,6 +4,24 @@
 * Store your terraform state file and it's backup in a secure place. It's not a good idea to push it to a public repository.
 * The script is designed to be run on the same host as where you would be creating the SSH tunnel and browsing Spinnaker from.
 * Only supports AWS right now.
+* Bakes only work in us-east-1 and us-west-2. 
+
+## What does this do?
+This is a set of terraform files and scripts designed to create a cloud environment from scratch with an example Jenkins job and Spinnaker application and pipeline.
+
+The environment contains a Bastion host, a Spinnaker Host, and a Jenkins host.
+
+INSERT PRETTY DIAGRAM HERE WITH CONNECTIVITY.
+
+Bastion: Default instance type: t2.micro (can be changed in terraform.tfvars). All SSH connectivity and tunnels go through this host.
+
+Jenkins: Default instance type: t2.small (can be changed in terraform.tfvars). Where your Jenkins jobs reside, obviously.
+
+Spinnaker: Default instance type: m4.2xlarge (can be changed in terraform.tfvars but this is the smallest recommended size due to Spinnakers memory requirements). Access to this host is tunneled/port forwarded through the bastion because it currently has no authorization or authentication available.
+
+Other things the terraform does:
+* Creates an internal DNS zone 
+* Creates the necessary Security Groups and IAM profiles.
 
 ## To use:
 * Install Terraform (https://terraform.io/downloads.html) and make sure it's in your $PATH
@@ -18,6 +36,9 @@
 ```
 ./create_spinnaker_vpc.sh -a apply -c aws
 ```
+-a is the terraform action to run (apply, plan, or destroy)
+-c is the cloud provider you're using (aws is the only option right now)
+
 There are two optional flags you can pass to the create_spinnaker_vpc.sh script
 ```
 -l Tells the script to log the terraform output to a file. Location of file will be printed.
@@ -75,13 +96,15 @@ cd support ; ./create_application_and_pipeline.py -a appname -p appnamepipeline 
 ```
 Execute it, and it will create a pipeline in Spinnaker. This requires that your AWS ENV vars be set.
 
-With a working pipeline, all you should have to do is go to the 'Package_example_app' job on jenkins and build it. The Spinnaker pipeline will be trigged, an AMI baked, and an ASG deployed with a Load Balancer.
+With a working pipeline, all you should have to do is go to the 'Package_example_app' job on jenkins and build it. The Spinnaker pipeline will be trigged, an Image baked, and a Server Group deployed with a Load Balancer.
 
 # Destroying the Spinnaker VPC
 Before running terraform destroy, you need to execute several manual steps to destroy the VPC that was created
-* Delete any ASGs that were created by Spinnaker. This should also terminate any instances created by Spinnaker.
+* Delete any Server Groups that were created by Spinnaker. This should also terminate any instances created by Spinnaker.
 * Delete any Load Balancers that were created by Spinnaker
 * Delete any Launch Configurations that were created by Spinnaker
+Optional:
+* Deregister any Images that Spinnaker created.
 
 If you do not do the previous steps terraform will not be able to completely destroy the VPC.
 
@@ -90,3 +113,7 @@ Run this command:
 ./create_spinnaker_vpc.sh -a destroy -c aws
 ```
 Congratulations, your Spinnaker VPC is now gone!
+
+## TODO
+* Remove unnecessary packages and services from the Bastion host.
+* Implement GCE and other Cloud Providers

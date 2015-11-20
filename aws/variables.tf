@@ -7,13 +7,11 @@ variable "ssh_public_key" {}
 variable "ssh_key_name" {}
 variable "ssh_private_key_location" {}
 variable "ssh_user" {}
-#variable "aptly_repo_key" {}
 variable "ppa_repo_key" {}
 variable "jenkins_admin_username" {}
 variable "jenkins_admin_password" {}
 variable "packer_url" {}
 variable "created_by" {}
-#variable "docker_repo_key" {}
 
 variable "jenkins_instance_type" {}
 variable "bastion_instance_type" {}
@@ -24,13 +22,6 @@ variable "internal_dns_zone" {}
 variable "adm_bastion_incoming_cidrs" {}
 variable "infra_jenkins_incoming_cidrs" {}
 
-#variable "spinnaker_ami" {
-#  default = {}
-#}
-
-#variable "trusty_amis" {
-#  default = {}
-#}
 
 module "tf_aws_kenzan_spinnaker" {
   source = "github.com/kenzanlabs/tf_aws_kenzan_spinnaker"
@@ -69,19 +60,6 @@ variable "public_subnet_block" {
   }
 } 
 
-#variable "spinnaker_ami" {
-#  default = {
-#    "us-east-1" = "ami-22387d48"
-#    "us-west-1" = "ami-76583616"
-#    "us-west-2" = "ami-31564650"
-#    "eu-west-1" = "ami-5f954f2c"
-#    "eu-central-1" = "ami-a36476cf"
-#   "ap-southeast-1" = "ami-ab589ec8"
-#    "ap-southeast-2" = "ami-f6045d95"
-#    "ap-northeast-1" = "ami-a2b797cc"
-#    "sa-east-1" = "ami-8173c9ed"
-#  }
-#}
 
 # 
 # loop count for setting up muliple private subnets
