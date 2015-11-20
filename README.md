@@ -36,6 +36,9 @@ Other things the terraform does:
 ```
 ./create_spinnaker_vpc.sh -a apply -c aws
 ```
+-a is the terraform action to run (apply, plan, or destroy)
+-c is the cloud provider you're using (aws is the only option right now)
+
 There are two optional flags you can pass to the create_spinnaker_vpc.sh script
 ```
 -l Tells the script to log the terraform output to a file. Location of file will be printed.
