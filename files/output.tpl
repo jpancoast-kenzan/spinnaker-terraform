@@ -30,4 +30,3 @@ Execute the following steps, in this order, to create a tunnel to the spinnaker 
 
 7.	When the Jenkins build is done, go to the spinnaker instance in your browser, select 'appname', and then 'Pipelines'. The pipeline should automatically start after the jenkins job is complete.
 	It will bake an AMI, then deploy that AMI.
-    

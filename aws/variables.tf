@@ -3,9 +3,9 @@
 variable "region" {}
 variable "vpc_cidr" {}
 variable "vpc_name" {}
-variable "ssh_public_key" {}
 variable "ssh_key_name" {}
 variable "ssh_private_key_location" {}
+variable "ssh_public_key_location" {}
 variable "ssh_user" {}
 variable "ppa_repo_key" {}
 variable "jenkins_admin_username" {}
@@ -21,7 +21,6 @@ variable "internal_dns_zone" {}
 
 variable "adm_bastion_incoming_cidrs" {}
 variable "infra_jenkins_incoming_cidrs" {}
-
 
 module "tf_aws_kenzan_spinnaker" {
   source = "github.com/kenzanlabs/tf_aws_kenzan_spinnaker"

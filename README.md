@@ -35,8 +35,8 @@ Other things the terraform does:
 * Set your AWS ENV Variables.
 * generate ssh key. This should not be your default ssh key.
 * Look at ./aws/terraform.tfvars and change anything you think might need changing (region, vpc_name, vpc_cidr)
-  * set ssh_private_key_location with the filesystem location of the ssh private key you created.
-  * set ssh_public_key to be the value of the public key.
+  * set ssh_private_key_location to the filesystem location of the ssh private key you created.
+  * set ssh_public_key_location to the filesystem location of the ssh public key.
   * set adm_bastion_incoming_cidrs and infra_jenkins_incoming_cidrs to a comma separated list of CIDRS that need to access those services. 22 is open to these IPs on the bastion host, and 80 is open to these IPs on the jenkins host. The IP of the host that terraform is running on needs to be listed in adm_bastion_incoming_cidrs so it can access port 22 on the bastion host.
   * for now, do not change ssh_key_name
 * run the script:

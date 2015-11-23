@@ -8,7 +8,7 @@ vpc_name = "vpc_DIFFNAME"
 ssh_key_name = "my-aws-account-keypair"
 
 ssh_private_key_location = "/Users/jpancoast/.ssh/id_rsa_spinnaker_terraform"
-ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDkWmtpATmnVRgrtylVNdyPsCZJWC4i/dJLeqxm0rv9pJDrFNSLzHKrjzBaxrTUW69VzymgSGD6owAmtQEYffx7n8nyacp91f6s9jhUgqtXJAljQ2KVD424gNMmJeP4yHtzavUbucI7bNbhHH4pJSuVCOOsX7ULHVuaE+VPSOXBBV6XC6x4isfyn1k7SnYcWWJ36HRSpp2hoXxR1QC+31vyQJjW6F5UAILkw5CadVHghi+tp/aVoTrmG3bQNvsNKn9glFHZHo0ATwuJS3LY1LdylX7FiD6wcGt3QLqwmGpR03sEO4n+WZCxRMlXWLZVWS+SpKJTidqqoHbbpRsl8wDh jpancoast@jpancoast-kenzan.local"
+ssh_public_key_location = "/Users/jpancoast/.ssh/id_rsa_spinnaker_terraform.pub"
 
 jenkins_admin_username = "admin"
 jenkins_admin_password = "admin123"
