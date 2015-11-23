@@ -4,7 +4,7 @@
 * Store your terraform state file and it's backup in a secure place. It's not a good idea to push it to a public repository.
 * The script is designed to be run on the same host as where you would be creating the SSH tunnel and browsing Spinnaker from. You _CAN_ run the install from pretty much anywhere with the pre-requisites and access to the cloud provider however the tunneling instructions the script outputs will have to be modified based on where you would like to access the services from.
 * Only supports AWS right now.
-* Bakes only work in us-east-1 and us-west-2. 
+* Bakes only work in us-east-1 and us-west-2 (pending rosco update to handle bakes in other regions). 
 
 ## What does this do?
 This is a set of terraform files and scripts designed to create a cloud environment from scratch with an example Jenkins job and Spinnaker application and pipeline.
