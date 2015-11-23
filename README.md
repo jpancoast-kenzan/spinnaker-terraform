@@ -2,9 +2,9 @@
 
 ## Several things to Note:
 * Store your terraform state file and it's backup in a secure place. It's not a good idea to push it to a public repository.
-* The script is designed to be run on the same host as where you would be creating the SSH tunnel and browsing Spinnaker from.
+* The script is designed to be run on the same host as where you would be creating the SSH tunnel and browsing Spinnaker from. You _CAN_ run the install from pretty much anywhere with the pre-requisites and access to the cloud provider however the tunneling instructions the script outputs will have to be modified based on where you would like to access the services from.
 * Only supports AWS right now.
-* Bakes only work in us-east-1 and us-west-2. 
+* Bakes only work in us-east-1 and us-west-2 (pending rosco update to handle bakes in other regions). 
 
 ## What does this do?
 This is a set of terraform files and scripts designed to create a cloud environment from scratch with an example Jenkins job and Spinnaker application and pipeline.
@@ -24,13 +24,20 @@ Other things the terraform does:
 * Creates the necessary Security Groups and IAM profiles.
 
 ## To use:
-* Install Terraform (https://terraform.io/downloads.html) and make sure it's in your $PATH
+* Install Pre-Requisites. The scripts will happily complain if the pre-reqs aren't there, but who wants to hear complaining?
+  * Terraform (https://terraform.io/downloads.html) and put it in your $PATH\
+  * git 
+  * Python Modules:
+    * boto
+    * requests
+    * json
+    * docopt
 * Set your AWS ENV Variables.
 * generate ssh key. This should not be your default ssh key.
 * Look at ./aws/terraform.tfvars and change anything you think might need changing (region, vpc_name, vpc_cidr)
   * set ssh_private_key_location with the filesystem location of the ssh private key you created.
   * set ssh_public_key to be the value of the public key.
-  * set adm_bastion_incoming_cidrs and infra_jenkins_incoming_cidrs to a comma separated list of CIDRS that need to access those services. 22 is open to these IPs on the bastion host, and 80 is open to these IPs on the jenkins host.
+  * set adm_bastion_incoming_cidrs and infra_jenkins_incoming_cidrs to a comma separated list of CIDRS that need to access those services. 22 is open to these IPs on the bastion host, and 80 is open to these IPs on the jenkins host. The IP of the host that terraform is running on needs to be listed in adm_bastion_incoming_cidrs so it can access port 22 on the bastion host.
   * for now, do not change ssh_key_name
 * run the script:
 ```
