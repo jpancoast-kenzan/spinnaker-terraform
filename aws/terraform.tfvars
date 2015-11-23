@@ -7,8 +7,8 @@ vpc_cidr = "192.168.0.0/16"
 vpc_name = "vpc_DIFFNAME"
 ssh_key_name = "my-aws-account-keypair"
 
-ssh_private_key_location = "/Users/jpancoast/.ssh/id_rsa_spinnaker_terraform"
-ssh_public_key_location = "/Users/jpancoast/.ssh/id_rsa_spinnaker_terraform.pub"
+ssh_private_key_location = "${HOME}/.ssh/id_rsa_spinnaker_terraform"
+ssh_public_key_location = "${HOME}/.ssh/id_rsa_spinnaker_terraform.pub"
 
 jenkins_admin_username = "admin"
 jenkins_admin_password = "admin123"
