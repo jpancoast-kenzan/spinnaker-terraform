@@ -39,26 +39,49 @@ module "tf_aws_kenzan_spinnaker" {
 #   because there is no way to get a length on a map in terraform as of this
 #   writing. At least no way that I can find.
 #
-variable "count_public_subnet_block" {
-  default = 9
+#variable "count_public_subnet_block" {
+#  default = 9
+#}
+#
+#variable "public_subnet_block" {
+# default = {
+#  "0" = "0.0/24;eelb_public;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
+#  "1" = "1.0/24;eelb_public;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
+#  "2" = "2.0/24;eelb_public;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
+#
+#  "3" = "3.0/26;admin_public;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
+#  "4" = "3.64/26;admin_public;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
+#  "5" = "3.128/26;admin_public;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
+#
+#  "6" = "8.0/22;ec2_public;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
+#  "7" = "12.0/22;ec2_public;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
+#  "8" = "16.0/22;ec2_public;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
+#  }
+#} 
+
+variable "eelb_public_subnet_block" {
+  default = {
+    "0" = "0.0/24;eelb_public;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
+    "1" = "1.0/24;eelb_public;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
+    "2" = "2.0/24;eelb_public;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
+  }
 }
 
-variable "public_subnet_block" {
- default = {
-  "0" = "0.0/24;eelb_public;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
-  "1" = "1.0/24;eelb_public;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
-  "2" = "2.0/24;eelb_public;{\"purpose\":\"eelb\",\"target\":\"elb\"}"
-
-  "3" = "3.0/26;admin_public;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
-  "4" = "3.64/26;admin_public;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
-  "5" = "3.128/26;admin_public;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
-
-  "6" = "8.0/22;ec2_public;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
-  "7" = "12.0/22;ec2_public;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
-  "8" = "16.0/22;ec2_public;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
+variable "admin_public_subnet_block" {
+  default = {
+    "0" = "3.0/26;admin_public;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
+    "1" = "3.64/26;admin_public;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
+    "2" = "3.128/26;admin_public;{\"purpose\":\"admin\",\"target\":\"ec2\"}"
   }
-} 
+}
 
+variable "ec2_public_subnet_block" {
+  default = {
+    "0" = "8.0/22;ec2_public;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
+    "1" = "12.0/22;ec2_public;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
+    "2" = "16.0/22;ec2_public;{\"purpose\":\"ec2\",\"target\":\"ec2\"}"
+  }
+}
 
 # 
 # loop count for setting up muliple private subnets
@@ -66,11 +89,11 @@ variable "public_subnet_block" {
 #   because there is no way to get a length on a map in terraform as of this
 #   writing. At least no way that I can find.
 #
-variable "count_private_subnet_block" {
-  default = 3
-}
+#variable "count_private_subnet_block" {
+#  default = 3
+#}
 
-variable "private_subnet_block" {
+variable "ielb_private_subnet_block" {
   default = {
     "0" = "4.0/24;ielb_private;{\"purpose\":\"ielb\",\"target\":\"elb\"}"
     "1" = "5.0/24;ielb_private;{\"purpose\":\"ielb\",\"target\":\"elb\"}"
