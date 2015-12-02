@@ -4,14 +4,15 @@
 * Store your terraform state file and it's backup in a secure place. It's not a good idea to push it to a public repository.
 * The script is designed to be run on the same host as where you would be creating the SSH tunnel and browsing Spinnaker from. You _CAN_ run the install from pretty much anywhere with the pre-requisites and access to the cloud provider however the tunneling instructions the script outputs will have to be modified based on where you would like to access the services from.
 * Only supports AWS right now.
-* Bakes only work in us-east-1 and us-west-2 (pending rosco update to handle bakes in other regions). 
+* Bakes only work in us-east-1 and us-west-2 (pending rosco update to handle bakes in other regions).
+* These scripts are designed to be used in a fresh AWS environment where Spinnaker has never been installed due to the global nature of IAM roles. If you have manually installed Spinnaker using an existing guide there may be conflicts during setup.
 
 ## What does this do?
 This is a set of terraform files and scripts designed to create a cloud environment from scratch with an example Jenkins job and Spinnaker application and pipeline.
 
 The environment contains a Bastion host, a Spinnaker Host, and a Jenkins host.
 
-INSERT PRETTY DIAGRAM HERE WITH CONNECTIVITY.
+![Diagram](diagram.png)
 
 Bastion: Default instance type: t2.micro (can be changed in terraform.tfvars). All SSH connectivity and tunnels go through this host.
 
@@ -20,13 +21,13 @@ Jenkins: Default instance type: t2.small (can be changed in terraform.tfvars). W
 Spinnaker: Default instance type: m4.2xlarge (can be changed in terraform.tfvars but this is the smallest recommended size due to Spinnakers memory requirements). Access to this host is tunneled/port forwarded through the bastion because it currently has no authorization or authentication available.
 
 Other things the terraform does:
-* Creates an internal DNS zone 
+* Creates an internal DNS zone
 * Creates the necessary Security Groups and IAM profiles.
 
 ## To use:
 * Install Pre-Requisites. The scripts will happily complain if the pre-reqs aren't there, but who wants to hear complaining?
   * Terraform (https://terraform.io/downloads.html) and put it in your $PATH\
-  * git 
+  * git
   * Python Modules:
     * boto
     * requests
