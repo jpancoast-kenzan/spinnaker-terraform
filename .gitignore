@@ -46,6 +46,9 @@ Temporary Items
 terraform.tfstate
 terraform.tfstate.*
 
+# spinnaker_variables...
+**/spinnaker_variables.tf.json
+
 # Random editors
 .edit*
 *.swp
