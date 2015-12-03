@@ -25,7 +25,7 @@ Other things the terraform does:
 
 ## To use:
 * Install Pre-Requisites. The scripts will happily complain if the pre-reqs aren't there, but who wants to hear complaining?
-  * Terraform (https://terraform.io/downloads.html) and put it in your $PATH\
+  * Terraform (https://terraform.io/downloads.html) version 0.6.8 or greater and put it in your $PATH
   * git 
   * Python Modules:
     * boto
@@ -66,7 +66,7 @@ Bastion Public IP (for DNS): "52.32.185.147"
 
 Configure known hosts on the bastion server:
 	--- cut ---
-	ssh -o IdentitiesOnly=yes -i /Users/username/.ssh/id_rsa_spinnaker_terraform ubuntu@52.32.185.147 'ssh-keyscan -H 192.168.3.189 > ~/.ssh/known_hosts'
+	ssh -o IdentitiesOnly=yes -i ${HOME}/.ssh/id_rsa_spinnaker_terraform ubuntu@52.32.185.147 'ssh-keyscan -H 192.168.3.189 > ~/.ssh/known_hosts'
 	--- end cut ---
 NOTE: THIS needs to be done BEFORE you can run the following tunnel command.
 
@@ -74,7 +74,7 @@ Now, start up a tunnel:
 
 SSH CLI command:
 	--- cut ---
-	ssh -o IdentitiesOnly=yes -i /Users/username/.ssh/id_rsa_spinnaker_terraform -L 8080:localhost:8080 -L 8084:localhost:8084 ubuntu@52.32.185.147 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 8080:localhost:80 -L 8084:localhost:8084 -A ubuntu@192.168.3.189'
+	ssh -o IdentitiesOnly=yes -i ${HOME}/.ssh/id_rsa_spinnaker_terraform -L 8080:localhost:8080 -L 8084:localhost:8084 ubuntu@52.32.185.147 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 8080:localhost:80 -L 8084:localhost:8084 -A ubuntu@192.168.3.189'
 	--- end cut ---
 
 To create an example pipeline:
@@ -86,11 +86,11 @@ To create an example pipeline:
 To create the tunnel, you need to do two things (from the example output above)
 * The following sets up ssh keys nicely on the bastion host:
 ```
-ssh -o IdentitiesOnly=yes -i /Users/username/.ssh/id_rsa_spinnaker_terraform ubuntu@52.32.185.147 'ssh-keyscan -H 192.168.3.189 > ~/.ssh/known_hosts'
+ssh -o IdentitiesOnly=yes -i ${HOME}/.ssh/id_rsa_spinnaker_terraform ubuntu@52.32.185.147 'ssh-keyscan -H 192.168.3.189 > ~/.ssh/known_hosts'
 ```
 * The following creates the actual tunnel:
 ```
-ssh -o IdentitiesOnly=yes -i /Users/username/.ssh/id_rsa_spinnaker_terraform -L 8080:localhost:8080 -L 8084:localhost:8084 ubuntu@52.32.185.147 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 8080:localhost:80 -L 8084:localhost:8084 -A ubuntu@192.168.3.189'
+ssh -o IdentitiesOnly=yes -i ${HOME}/.ssh/id_rsa_spinnaker_terraform -L 8080:localhost:8080 -L 8084:localhost:8084 ubuntu@52.32.185.147 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 8080:localhost:80 -L 8084:localhost:8084 -A ubuntu@192.168.3.189'
 ```
 
 * With the tunnel running you can go to http://localhost:8080/ to access Spinnaker.
