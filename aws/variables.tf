@@ -22,14 +22,20 @@ variable "internal_dns_zone" {}
 variable "adm_bastion_incoming_cidrs" {}
 variable "infra_jenkins_incoming_cidrs" {}
 
-module "tf_aws_kenzan_spinnaker" {
-  source = "github.com/kenzanlabs/tf_aws_kenzan_spinnaker"
-  region = "${var.region}"
-  distribution = "trusty"
-  architecture = "amd64"
-  virttype = "hvm"
-  storagetype = "ebs-ssd"
-}
+variable "ubuntu_distribution" {}
+variable "ubuntu_virttype" {}
+variable "ubuntu_architecture" {}
+variable "ubuntu_storagetype" {}
+
+
+#module "tf_aws_kenzan_spinnaker" {
+#  source = "github.com/kenzanlabs/tf_aws_kenzan_spinnaker"
+#  region = "${var.region}"
+#  distribution = "trusty"
+#  architecture = "amd64"
+#  virttype = "hvm"
+#  storagetype = "ebs-ssd"
+#}
 
 
 

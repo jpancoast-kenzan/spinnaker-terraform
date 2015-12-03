@@ -7,8 +7,8 @@ vpc_cidr = "192.168.0.0/16"
 vpc_name = "vpc_DIFFNAME"
 ssh_key_name = "my-aws-account-keypair"
 
-ssh_private_key_location = "/Users/jpancoast/.ssh/id_rsa_spinnaker_terraform"
-ssh_public_key_location = "/Users/jpancoast/.ssh/id_rsa_spinnaker_terraform.pub"
+ssh_private_key_location = "~/.ssh/id_rsa_spinnaker_terraform"
+ssh_public_key_location = "~/.ssh/id_rsa_spinnaker_terraform.pub"
 
 jenkins_admin_username = "admin"
 jenkins_admin_password = "admin123"
@@ -42,3 +42,12 @@ infra_jenkins_incoming_cidrs = "38.75.226.18/32,67.190.184.208/32"
 #
 ppa_repo_key = "C2518248EEA14886"
 ssh_user = "ubuntu"
+
+#
+#	What kind of ubuntu AMI's do you want.
+#		These are the recommended values. CHANGE AT YOUR OWN RISK.
+#
+ubuntu_distribution = "trusty"
+ubuntu_virttype = "hvm"
+ubuntu_architecture = "amd64"
+ubuntu_storagetype = "ebs-ssd"

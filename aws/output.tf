@@ -1,6 +1,6 @@
 
 resource "template_file" "output" {
-	filename = "../files/output.tpl"
+	template = "../files/output.tpl"
 
 	vars {
 		jenkins_public_ip = "${aws_instance.jenkins.public_ip}"

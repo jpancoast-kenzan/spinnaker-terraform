@@ -101,6 +101,8 @@ do
 	fi
 done
 
+#Check the version of terraform... >= 0.6.8
+
 ./support/check_python_prereqs.py
 RETVAL=$?
 
@@ -117,39 +119,52 @@ fi
 echo "... All pre-reqs found ..."
 
 echo "here is where we could do some checks to make sure the environment is clean and ready to accept awesomeness"
+# Check to see if IAM roles already exist for one.
 echo
 
 
 if [ "$ACTION" != "destroy" ]; then
-	cd $SCRIPT_DIR/$CLOUD_PROVIDER
+    #Should check here and if the file is less than an hour old, don't download it.
 
-	echo "Getting/updating required modules"
-	terraform get -update
-
-
-	#
-	#	This is looking for a 'kenzan_spinnaker_get_info.py' script, which comes from the module
-	#
-	for makefile in $(find .terraform/modules -name kenzan_spinnaker_get_info.py -print)
-	do
-		cd $SCRIPT_DIR/$CLOUD_PROVIDER
-
-		mkfiledir=$(echo $makefile | sed -e 's/kenzan_spinnaker_get_info.py//')
-
-		cd $mkfiledir
-		./kenzan_spinnaker_get_info.py
-
-		RETVAL=$?
-
-		if [ "$RETVAL" == "1" ]; then
-			echo "WARNING: could not download some information, but it is probably OK to continue."
-			echo
-		elif [ "$RETVAL" == "2" ] ; then
-			echo "ERROR: could not download some information, and it is NOT OK to continue as no previous variables.tf.json file exists."
-			exit
-		fi
-	done
+    if test `find "$CLOUD_PROVIDER/spinnaker_variables.tf.json" -mmin +10`
+    then
+        echo "Downloading AMI, region, and AZ information"
+        ./support/kenzan_spinnaker_get_info.py $CLOUD_PROVIDER
+    else
+        echo "$CLOUD_PROVIDER/spinnaker_variables.tf.json and is less than 10 minutes old. No need to download it again I don't think."
+    fi
 fi
+
+#if [ "$ACTION" != "destroy" ]; then
+#	cd $SCRIPT_DIR/$CLOUD_PROVIDER
+#
+#	echo "Getting/updating required modules"
+#	terraform get -update
+#
+#
+#	#
+#	#	This is looking for a 'kenzan_spinnaker_get_info.py' script, which comes from the module
+#	#
+#	for makefile in $(find .terraform/modules -name kenzan_spinnaker_get_info.py -print)
+#	do
+#		cd $SCRIPT_DIR/$CLOUD_PROVIDER
+#		mkfiledir=$(echo $makefile | sed -e 's/kenzan_spinnaker_get_info.py//')
+#
+#		cd $mkfiledir
+#		./kenzan_spinnaker_get_info.py
+#
+#		RETVAL=$?
+#
+#		if [ "$RETVAL" == "1" ]; then
+#			echo "WARNING: could not download some information, but it is probably OK to continue."
+#			echo
+#		elif [ "$RETVAL" == "2" ] ; then
+#			echo "ERROR: could not download some information, and it is NOT OK to continue as no previous variables.tf.json file exists."
+#			exit
+#		fi
+#	done
+#fi
+
 
 cd $SCRIPT_DIR/$CLOUD_PROVIDER
 
