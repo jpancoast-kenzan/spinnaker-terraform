@@ -27,24 +27,19 @@ except ImportError, e:
     exit(2)
 
 ubuntu_image_url = "http://cloud-images.ubuntu.com/locator/ec2/releasesTable"
-spinnaker_image_url = "https://raw.githubusercontent.com/spinnaker/spinnaker.github.io/master/online_docs/quick_ref/ami_table.md"
+spinnaker_image_url = "https://raw.githubusercontent.com/spinnaker/spinnaker.github.io/master/online_docs/quick_ref/ami_table.json"
 
 
 def parse_spinnaker_amis():
     r_spinnaker_images = requests.get(spinnaker_image_url)
-
     spinnaker_amis = {}
 
-    for line in r_spinnaker_images.text.split('\n'):
-        if re.match('.*ami-.*', line):
-            line = re.sub('\s+', '', line)
-            values = line.split('|')
+    ami_info = r_spinnaker_images.json()
 
-            region = values[1]
-            instance_type = values[4]
-            ami_id = re.search('.*\[(ami-[^<]*)\].*', values[5]).group(1)
-
-            spinnaker_amis[region + '-' + instance_type.lower()] = ami_id
+    for instance_type in ami_info:
+        for region in ami_info[instance_type]:
+            spinnaker_amis[
+                region + '-' + instance_type.lower()] = ami_info[instance_type][region]
 
     return spinnaker_amis
 
@@ -77,9 +72,11 @@ def main(argv):
     data['variable']['aws_spinnaker_amis'] = {}
 
     data['variable']['aws_azs']['description'] = "AWS AZs per region"
-    data['variable']['aws_az_counts']['description'] = "AWS AZ counts per region"
+    data['variable']['aws_az_counts'][
+        'description'] = "AWS AZ counts per region"
     data['variable']['aws_ubuntu_amis']['description'] = "AWS Ubuntu AMIs"
-    data['variable']['aws_spinnaker_amis']['description'] = "AWS Spinnaker AMIs"
+    data['variable']['aws_spinnaker_amis'][
+        'description'] = "AWS Spinnaker AMIs"
 
     r_ubuntu = requests.get(ubuntu_image_url)
 
