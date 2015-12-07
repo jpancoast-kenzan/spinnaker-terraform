@@ -17,7 +17,7 @@ service igor start
 #
 #	The bakes, in this environment, need to use the local debian repository
 #
-sed -i.bak -e "s/# debianRepository: .*/debianRepository: http\:\/\/debianrepo.${2}:8000\/ binary\//" /opt/rosco/config/rosco.yml
+sed -i.bak -e "s/debianRepository: .*/debianRepository: http\:\/\/debianrepo.${2}:8000\/ binary\//" /opt/rosco/config/rosco.yml
 
 #
 #	Set the default region in settings.js and restart apache
