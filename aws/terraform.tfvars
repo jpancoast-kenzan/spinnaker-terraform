@@ -22,6 +22,15 @@ created_by = "Kenzan Spinnaker Terraform"
 
 internal_dns_zone = "kenzan.int"
 
+
+#
+#	IAM roles
+#
+jenkins_iam_role_name = "jenkins_iam_role"
+base_iam_role_name = "base_iam_role"
+spinnaker_iam_role_name = "spinnaker_iam_role"
+properties_and_logging_iam_role_name = "properties_and_logging_iam_role"
+
 #
 #	For the following '..._incoming_cidrs', you can use a comma separated list of incoming CIDRS
 #
@@ -30,11 +39,6 @@ internal_dns_zone = "kenzan.int"
 #	adm_bastion is inbound to port 22
 #
 adm_bastion_incoming_cidrs = "38.75.226.18/32,67.190.184.208/32"
-
-#
-#	infra_jenkins are inbound to port 80
-#
-infra_jenkins_incoming_cidrs = "38.75.226.18/32,67.190.184.208/32"
 
 
 #

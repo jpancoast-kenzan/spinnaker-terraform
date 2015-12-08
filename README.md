@@ -26,19 +26,20 @@ Other things the terraform does:
 
 ## To use:
 * Install Pre-Requisites. The scripts will happily complain if the pre-reqs aren't there, but who wants to hear complaining?
-  * Terraform (https://terraform.io/downloads.html) version 0.6.8 or greater and put it in your $PATH
-  * git 
+  * Terraform >= 0.6.8 
+    * Download from https://terraform.io/downloads.html and put it in your $PATH
+  * git >= 2.6.2
   * Python Modules:
-    * boto
-    * requests
-    * json
-    * docopt
-* Set your AWS ENV Variables.
+    * boto >= 2.38.0
+    * requests >= 2.8.1
+    * json >= 2.0.9
+    * docopt >= 0.6.2
+* Set your AWS ENV Variables (AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY).
 * generate ssh key. This should not be your default ssh key.
 * Look at ./aws/terraform.tfvars and change anything you think might need changing (region, vpc_name, vpc_cidr)
   * set ssh_private_key_location to the filesystem location of the ssh private key you created.
   * set ssh_public_key_location to the filesystem location of the ssh public key.
-  * set adm_bastion_incoming_cidrs and infra_jenkins_incoming_cidrs to a comma separated list of CIDRS that need to access those services. 22 is open to these IPs on the bastion host, and 80 is open to these IPs on the jenkins host. The IP of the host that terraform is running on needs to be listed in adm_bastion_incoming_cidrs so it can access port 22 on the bastion host.
+  * set adm_bastion_incoming_cidrs to a comma separated list of CIDRS that need to access those services. 22 is open to these IPs on the bastion host. The IP of the host that terraform is running on needs to be listed in adm_bastion_incoming_cidrs so it can access port 22 on the bastion host.
   * for now, do not change ssh_key_name
 * run the script:
 ```
@@ -61,41 +62,58 @@ Pay careful attention to the output at the end, example:
 Outputs:
 
    =
+Bastion Public IP (for DNS): 52.34.196.173
 
-Jenkins Public IP (for DNS): "52.34.56.108"
-Bastion Public IP (for DNS): "52.32.185.147"
+Execute the following steps, in this order, to create a tunnel to the spinnaker and jenkins instances and an example pipeline:
 
-Configure known hosts on the bastion server:
-	--- cut ---
-	ssh -o IdentitiesOnly=yes -i ${HOME}/.ssh/id_rsa_spinnaker_terraform ubuntu@52.32.185.147 'ssh-keyscan -H 192.168.3.189 > ~/.ssh/known_hosts'
-	--- end cut ---
-NOTE: THIS needs to be done BEFORE you can run the following tunnel command.
+1.  Configure known hosts on the bastion server:
+  --- cut ---
+  ssh -o IdentitiesOnly=yes -i ~/.ssh/id_rsa_spinnaker_terraform ubuntu@52.34.196.173 'ssh-keyscan -H 192.168.4.89 > ~/.ssh/known_hosts'
+  --- end cut ---
+    NOTE: THIS needs to be done BEFORE you can run the following tunnel command.
 
-Now, start up a tunnel:
+2.  In a separate window, start up the Spinnaker tunnel:
+  --- cut ---
+  ssh -o IdentitiesOnly=yes -i ~/.ssh/id_rsa_spinnaker_terraform -L 9000:localhost:9000 -L 8084:localhost:8084 -L 8087:localhost:8087 ubuntu@52.34.196.173 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 9000:localhost:9000 -L 8084:localhost:8084 -L 8087:localhost:8087 -A ubuntu@192.168.4.89' &;
+  --- end cut ---
 
-SSH CLI command:
-	--- cut ---
-	ssh -o IdentitiesOnly=yes -i ${HOME}/.ssh/id_rsa_spinnaker_terraform -L 8080:localhost:8080 -L 8084:localhost:8084 ubuntu@52.32.185.147 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 8080:localhost:80 -L 8084:localhost:8084 -A ubuntu@192.168.3.189'
-	--- end cut ---
+3.  In yet another separate window, start up the Jenkins tunnel:
+  --- cut ---
+  ssh -o IdentitiesOnly=yes -i ~/.ssh/id_rsa_spinnaker_terraform -L 9999:localhost:9999 ubuntu@52.34.196.173 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 9999:localhost:80 -A ubuntu@192.168.4.42'
+  --- end cut ---
 
-To create an example pipeline:
-    --- cut ---
-    cd support ; ./create_application_and_pipeline.py -a appname -p appnamepipeline -g sg-30165d54 -v sg-31165d55 -m sg-3c165d58
-    --- end cut ---
+4.  Go back to the window where you ran terraform, cd to where you cloned the terraform scripts and run the following command:
+  --- cut ---
+  cd support ; ./create_application_and_pipeline.py -a testappname -p testappnamepipeline -g sg-4c8fbb28 -i vpc-b80335dd -v sg-478fbb23 -m sg-4d8fbb29 -n vpc_DIFFNAME -r us-west-2
+  --- end cut ---
+
+5.  Go to http://localhost:9999/ (This is Jenkins) in your browser and login with the credentials you set in terraform.tfvars.
+
+6.  Go to http://localhost:9000/ (This is Spinnaker) in a separate tab in your browser. This is the tunnel to the new Spinnaker instance.
+
+7.  On Jenkins, choose the job "Package_example_app" and "build now"
+  NOTE: sometimes the build fails with gradle errors about being unable to download dependencies.
+
+8.  When the Jenkins build is done, go to the spinnaker instance in your browser, select 'appname', and then 'Pipelines'. The pipeline should automatically start after the jenkins job is complete.
+  It will bake an AMI, then deploy that AMI.
 ```
 
-To create the tunnel, you need to do two things (from the example output above)
+To create the tunnels, you need to do three things (from the example output above)
 * The following sets up ssh keys nicely on the bastion host:
 ```
 ssh -o IdentitiesOnly=yes -i ${HOME}/.ssh/id_rsa_spinnaker_terraform ubuntu@52.32.185.147 'ssh-keyscan -H 192.168.3.189 > ~/.ssh/known_hosts'
 ```
-* The following creates the actual tunnel:
+* The following creates the Spinnaker tunnel:
 ```
 ssh -o IdentitiesOnly=yes -i ${HOME}/.ssh/id_rsa_spinnaker_terraform -L 8080:localhost:8080 -L 8084:localhost:8084 ubuntu@52.32.185.147 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 8080:localhost:80 -L 8084:localhost:8084 -A ubuntu@192.168.3.189'
 ```
+* The following creates the Jenkins tunnel:
+```
+ssh -o IdentitiesOnly=yes -i ~/.ssh/id_rsa_spinnaker_terraform -L 9999:localhost:9999 ubuntu@52.34.196.173 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 9999:localhost:80 -A ubuntu@192.168.4.42'
+```
 
-* With the tunnel running you can go to http://localhost:8080/ to access Spinnaker.
-* NOTE: Jenkins does NOT have to be accessed through the tunnel, and you should be able to login to it using the public IP (if you set infra_jenkins_incoming_cidrs correctly) with the username/password in terraform.tfvars
+
+* With the tunnels running you can go to http://localhost:9000/ to access Spinnaker and http://localhost:9999/ to access Jenkins.
 
 ## Creating a pipeline for the example app:
 You'll see a line in the example output above that looks like this:
@@ -121,6 +139,23 @@ Run this command:
 ./create_spinnaker_vpc.sh -a destroy -c aws
 ```
 Congratulations, your Spinnaker VPC is now gone!
+
+# If you need to destroy the VPC manually (This requires the aws cli tools be installed):
+* Terminate all instances in the VPC that was created.
+* Delete any keypair(s) that were created by the script (the name of the keypair is set in terraform.tfvars)
+* Delete the Route 53 internal zone that was created (${var.internal_dns_zone})
+* Delete the VPC that was created
+* Delete the IAM roles that were created. This can be done with the AWS web interface
+* Delete the IAM profiles that were created. This can only be done via the CLI:
+  * List the profiles:
+```
+set your aws environment variables, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+aws iam list-instance-profiles
+```
+  * Delete each profile listed in the previous commands output
+```
+aws iam delete-instance-profile --instance-profile-name <profile_name_from_the_list_above>
+```
 
 ## TODO
 * Remove unnecessary packages and services from the Bastion host.
