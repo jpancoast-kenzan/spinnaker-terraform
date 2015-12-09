@@ -325,8 +325,6 @@ resource "aws_security_group" "infra_spinnaker" {
   }
 }
 
-
-
 resource "aws_security_group_rule" "infra_spinnaker_self_referential_rules" {
   type = "ingress"
   from_port = 0
@@ -337,6 +335,15 @@ resource "aws_security_group_rule" "infra_spinnaker_self_referential_rules" {
   self = true
 }
 
+resource "aws_security_group_rule" "infra_jenkins_new_rule" {
+  type = "ingress"
+  from_port = 80
+  to_port = 80
+  protocol = "tcp"
+
+  security_group_id = "${aws_security_group.infra_jenkins.id}"
+  self = true
+}
 
 /* Jenkins SG */
 resource "aws_security_group" "infra_jenkins" {
@@ -362,12 +369,6 @@ resource "aws_security_group" "infra_jenkins" {
     to_port="80"
     protocol="tcp"
     security_groups=["${aws_security_group.infra_spinnaker.id}"]
-  }
-  ingress {
-    from_port="80"
-    to_port="80"
-    protocol="tcp"
-    security_groups=["${aws_security_group.adm_bastion.id}"]
   }
 }
 

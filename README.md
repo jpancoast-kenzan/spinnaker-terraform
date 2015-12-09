@@ -39,7 +39,7 @@ Other things the terraform does:
 * Look at ./aws/terraform.tfvars and change anything you think might need changing (region, vpc_name, vpc_cidr)
   * set ssh_private_key_location to the filesystem location of the ssh private key you created.
   * set ssh_public_key_location to the filesystem location of the ssh public key.
-  * set adm_bastion_incoming_cidrs to a comma separated list of CIDRS that need to access those services. 22 is open to these IPs on the bastion host. The IP of the host that terraform is running on needs to be listed in adm_bastion_incoming_cidrs so it can access port 22 on the bastion host.
+  * set adm_bastion_incoming_cidrs to a comma separated list of CIDRS that need to access these services. In general this would be the IP of the machine that is running terraform and the IP's of any machines that would need to access spinnaker & jenkins. Those two blocks could be the same.
   * for now, do not change ssh_key_name
 * run the script:
 ```

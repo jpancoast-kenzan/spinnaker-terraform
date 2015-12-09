@@ -31,14 +31,12 @@ base_iam_role_name = "base_iam_role"
 spinnaker_iam_role_name = "spinnaker_iam_role"
 properties_and_logging_iam_role_name = "properties_and_logging_iam_role"
 
-#
-#	For the following '..._incoming_cidrs', you can use a comma separated list of incoming CIDRS
-#
 
 #
 #	adm_bastion is inbound to port 22
 #
-adm_bastion_incoming_cidrs = "38.75.226.18/32,67.190.184.208/32"
+#adm_bastion_incoming_cidrs = "38.75.226.18/32,67.190.184.208/32"
+#adm_bastion_incoming_cidrs = ""
 
 
 #

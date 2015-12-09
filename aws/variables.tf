@@ -20,7 +20,6 @@ variable "spinnaker_instance_type" {}
 variable "internal_dns_zone" {}
 
 variable "adm_bastion_incoming_cidrs" {}
-variable "infra_jenkins_incoming_cidrs" {}
 
 variable "ubuntu_distribution" {}
 variable "ubuntu_virttype" {}
