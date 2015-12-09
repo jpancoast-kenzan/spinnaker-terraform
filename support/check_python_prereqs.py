@@ -8,7 +8,7 @@ import re
 def main(argv):
     reqd_module_names_and_versions = {}
     reqd_module_names_and_versions['boto'] = '2.38.0'
-    reqd_module_names_and_versions['requests'] = '2.8.1'
+    reqd_module_names_and_versions['requests'] = '2.2.1'
     reqd_module_names_and_versions['json'] = '2.0.9'
     reqd_module_names_and_versions['docopt'] = '0.6.2'
 
