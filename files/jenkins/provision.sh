@@ -32,6 +32,8 @@ apt-get -y install jenkins nginx unzip git openjdk-8-jdk htop
 mv /tmp/terraform/jenkins_config.xml /var/lib/jenkins/config.xml
 chown jenkins:jenkins /var/lib/jenkins/config.xml
 
+#mv /tmp/terraform/jenkins.model.JenkinsLocationConfiguration.xml /var/lib/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
+
 mkdir -p /var/lib/jenkins/users/tempaccount/
 chown jenkins:jenkins /var/lib/jenkins/users/
 mv /tmp/terraform/tempaccount_config.xml /var/lib/jenkins/users/tempaccount/config.xml
@@ -51,6 +53,9 @@ update-rc.d jenkins enable
 /etc/init.d/jenkins start
 
 mv /tmp/terraform/nginx.conf /etc/nginx/sites-available/default
+mkdir /var/log/nginx/jenkins/
+chown www-data /var/log/nginx/jenkins/
+
 #mv /tmp/terraform/provision_base_ami /usr/bin/
 #chmod a+x /usr/bin/provision_base_ami
 

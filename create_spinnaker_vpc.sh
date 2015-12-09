@@ -158,4 +158,4 @@ else
 	COMMAND="terraform $ACTION -state=$STATEPATH -backup=$STATEPATH.backup $TFVARS"
 fi
 
-echo $COMMAND
+eval $COMMAND

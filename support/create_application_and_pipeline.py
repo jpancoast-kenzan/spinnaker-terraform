@@ -4,7 +4,7 @@
 Create an application in spinnaker
 
 Usage:
-    ./create_application.py (--app_name=<app_name>) (--pipeline_name=<pipeline_name>) (--vpc_id=<vpc_id>) (--sg_id=<sg_id>) (--aws_region=<aws_region>) (--vpc_name=<vpc_name>) (--vpc_sg_id=<vpc_sg_id>) (--mgmt_sg_id=<mgmt_sg_id>) [(--spinnaker_address=<spinnaker_address>)]
+    ./create_application.py (--app_name=<app_name>) (--pipeline_name=<pipeline_name>) (--vpc_id=<vpc_id>) (--sg_id=<sg_id>) (--aws_region=<aws_region>) (--vpc_name=<vpc_name>) (--vpc_sg_id=<vpc_sg_id>) (--mgmt_sg_id=<mgmt_sg_id>) (--iam_role=<iam_role>) [(--spinnaker_address=<spinnaker_address>)]
 
 Options:
     --help Show this screen
@@ -18,6 +18,7 @@ Options:
     -n, --vpc_name=<vpc_name> Name of the VPC
     -i, --vpc_id=<vpc_id> VPC ID.
     -r, --aws_region=<aws_region> AWS region
+    -o, --iam_role=<iam_role> IAM role for the instance
 """
 
 VERSION = '0.1'
@@ -75,6 +76,7 @@ def main(argv):
     vpc_sg_id = arguments['--vpc_sg_id']
     mgmt_sg_id = arguments['--mgmt_sg_id']
     vpc_name = arguments['--vpc_name']
+    iam_role = arguments['--iam_role']
 
     pipeline_json_file = 'pipeline.json'
     app_json_file = 'application.json'
@@ -155,6 +157,8 @@ def main(argv):
 
     pipeline['stages'][1]['clusters'][0]['subnetType'] = "ec2_public (" + vpc_name + ")"
     
+    pipeline['stages'][1]['clusters'][0]['iamRole'] = iam_role
+
     pipeline['stages'][1]['clusters'][0][
         'securityGroups'] = [sg_id, vpc_sg_id, mgmt_sg_id]
 

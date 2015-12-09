@@ -36,10 +36,11 @@ Other things the terraform does:
     * docopt >= 0.6.2
 * Set your AWS ENV Variables (AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY).
 * generate ssh key. This should not be your default ssh key.
-* Look at ./aws/terraform.tfvars and change anything you think might need changing (region, vpc_name, vpc_cidr)
+* Look at ./aws/terraform.tfvars and change anything you think might need changing (region, vpc_name, vpc_cidr). If these variables are not set you will be prompted for them when you run terraform.
   * set ssh_private_key_location to the filesystem location of the ssh private key you created.
   * set ssh_public_key_location to the filesystem location of the ssh public key.
-  * set adm_bastion_incoming_cidrs to a comma separated list of CIDRS that need to access these services. In general this would be the IP of the machine that is running terraform and the IP's of any machines that would need to access spinnaker & jenkins. Those two blocks could be the same.
+  * set adm_bastion_incoming_cidrs and infra_jenkins_incoming_cidrs to a comma separated list of CIDRS that need to access these services. In general this would be the IP of the machine that is running terraform and the IP's of any machines that would need to access spinnaker & jenkins. Those two blocks could be the same.
+  * Set the username and password for jenkins. 
   * for now, do not change ssh_key_name
 * run the script:
 ```
@@ -98,22 +99,13 @@ Execute the following steps, in this order, to create a tunnel to the spinnaker 
   It will bake an AMI, then deploy that AMI.
 ```
 
-To create the tunnels, you need to do three things (from the example output above)
-* The following sets up ssh keys nicely on the bastion host:
-```
-ssh -o IdentitiesOnly=yes -i ${HOME}/.ssh/id_rsa_spinnaker_terraform ubuntu@52.32.185.147 'ssh-keyscan -H 192.168.3.189 > ~/.ssh/known_hosts'
-```
-* The following creates the Spinnaker tunnel:
+To create the Spinnaker tunnel, you need to do run the following command (from the example output above)
 ```
 ssh -o IdentitiesOnly=yes -i ${HOME}/.ssh/id_rsa_spinnaker_terraform -L 8080:localhost:8080 -L 8084:localhost:8084 ubuntu@52.32.185.147 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 8080:localhost:80 -L 8084:localhost:8084 -A ubuntu@192.168.3.189'
 ```
-* The following creates the Jenkins tunnel:
-```
-ssh -o IdentitiesOnly=yes -i ~/.ssh/id_rsa_spinnaker_terraform -L 9999:localhost:9999 ubuntu@52.34.196.173 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 9999:localhost:80 -A ubuntu@192.168.4.42'
-```
 
 
-* With the tunnels running you can go to http://localhost:9000/ to access Spinnaker and http://localhost:9999/ to access Jenkins.
+* With the tunnel running you can go to http://localhost:9000/ to access Spinnaker.
 
 ## Creating a pipeline for the example app:
 You'll see a line in the example output above that looks like this:

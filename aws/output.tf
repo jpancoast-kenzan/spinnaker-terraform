@@ -16,6 +16,7 @@ resource "template_file" "output" {
 		vpc_name = "${var.vpc_name}"
 		aws_region = "${var.region}"
 		vpc_id = "${aws_vpc.main.id}"
+		instance_iam_role = "${var.base_iam_role_name}"
 	}
 }
 
