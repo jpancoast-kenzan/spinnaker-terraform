@@ -82,8 +82,12 @@ def main(argv):
 
     aws_conn = boto.ec2.connect_to_region("us-east-1")
 
-    regions = aws_conn.get_all_regions()
-
+    try:
+        regions = aws_conn.get_all_regions()
+    except Exception, e:
+        print "ERROR: Could not connect to AWS. Check your aws keys."
+        exit(1)
+        
     # The URL actually returns invalid json.
     ubuntu_good_json = re.sub("],\n]\n}", ']]}', r_ubuntu.text)
 
