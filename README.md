@@ -26,15 +26,15 @@ Other things the terraform does:
 
 ## To use:
 * Install Pre-Requisites. The scripts will happily complain if the pre-reqs aren't there, but who wants to hear complaining?
+  * git
   * Terraform >= 0.6.8 
     * Download from https://terraform.io/downloads.html and put it in your $PATH
-  * git
   * Python Modules:
     * boto >= 2.38.0
     * requests >= 2.8.1
     * json >= 2.0.9
     * docopt >= 0.6.2
-  * You may need to install pip. Please consult pip install instructions specific to the OS.
+  * You may need to install pip. Please consult pip install instructions specific to your OS.
 * Set your AWS ENV Variables (AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY).
 * generate ssh key. This should not be your default ssh key.
 * Look at ./aws/terraform.tfvars and change anything you think might need changing (region, vpc_name, vpc_cidr). If these variables are not set you will be prompted for them when you run terraform.

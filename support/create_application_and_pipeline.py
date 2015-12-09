@@ -88,6 +88,19 @@ def main(argv):
 
     aws_conn = boto.vpc.connect_to_region(aws_region)
 
+    try:
+        all_subnets = aws_conn.get_all_subnets(
+            filters={'vpc_id': vpc_id, 'tag:Name': tag_name_filter})
+    except Exception, e:
+        print "ERROR: Could not connect to AWS. Check your aws keys."
+        exit(1)
+
+    subnet_azs = [s.availability_zone for s in all_subnets]
+
+    if len(subnet_azs) == 1:
+        print "No subnets found!"
+        exit(1)
+
     spin_tools = spinnaker(spinnaker_address=spinnaker_address,
                            spinnaker_port=SPINNAKER_PORT, gate_port=GATE_PORT)
 
@@ -103,7 +116,6 @@ def main(argv):
     stack = 'teststack'
     detail = 'testdetail'
 
-
     '''
     Get the subnet information
     '''
@@ -111,26 +123,6 @@ def main(argv):
 
     tag_name_filter = vpc_name + "." + \
         re.sub("\ \(.*\)", '', subnet_type) + "." + aws_region
-
-    '''
-    print "Tag Name Filter: " + tag_name_filter
-    print "VPC_ID: " + vpc_id
-    '''
-    
-    all_subnets = aws_conn.get_all_subnets(
-        filters={'vpc_id': vpc_id, 'tag:Name': tag_name_filter})
-
-    subnet_azs = [s.availability_zone for s in all_subnets]
-
-    if len(subnet_azs) == 1:
-        print "No subnets found!"
-        exit(1)
-
-    '''
-    print "Subnet AZs:" 
-    pp.pprint(all_subnets)
-    pp.pprint(subnet_azs)
-    '''
 
     '''
     Configure the special load balancer vars
@@ -147,7 +139,8 @@ def main(argv):
     loadbalancer['job'][0]['regionZones'] = subnet_azs
 
     loadbalancer['application'] = app_name
-    loadbalancer['description'] = 'Create Load Balancer: ' + loadbalancer['job'][0]['name']
+    loadbalancer['description'] = 'Create Load Balancer: ' + \
+        loadbalancer['job'][0]['name']
 
     '''
     Configure the special pipeline vars
@@ -155,15 +148,16 @@ def main(argv):
 
     pipeline['name'] = pipeline_name
 
-    pipeline['stages'][1]['clusters'][0]['subnetType'] = "ec2_public (" + vpc_name + ")"
-    
+    pipeline['stages'][1]['clusters'][0][
+        'subnetType'] = "ec2_public (" + vpc_name + ")"
+
     pipeline['stages'][1]['clusters'][0]['iamRole'] = iam_role
 
     pipeline['stages'][1]['clusters'][0][
         'securityGroups'] = [sg_id, vpc_sg_id, mgmt_sg_id]
 
     pipeline['stages'][1]['clusters'][0][
-        'loadBalancers'] = [ app_name + '-' + stack + '-' + detail]
+        'loadBalancers'] = [app_name + '-' + stack + '-' + detail]
 
     pipeline['stages'][1]['clusters'][0]['application'] = app_name
     pipeline['stages'][1]['clusters'][0]['stack'] = stack
@@ -176,14 +170,11 @@ def main(argv):
     pipeline['name'] = pipeline_name
     pipeline['application'] = app_name
 
-
     '''
     Configure the special application vars
     '''
     application['app_name'] = app_name
 
-
-    
     if spin_tools.create_application(application):
         if spin_tools.create_load_balancer(loadbalancer):
             if spin_tools.create_pipeline(pipeline):
@@ -198,7 +189,7 @@ def main(argv):
     else:
         print "Application creation failed, not continuing."
         pp.pprint(application)
-    
+
 
 if __name__ == "__main__":
     main(sys.argv)
