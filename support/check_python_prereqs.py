@@ -22,7 +22,7 @@ def main(argv):
             reqd_version = re.sub("\.", '', reqd_module_names_and_versions[module_name])
 
             if installed_version < reqd_version:
-                print "ERROR: Module " + module_name + " is not of high enough version."
+                print "ERROR: Module " + module_name + " is not of high enough version. You need: v" + reqd_module_names_and_versions[module_name]
                 ret_val = 1
 
         except ImportError:
