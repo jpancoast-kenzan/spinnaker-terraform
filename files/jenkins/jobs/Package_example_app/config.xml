@@ -11,7 +11,7 @@
   <keepDependencies>false</keepDependencies>
   <properties>
     <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.14.0">
-      <projectUrl>https://github.com/kenzanmedia/hello-karyon-rxnetty/</projectUrl>
+      <projectUrl>https://github.com/kenzanlabs/hello-karyon-rxnetty/</projectUrl>
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
     <org.jvnet.hudson.plugins.shelveproject.ShelveProjectProperty plugin="shelve-project-plugin@1.5"/>
   </properties>
@@ -20,7 +20,7 @@
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
         <name>master-hello-karyon-rxnetty</name>
-        <url>https://github.com/kenzanmedia/hello-karyon-rxnetty.git</url>
+        <url>https://github.com/kenzanlabs/hello-karyon-rxnetty.git</url>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>

@@ -1,9 +1,9 @@
 
 /* bastion instance */
 resource "aws_instance" "bastion" {
-  ami = "${module.tf_aws_kenzan_spinnaker.ubuntu_ami_id}"
+  ami = "${lookup(var.aws_ubuntu_amis, format(\"%s-%s-%s-%s-%s\", var.region, var.ubuntu_distribution, var.ubuntu_architecture, var.ubuntu_virttype, var.ubuntu_storagetype))}"
   instance_type = "${var.bastion_instance_type}"
-  subnet_id = "${aws_subnet.public_subnet.3.id}"
+  subnet_id = "${aws_subnet.admin_public_subnet.0.id}"
   vpc_security_group_ids = ["${aws_security_group.adm_bastion.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]
   associate_public_ip_address=true
   key_name = "${var.ssh_key_name}"
@@ -32,9 +32,9 @@ resource "aws_instance" "bastion" {
 
 /* jenkins instance */
 resource "aws_instance" "jenkins" {
-  ami = "${module.tf_aws_kenzan_spinnaker.ubuntu_ami_id}"
+  ami = "${lookup(var.aws_ubuntu_amis, format(\"%s-%s-%s-%s-%s\", var.region, var.ubuntu_distribution, var.ubuntu_architecture, var.ubuntu_virttype, var.ubuntu_storagetype))}"
   instance_type = "${var.jenkins_instance_type}"
-  subnet_id = "${aws_subnet.public_subnet.4.id}"
+  subnet_id = "${aws_subnet.admin_public_subnet.0.id}"
   vpc_security_group_ids = ["${aws_security_group.infra_jenkins.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]
   associate_public_ip_address=true
   key_name = "${var.ssh_key_name}"
@@ -75,9 +75,9 @@ resource "aws_instance" "jenkins" {
 
 /* Spinnaker instance */
 resource "aws_instance" "spinnaker" {
-  ami = "${module.tf_aws_kenzan_spinnaker.spinnaker_ami_id}"
+  ami = "${lookup(var.aws_spinnaker_amis, format(\"%s-%s\", var.region, var.ubuntu_virttype))}"
   instance_type = "${var.spinnaker_instance_type}"
-  subnet_id = "${aws_subnet.public_subnet.5.id}"
+  subnet_id = "${aws_subnet.admin_public_subnet.1.id}"
   vpc_security_group_ids = ["${aws_security_group.infra_spinnaker.id}", "${aws_security_group.vpc_sg.id}", "${aws_security_group.mgmt_sg.id}"]
   associate_public_ip_address=true
   key_name = "${var.ssh_key_name}"

@@ -89,7 +89,7 @@ class spinnaker():
     -H 'Accept: application/json, text/plain, */*' 
     -H 'Referer: http://52.26.81.34/' 
     -H 'Connection: keep-alive' -H 'DNT: 1' 
-    --data-binary '{"name":"pipeline-name","stages":[],"triggers":[],"application":"jpancoast.test.script","stageCounter":0,"parallel":true,"index":0}' --compressed
+    --data-binary '{"name":"pipeline-name","stages":[],"triggers":[],"application":"kenzan.test.script","stageCounter":0,"parallel":true,"index":0}' --compressed
     '''
     def create_pipeline(self, pipeline):
         print "Creating pipeline: " + pipeline['name']

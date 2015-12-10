@@ -385,4 +385,10 @@ resource "aws_security_group" "example_app" {
     allocated_on="none"
     owner="none"
   }
+  ingress {
+    from_port="8080"
+    to_port="8080"
+    protocol="tcp"
+    security_groups=["${aws_security_group.eelb.id}"]
+  }
 }
