@@ -88,19 +88,6 @@ def main(argv):
 
     aws_conn = boto.vpc.connect_to_region(aws_region)
 
-    try:
-        all_subnets = aws_conn.get_all_subnets(
-            filters={'vpc_id': vpc_id, 'tag:Name': tag_name_filter})
-    except Exception, e:
-        print "ERROR: Could not connect to AWS. Check your aws keys."
-        exit(1)
-
-    subnet_azs = [s.availability_zone for s in all_subnets]
-
-    if len(subnet_azs) == 1:
-        print "No subnets found!"
-        exit(1)
-
     spin_tools = spinnaker(spinnaker_address=spinnaker_address,
                            spinnaker_port=SPINNAKER_PORT, gate_port=GATE_PORT)
 
@@ -123,6 +110,19 @@ def main(argv):
 
     tag_name_filter = vpc_name + "." + \
         re.sub("\ \(.*\)", '', subnet_type) + "." + aws_region
+
+    try:
+        all_subnets = aws_conn.get_all_subnets(
+            filters={'vpc_id': vpc_id, 'tag:Name': tag_name_filter})
+    except Exception, e:
+        print "ERROR: Could not connect to AWS. Check your aws keys."
+        exit(1)
+
+    subnet_azs = [s.availability_zone for s in all_subnets]
+
+    if len(subnet_azs) == 1:
+        print "No subnets found!"
+        exit(1)
 
     '''
     Configure the special load balancer vars

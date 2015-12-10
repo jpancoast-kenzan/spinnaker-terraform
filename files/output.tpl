@@ -16,7 +16,7 @@ Execute the following steps, in this order, to create a tunnel to the spinnaker 
 
 	Run this command and then re-run the tunnel command:
 	--- cut ---
-	ssh -o IdentitiesOnly=yes -i ${private_key} ${ssh_user}@${bastion_public_ip} 'ssh-keyscan -H ${spinnaker_private_ip} >> ~/.ssh/known_hosts'"
+	ssh -o IdentitiesOnly=yes -i ${private_key} ${ssh_user}@${bastion_public_ip} 'ssh-keyscan -H ${spinnaker_private_ip} >> ~/.ssh/known_hosts'
 	--- end cut ---
 
 3.	Go back to the window where you ran terraform, cd to where you cloned the terraform scripts and run the following command:
