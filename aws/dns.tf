@@ -1,4 +1,3 @@
-
 resource "aws_route53_zone" "internal" {
 	name = "${var.internal_dns_zone}"
 

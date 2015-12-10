@@ -24,13 +24,15 @@ add-apt-repository -y ppa:openjdk-r/ppa
 #	Install some packages...
 #
 apt-get update
-apt-get -y install jenkins nginx unzip git openjdk-7-jdk openjdk-8-jdk htop
+apt-get -y install jenkins nginx unzip git openjdk-8-jdk htop
 
 #
 #	Create/move/copy/fix permissions on all the configs that are needed
 #
 mv /tmp/terraform/jenkins_config.xml /var/lib/jenkins/config.xml
 chown jenkins:jenkins /var/lib/jenkins/config.xml
+
+#mv /tmp/terraform/jenkins.model.JenkinsLocationConfiguration.xml /var/lib/jenkins/jenkins.model.JenkinsLocationConfiguration.xml
 
 mkdir -p /var/lib/jenkins/users/tempaccount/
 chown jenkins:jenkins /var/lib/jenkins/users/
@@ -51,8 +53,11 @@ update-rc.d jenkins enable
 /etc/init.d/jenkins start
 
 mv /tmp/terraform/nginx.conf /etc/nginx/sites-available/default
-mv /tmp/terraform/provision_base_ami /usr/bin/
-chmod a+x /usr/bin/provision_base_ami
+mkdir /var/log/nginx/jenkins/
+chown www-data /var/log/nginx/jenkins/
+
+#mv /tmp/terraform/provision_base_ami /usr/bin/
+#chmod a+x /usr/bin/provision_base_ami
 
 
 #
@@ -103,11 +108,6 @@ java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ login --usern
 /usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ install-plugin postbuildscript
 
 #
-#	Install the one job by hand...
-#
-#/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ create-job dsl-ami-provisioning < /tmp/terraform/jobs/dsl-ami-provisioning/config.xml
-
-#
 #	OR find all the jobs in the jobs/ dir and install them all
 #
 for job_xml in $(find /tmp/terraform/jobs/ -name config.xml -print)
@@ -135,7 +135,6 @@ sleep 60
 #	Create admin user, delete tempaccount, and reload jenkins config
 #
 echo "jenkins.model.Jenkins.instance.securityRealm.createAccount(\"$1\", \"$2\")" | java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ groovy =
-/usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ build dsl-ami-provisioning
 
 rm -rf /var/lib/jenkins/users/tempaccount/
 /usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:8080/ reload-configuration

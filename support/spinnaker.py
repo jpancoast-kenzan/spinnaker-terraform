@@ -74,7 +74,8 @@ class spinnaker():
             '/pipelines'
 
         try:
-            r = requests.post(url, json=trigger)
+            headers = {'content-type': 'application/json'}
+            r = requests.post(url, data=json.dumps(trigger), headers=headers)
         except requests.exceptions.RequestException, e:
             print e
             return False
@@ -101,7 +102,8 @@ class spinnaker():
             '/pipelines'
 
         try:
-            r = requests.post(url, json=pipeline)
+            headers = {'content-type': 'application/json'}
+            r = requests.post(url, data=json.dumps(pipeline), headers=headers)
         except requests.exceptions.RequestException, e:
             self.error_response = r
             print e
@@ -121,7 +123,8 @@ class spinnaker():
             '/applications/testappname/tasks'
 
         try:
-            r = requests.post(url, json=loadbalancer)
+            headers = {'content-type': 'application/json'}
+            r = requests.post(url, data=json.dumps(loadbalancer), headers=headers)
         except requests.exceptions.RequestException, e:
             print e
             return False
@@ -192,7 +195,8 @@ class spinnaker():
         print "Attempting to create application..." + url
 
         try:
-            r = requests.post(url, json=payload)
+            headers = {'content-type': 'application/json'}
+            r = requests.post(url, data=json.dumps(payload), headers=headers)
         except requests.exceptions.RequestException, e:
             print e
             return False

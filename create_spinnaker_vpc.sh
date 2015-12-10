@@ -28,6 +28,9 @@ do
         -l|--log)
         LOG="YES"
         ;;
+        -t|--tfvars)
+        TFVARS="$2"
+        ;;
     esac
     shift
 done
@@ -39,12 +42,12 @@ CURRENT_DATE=$(date +%Y-%m-%d-%H-%M)
 
 
 if [ "x$CLOUD_PROVIDER" == "x" ]; then
-    echo "usage: $0 -c <cloud provider (aws only for now)> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional)"
+    echo "usage: $0 -c <cloud provider (aws only for now)> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional) -t <terraform vars in this format: \"-var 'variable=value' -var 'variable_2=value_2'\">(optional)"
     exit 1
 fi
 
 if [ "x$ACTION" == "x" ]; then
-    echo "usage: $0 -c <cloud provider (aws only for now)> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional)"
+    echo "usage: $0 -c <cloud provider (aws only for now)> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional) -t <terraform vars in this format: \"-var 'variable=value' -var 'variable_2=value_2'\">(optional)"
     exit 1
 fi
 
@@ -142,7 +145,6 @@ if [ "$ACTION" != "destroy" ]; then
     fi
 fi
 
-
 cd $SCRIPT_DIR/$CLOUD_PROVIDER
 
 if [ "$ACTION" != "destroy" ] && [ "$LOG" == "YES" ]; then
@@ -151,7 +153,9 @@ if [ "$ACTION" != "destroy" ] && [ "$LOG" == "YES" ]; then
 	#
 	LOG_TARGET=/tmp/$CLOUD_PROVIDER.SPINNAKER.$ACTION.$(date +%Y-%m-%d-%H-%M-%S)
 	echo "Logging to: $LOG_TARGET"
-	terraform $ACTION -no-color -state=$STATEPATH -backup=$STATEPATH.backup > $LOG_TARGET 2>&1
+	COMMAND="terraform $ACTION -no-color -state=$STATEPATH -backup=$STATEPATH.backup $TFVARS > $LOG_TARGET 2>&1"
 else
-	terraform $ACTION -state=$STATEPATH -backup=$STATEPATH.backup
+	COMMAND="terraform $ACTION -state=$STATEPATH -backup=$STATEPATH.backup $TFVARS"
 fi
+
+eval $COMMAND

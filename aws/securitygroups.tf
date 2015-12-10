@@ -325,19 +325,6 @@ resource "aws_security_group" "infra_spinnaker" {
   }
 }
 
-
-
-resource "aws_security_group_rule" "infra_spinnaker_self_referential_rules" {
-  type = "ingress"
-  from_port = 0
-  to_port = 65535
-  protocol = "-1"
-
-  security_group_id = "${aws_security_group.infra_spinnaker.id}"
-  self = true
-}
-
-
 /* Jenkins SG */
 resource "aws_security_group" "infra_jenkins" {
   vpc_id = "${aws_vpc.main.id}"
@@ -352,12 +339,6 @@ resource "aws_security_group" "infra_jenkins" {
     owner="none"
   }
   ingress {
-    from_port="80"
-    to_port="80"
-    protocol="tcp"
-    cidr_blocks=["${split(",",var.infra_jenkins_incoming_cidrs)}"]
-  }
-  ingress {
     from_port="8000"
     to_port="8000"
     protocol="tcp"
@@ -368,6 +349,12 @@ resource "aws_security_group" "infra_jenkins" {
     to_port="80"
     protocol="tcp"
     security_groups=["${aws_security_group.infra_spinnaker.id}"]
+  }
+  ingress {
+    from_port=80
+    to_port=80
+    protocol="tcp"
+    cidr_blocks=["${split(",",var.infra_jenkins_incoming_cidrs)}"]
   }
 }
 
@@ -391,4 +378,28 @@ resource "aws_security_group" "example_app" {
     protocol="tcp"
     security_groups=["${aws_security_group.eelb.id}"]
   }
+}
+
+
+#
+# Creating some rules separately to get around a terraform sg diff bug.
+#
+resource "aws_security_group_rule" "infra_spinnaker_self_referential_rules" {
+  type = "ingress"
+  from_port = 0
+  to_port = 65535
+  protocol = "-1"
+
+  security_group_id = "${aws_security_group.infra_spinnaker.id}"
+  self = true
+}
+
+resource "aws_security_group_rule" "infra_jenkins_rule_one" {
+  type = "ingress"
+  from_port = 80
+  to_port = 80
+  protocol = "tcp"
+
+  security_group_id = "${aws_security_group.infra_jenkins.id}"
+  self = true
 }
