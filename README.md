@@ -6,6 +6,7 @@
 * Only supports AWS right now.
 * Bakes only work in us-east-1 and us-west-2 (pending rosco update to handle bakes in other regions).
 * These scripts are designed to be used in a fresh AWS environment where Spinnaker has never been installed due to the global nature of IAM roles. If you have manually installed Spinnaker using an existing guide there may be conflicts during setup.
+* These scripts were tested running on OS X and Ubuntu 14.04 desktop.
 
 ## What does this do?
 This is a set of terraform files and scripts designed to create a cloud environment from scratch with an example Jenkins job and Spinnaker application and pipeline.
@@ -63,40 +64,40 @@ Pay careful attention to the output at the end, example:
 ```
 Outputs:
 
-   =
-Bastion Public IP (for DNS): 52.34.196.173
+   = 
+Bastion Public IP (for DNS): 52.35.120.144
+Jenkins Public IP (for DNS): 52.35.120.209
 
 Execute the following steps, in this order, to create a tunnel to the spinnaker and jenkins instances and an example pipeline:
 
-1.  Configure known hosts on the bastion server:
+1.  In a separate window, start up the Spinnaker tunnel:
   --- cut ---
-  ssh -o IdentitiesOnly=yes -i ~/.ssh/id_rsa_spinnaker_terraform ubuntu@52.34.196.173 'ssh-keyscan -H 192.168.4.89 > ~/.ssh/known_hosts'
-  --- end cut ---
-    NOTE: THIS needs to be done BEFORE you can run the following tunnel command.
-
-2.  In a separate window, start up the Spinnaker tunnel:
-  --- cut ---
-  ssh -o IdentitiesOnly=yes -i ~/.ssh/id_rsa_spinnaker_terraform -L 9000:localhost:9000 -L 8084:localhost:8084 -L 8087:localhost:8087 ubuntu@52.34.196.173 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 9000:localhost:9000 -L 8084:localhost:8084 -L 8087:localhost:8087 -A ubuntu@192.168.4.89' &;
+  ssh -o IdentitiesOnly=yes -i ~/.ssh/id_rsa_spinnaker -L 9000:localhost:9000 -L 8084:localhost:8084 -L 8087:localhost:8087 ubuntu@52.35.120.144 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 9000:localhost:9000 -L 8084:localhost:8084 -L 8087:localhost:8087 -A ubuntu@192.168.4.94'
   --- end cut ---
 
-3.  In yet another separate window, start up the Jenkins tunnel:
+2.  If the previous command fails with this message:
   --- cut ---
-  ssh -o IdentitiesOnly=yes -i ~/.ssh/id_rsa_spinnaker_terraform -L 9999:localhost:9999 ubuntu@52.34.196.173 'ssh -o IdentitiesOnly=yes -i /home/ubuntu/.ssh/id_rsa -L 9999:localhost:80 -A ubuntu@192.168.4.42'
+  Host key verification failed.
   --- end cut ---
 
-4.  Go back to the window where you ran terraform, cd to where you cloned the terraform scripts and run the following command:
+  Run this command and then re-run the tunnel command:
   --- cut ---
-  cd support ; ./create_application_and_pipeline.py -a testappname -p testappnamepipeline -g sg-4c8fbb28 -i vpc-b80335dd -v sg-478fbb23 -m sg-4d8fbb29 -n vpc_DIFFNAME -r us-west-2
+  ssh -o IdentitiesOnly=yes -i ~/.ssh/id_rsa_spinnaker ubuntu@52.35.120.144 'ssh-keyscan -H 192.168.4.94 >> ~/.ssh/known_hosts'"
   --- end cut ---
 
-5.  Go to http://localhost:9999/ (This is Jenkins) in your browser and login with the credentials you set in terraform.tfvars.
+3.  Go back to the window where you ran terraform, cd to where you cloned the terraform scripts and run the following command:
+  --- cut ---
+  cd support ; ./create_application_and_pipeline.py -a testappname -p testappnamepipeline -g sg-1eba8b7a -i vpc-18b3827d -v sg-11ba8b75 -m sg-1dba8b79 -n vpc_DIFFNAME -r us-west-2 -o base_iam_role_testing_diff_name_profile
+  --- end cut ---
 
-6.  Go to http://localhost:9000/ (This is Spinnaker) in a separate tab in your browser. This is the tunnel to the new Spinnaker instance.
+4.  Go to http://52.35.120.209/ (This is Jenkins) in your browser and login with the credentials you set in terraform.tfvars.
 
-7.  On Jenkins, choose the job "Package_example_app" and "build now"
+5.  Go to http://localhost:9000/ (This is Spinnaker) in a separate tab in your browser. This is the tunnel to the new Spinnaker instance.
+
+6.  On Jenkins, choose the job "Package_example_app" and "build now"
   NOTE: sometimes the build fails with gradle errors about being unable to download dependencies.
 
-8.  When the Jenkins build is done, go to the spinnaker instance in your browser, select 'appname', and then 'Pipelines'. The pipeline should automatically start after the jenkins job is complete.
+7.  When the Jenkins build is done, go to the spinnaker instance in your browser, select 'appname', and then 'Pipelines'. The pipeline should automatically start after the jenkins job is complete.
   It will bake an AMI, then deploy that AMI.
 ```
 

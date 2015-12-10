@@ -2,7 +2,7 @@
 Bastion Public IP (for DNS): ${bastion_public_ip}
 Jenkins Public IP (for DNS): ${jenkins_public_ip}
 
-Execute the following steps, in this order, to create a tunnel to the spinnaker and jenkins instances and an example pipeline:
+Execute the following steps, in this order, to create a tunnel to the spinnaker instance and an example pipeline:
 
 1.	In a separate window, start up the Spinnaker tunnel:
 	--- cut ---
