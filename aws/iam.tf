@@ -2,7 +2,7 @@
 # BaseIAMRole, the IAM role spinnaker requires.
 #
 resource "aws_iam_role" "base_iam_role" {
-  name = "BaseIAMRole"
+  name = "${var.base_iam_role_name}"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -20,8 +20,8 @@ resource "aws_iam_role" "base_iam_role" {
 EOF
 }
 
-resource "aws_iam_instance_profile" "base_iam_profile" {
-  name = "BaseIAMRole"
+resource "aws_iam_instance_profile" "base_iam_role_profile" {
+  name = "${var.base_iam_role_name}_profile"
   roles = ["${aws_iam_role.base_iam_role.id}"]
 }
 
@@ -29,7 +29,7 @@ resource "aws_iam_instance_profile" "base_iam_profile" {
 # Jenkins role
 #
 resource "aws_iam_role" "jenkins_role" {
-  name = "jenkins_role"
+  name = "${var.jenkins_iam_role_name}"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -70,11 +70,13 @@ resource "aws_iam_instance_profile" "jenkins_instance_profile" {
   roles = ["${aws_iam_role.jenkins_role.id}"]
 }
 
+
+
 #
 # Default role for everything else (logging, etc.)
 #
 resource "aws_iam_role" "properties_and_logging_role" {
-  name = "properties_and_logging_role"
+  name = "${var.properties_and_logging_iam_role_name}"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -152,7 +154,7 @@ EOF
 }
 
 resource "aws_iam_role" "spinnaker_role" {
-  name = "spinnaker_role"
+  name = "${var.spinnaker_iam_role_name}"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",

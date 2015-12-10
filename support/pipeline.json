@@ -34,7 +34,7 @@
     {
       "clusters": [
         {
-          "iamRole": "BaseIAMRole",
+          "iamRole": "DUMMY_INFO_REPLACED_BY_SCRIPT",
           "suspendedProcesses": [],
           "cooldown": 10,
           "securityGroups": [
