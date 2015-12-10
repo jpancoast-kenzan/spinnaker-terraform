@@ -17,11 +17,6 @@
   <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
   <jdks>
     <jdk>
-      <name>JDK7</name>
-      <home>/usr/lib/jvm/java-1.7.0-openjdk-amd64</home>
-      <properties/>
-    </jdk>
-    <jdk>
       <name>JDK8</name>
       <home>/usr/lib/jvm/java-1.8.0-openjdk-amd64</home>
       <properties/>

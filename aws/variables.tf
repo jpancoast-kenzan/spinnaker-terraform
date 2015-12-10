@@ -27,6 +27,11 @@ variable "ubuntu_virttype" {}
 variable "ubuntu_architecture" {}
 variable "ubuntu_storagetype" {}
 
+variable "jenkins_iam_role_name" {}
+variable "base_iam_role_name" {}
+variable "spinnaker_iam_role_name" {}
+variable "properties_and_logging_iam_role_name" {}
+
 
 variable "eelb_public_subnet_block" {
   default = {

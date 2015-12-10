@@ -119,6 +119,11 @@ resource "aws_instance" "spinnaker" {
     ]
   }
 
+  #ssh -o IdentitiesOnly=yes -i ~/.ssh/id_rsa_spinnaker_terraform ubuntu@52.32.242.45 'ssh-keyscan -H 192.168.4.89 > ~/.ssh/known_hosts'
+  provisioner "local-exec" {
+    command = "ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -i ${var.ssh_private_key_location} ${var.ssh_user}@${aws_instance.bastion.public_ip} 'ssh-keyscan -H ${aws_instance.spinnaker.private_ip} >> ~/.ssh/known_hosts'"
+  }
+
   tags = {
     Name = "Spinnaker host"
     created_by = "${var.created_by}"
