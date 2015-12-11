@@ -23,7 +23,7 @@ class spinnaker():
         self.gate_port = gate_port
 
         self.pp = pprint.PrettyPrinter(indent=4)
-        self.retries = 5
+        self.retries = 10
         self.retry_interval = 2  # in seconds...
         self.error_response = None
 
@@ -139,7 +139,7 @@ class spinnaker():
         TODO: put this in a method
         '''
         while not lb_create_success and num_tries < self.retries:
-            r = requests.get(check_url)
+            r = requests.get(check_url, timeout=30.0)
             num_tries += 1
 
             print "Checking for LB creation success... " + str(num_tries)
@@ -210,7 +210,7 @@ class spinnaker():
         busy waiting is the awesomest. Since I sorta do actually want this to block.
         '''
         while not app_create_success and num_tries < self.retries:
-            r = requests.get(check_url)
+            r = requests.get(check_url, timeout=30.0)
             num_tries += 1
 
             print "Checking for app creation success... " + str(num_tries)

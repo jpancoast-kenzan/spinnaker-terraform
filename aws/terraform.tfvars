@@ -17,7 +17,7 @@ spinnaker_instance_type = "m4.2xlarge"
 
 created_by = "Kenzan Spinnaker Terraform"
 
-internal_dns_zone = "kenzan.int"
+internal_dns_zone = "kenzanlabs.int"
 
 
 #
@@ -35,11 +35,10 @@ properties_and_logging_iam_role_name = "properties_and_logging_iam_role"
 #		Example:
 #	infra_jenkins_incoming_cidrs = "39.9.9.9/32,8.20.4.0/24"
 #
-#	This NEEDS TO BE SET. Either in this file or you will be prompted for them.
-#		If you set them in here, uncomment them.
+#	NOTE: The IP of the machine that Terraform is running on will be automatically determined and does 
+#		not need to be entered here.
 #
-#
-#infra_jenkins_incoming_cidrs = "DO NOT LEAVE EMPTY IF YOU SET IT IN HERE"
+infra_jenkins_incoming_cidrs = ""
 
 #
 #	adm_bastion_incoming_cidrs is inbound to port 22
@@ -48,17 +47,21 @@ properties_and_logging_iam_role_name = "properties_and_logging_iam_role"
 #	adm_bastion_incoming_cidrs = "39.9.9.9/32,8.20.4.0/24"
 #
 #
+#	NOTE: The IP of the machine that Terraform is running on will be automatically determined and does 
+#		not need to be entered here.
+#
+adm_bastion_incoming_cidrs = ""
+
+
+#
+#	Jenkins user
+#
+jenkins_admin_username = "admin"
+
+#
 #	This NEEDS TO BE SET. Either in this file or you will be prompted for them.
 #		If you set them in here, uncomment them.
 #
-#
-#adm_bastion_incoming_cidrs = "DO NOT LEAVE EMPTY IF YOU SET IT IN HERE"
-
-#
-#	These NEED TO BE SET. Either in this file or you will be prompted for them.
-#		If you set them in here, uncomment them.
-#
-#jenkins_admin_username = "DO NOT LEAVE EMPTY IF YOU SET IT IN HERE"
 #jenkins_admin_password = "DO NOT LEAVE EMPTY IF YOU SET IT IN HERE"
 
 #

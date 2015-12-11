@@ -67,6 +67,10 @@ resource "aws_instance" "jenkins" {
     ]
   }
 
+  provisioner "local-exec" {
+    command = "ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -i ${var.ssh_private_key_location} ${var.ssh_user}@${aws_instance.bastion.public_ip} 'ssh-keyscan -H ${aws_instance.jenkins.private_ip} >> ~/.ssh/known_hosts'"
+  }
+
   tags = {
     Name = "Jenkins host"
     created_by = "${var.created_by}"
@@ -82,6 +86,7 @@ resource "aws_instance" "spinnaker" {
   associate_public_ip_address=true
   key_name = "${var.ssh_key_name}"
   iam_instance_profile = "${aws_iam_instance_profile.spinnaker_instance_profile.id}"
+  depends_on = ["aws_instance.jenkins"]
 
   connection {
     user = "${var.ssh_user}"
@@ -124,6 +129,18 @@ resource "aws_instance" "spinnaker" {
     command = "ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -i ${var.ssh_private_key_location} ${var.ssh_user}@${aws_instance.bastion.public_ip} 'ssh-keyscan -H ${aws_instance.spinnaker.private_ip} >> ~/.ssh/known_hosts'"
   }
 
+  provisioner "remote-exec" {
+    inline = [
+      "chmod a+x /tmp/terraform/create_application.sh",
+      "/tmp/terraform/create_application.sh ${var.region} ${aws_vpc.main.id} ${var.base_iam_role_name} ${var.vpc_name} ${aws_security_group.infra_spinnaker.id} ${aws_security_group.vpc_sg.id} ${aws_security_group.mgmt_sg.id}"
+    ]
+  }
+  
+  provisioner "remote-exec" {
+    inline = [
+      "rm -rf /tmp/terraform*"
+    ]
+  }
   tags = {
     Name = "Spinnaker host"
     created_by = "${var.created_by}"
