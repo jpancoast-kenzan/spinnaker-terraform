@@ -135,15 +135,14 @@ echo "here is where we could do some checks to make sure the environment is clea
 echo
 
 
-if [ "$ACTION" != "destroy" ]; then
-    if [ -f "$CLOUD_PROVIDER/spinnaker_variables.tf.json" ] && ! test `find "$CLOUD_PROVIDER/spinnaker_variables.tf.json" -mmin +20`
-    then
-        echo "$CLOUD_PROVIDER/spinnaker_variables.tf.json exists and is less than 20 minutes old. No need to download it again I don't think."
-    else
-        echo "Downloading OS Image, region, and AZ information"
-        ./support/kenzan_spinnaker_get_info.py $CLOUD_PROVIDER
-    fi
+if [ -f "$CLOUD_PROVIDER/spinnaker_variables.tf.json" ] && ! test `find "$CLOUD_PROVIDER/spinnaker_variables.tf.json" -mmin +20`
+then
+    echo "$CLOUD_PROVIDER/spinnaker_variables.tf.json exists and is less than 20 minutes old. No need to download it again I don't think."
+else
+    echo "Downloading OS Image, region, and AZ information"
+    ./support/kenzan_spinnaker_get_info.py $CLOUD_PROVIDER
 fi
+
 
 cd $SCRIPT_DIR/$CLOUD_PROVIDER
 
