@@ -392,7 +392,6 @@ resource "aws_security_group_rule" "adm_bastion_incoming_cidrs" {
   security_group_id = "${aws_security_group.adm_bastion.id}"
 }
 
-
 resource "aws_security_group_rule" "infra_spinnaker_self_referential_rules" {
   type = "ingress"
   from_port = 0

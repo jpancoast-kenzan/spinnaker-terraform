@@ -21,9 +21,6 @@ variable "internal_dns_zone" {}
 
 variable "adm_bastion_incoming_cidrs" {}
 variable "infra_jenkins_incoming_cidrs" {}
-#variable "local_ip" {
-#  default = {}
-#}
 variable "local_ip" {}
 
 variable "ubuntu_distribution" {}

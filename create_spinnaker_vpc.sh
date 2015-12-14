@@ -181,6 +181,19 @@ fi
 
 cd $SCRIPT_DIR/$CLOUD_PROVIDER
 
+if [ "$ACTION" == "destroy" ]; then
+    echo "Deleting any resources created by spinnaker."
+
+    region=$(terraform show | grep 'Region: ' | head -n1 | sed -e 's/Region: //' )
+    vpc_id=$(terraform show | grep 'VPC_ID: ' | head -n1 | sed -e 's/VPC_ID: //' )
+    echo "REGION: $region"
+    echo "VPC ID: $vpc_id"
+    
+    ../support/tunnel.sh -c $CLOUD_PROVIDER -a stop
+    ../support/delete_things_spinnaker_cant_control.py $region $vpc_id
+fi
+
+
 if [ "$ACTION" != "destroy" ] && [ "$LOG" == "YES" ]; then
 	#
 	#	Where to log the 'apply' and 'plan' output
