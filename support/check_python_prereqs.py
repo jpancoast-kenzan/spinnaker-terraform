@@ -18,8 +18,10 @@ def main(argv):
         try:
             __import__(module_name)
 
-            installed_version = re.sub("\.", '', str(__import__(module_name).__version__))
-            reqd_version = re.sub("\.", '', reqd_module_names_and_versions[module_name])
+            installed_version = re.sub(
+                "\.", '', str(__import__(module_name).__version__))
+            reqd_version = re.sub(
+                "\.", '', reqd_module_names_and_versions[module_name])
 
             if installed_version < reqd_version:
                 print "ERROR: Module " + module_name + " is not of high enough version. You need: v" + reqd_module_names_and_versions[module_name]

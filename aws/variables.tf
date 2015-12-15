@@ -33,6 +33,8 @@ variable "base_iam_role_name" {}
 variable "spinnaker_iam_role_name" {}
 variable "properties_and_logging_iam_role_name" {}
 
+variable "kenzan_statepath" {}
+
 
 variable "eelb_public_subnet_block" {
   default = {

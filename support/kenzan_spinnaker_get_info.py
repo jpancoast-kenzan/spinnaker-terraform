@@ -95,7 +95,7 @@ def main(argv):
         exit(1)
 
     print "Region information downloaded...\n"
-        
+
     # The URL actually returns invalid json.
     ubuntu_good_json = re.sub("],\n]\n}", ']]}', r_ubuntu.text)
 
@@ -127,7 +127,7 @@ def main(argv):
 
         try:
             zones = temp_conn.get_all_zones()
-        except Exception,e:
+        except Exception, e:
             region_error = True
             print "WARNING: Could not connect to AWS region: " + str(region) + ". Please check your AWS keys. You should be fine to continue if you do not want to use this region for the install."
 
@@ -143,7 +143,6 @@ def main(argv):
 
             zone_data[region.name] = az_string
             zone_count_data[region.name] = str(zone_count)
-
 
     data['variable']['aws_azs']['default'] = zone_data
     data['variable']['aws_az_counts']['default'] = zone_count_data
@@ -182,7 +181,6 @@ def main(argv):
             # DOES NOT EXIST, so it is NOT OK to continue
             sys.exit(2)
 
-    
     f = open(variables_file, 'w')
 
     f.write(json.dumps(data, indent=4, sort_keys=True))
