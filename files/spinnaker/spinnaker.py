@@ -23,11 +23,9 @@ class spinnaker():
         self.gate_port = gate_port
 
         self.pp = pprint.PrettyPrinter(indent=4)
-        self.retries = 5
+        self.retries = 10
         self.retry_interval = 2  # in seconds...
         self.error_response = None
-
-    
 
     '''
     curl 'http://localhost:8084/pipelines' 
@@ -64,7 +62,8 @@ class spinnaker():
     "id": "9bfb3400-88ce-11e5-bf5b-9d3eb09d9db6"
     }
     '''
-    def create_trigger(self,trigger):
+
+    def create_trigger(self, trigger):
         print "Creating Trigger"
 
         '''
@@ -92,6 +91,7 @@ class spinnaker():
     -H 'Connection: keep-alive' -H 'DNT: 1' 
     --data-binary '{"name":"pipeline-name","stages":[],"triggers":[],"application":"kenzan.test.script","stageCounter":0,"parallel":true,"index":0}' --compressed
     '''
+
     def create_pipeline(self, pipeline):
         print "Creating pipeline: " + pipeline['name']
 
@@ -114,6 +114,7 @@ class spinnaker():
     '''
     curl 'http://localhost:8084/applications/testappname/tasks'
     '''
+
     def create_load_balancer(self, loadbalancer):
         print "Creating load_balancer: " + loadbalancer['application']
         lb_create_success = False
@@ -124,7 +125,8 @@ class spinnaker():
 
         try:
             headers = {'content-type': 'application/json'}
-            r = requests.post(url, data=json.dumps(loadbalancer), headers=headers)
+            r = requests.post(
+                url, data=json.dumps(loadbalancer), headers=headers)
         except requests.exceptions.RequestException, e:
             print e
             return False
@@ -139,7 +141,7 @@ class spinnaker():
         TODO: put this in a method
         '''
         while not lb_create_success and num_tries < self.retries:
-            r = requests.get(check_url)
+            r = requests.get(check_url, timeout=30.0)
             num_tries += 1
 
             print "Checking for LB creation success... " + str(num_tries)
@@ -154,8 +156,6 @@ class spinnaker():
             self.error_response = r
 
         return lb_create_success
-
-
 
     def create_application(self, application):
         print "Create Application"
@@ -173,7 +173,8 @@ class spinnaker():
         job = {}
         job['user'] = 'anonymous'
         job['type'] = 'createApplication'
-        job['account'] = 'my-aws-account' #default value for now, probably shouldn't hard code it
+        # default value for now, probably shouldn't hard code it
+        job['account'] = 'my-aws-account'
 
         job['application'] = {}
         job['application']['name'] = application['app_name']
@@ -210,7 +211,7 @@ class spinnaker():
         busy waiting is the awesomest. Since I sorta do actually want this to block.
         '''
         while not app_create_success and num_tries < self.retries:
-            r = requests.get(check_url)
+            r = requests.get(check_url, timeout=30.0)
             num_tries += 1
 
             print "Checking for app creation success... " + str(num_tries)
@@ -226,8 +227,6 @@ class spinnaker():
 
         return app_create_success
 
-        
-
     '''
     Curl to create the first stage:
     curl 'http://ec2-52-26-72-234.us-west-2.compute.amazonaws.com/8084/pipelines' 
@@ -241,5 +240,6 @@ class spinnaker():
         -H 'Connection: keep-alive' 
         -H 'DNT: 1' --data-binary '{"name":"pipelinetest","stages":[{"requisiteStageRefIds":[],"refId":"1","type":"bake","name":"Bake","cloudProviderType":"aws","regions":["us-west-2"],"user":"[anonymous]","vmType":"hvm","storeType":"ebs","baseOs":"trusty","baseLabel":"unstable","showAdvancedOptions":true,"baseAmi":"ami-8ee605bd","package":"echo"}],"triggers":[{"enabled":true,"type":"jenkins","master":"Jenkins","job":"Package_example_app"}],"application":"appnme","limitConcurrent":true,"stageCounter":1,"parallel":true,"index":0,"id":"b4f3c970-84de-11e5-832e-77b4d230fd64"}' --compressed
     '''
-    def create_stage(self,something):
+
+    def create_stage(self, something):
         print "Creating stage"

@@ -54,3 +54,5 @@ terraform.tfstate.*
 *.swp
 
 **/*.pyc
+
+**/crash.log

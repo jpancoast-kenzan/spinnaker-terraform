@@ -31,7 +31,9 @@ spinnaker_image_url = "https://raw.githubusercontent.com/spinnaker/spinnaker.git
 
 
 def parse_spinnaker_amis():
-    r_spinnaker_images = requests.get(spinnaker_image_url)
+    print "Downloading Spinnaker AMI information..."
+    r_spinnaker_images = requests.get(spinnaker_image_url, timeout=30.0)
+    print "Spinnaker AMI information downloaded...\n"
     spinnaker_amis = {}
 
     ami_info = r_spinnaker_images.json()
@@ -58,6 +60,7 @@ def main(argv):
     spinnaker_amis = parse_spinnaker_amis()
 
     data_error = False
+    region_error = False
 
     data = {}
     zone_data = {}
@@ -78,8 +81,11 @@ def main(argv):
     data['variable']['aws_spinnaker_amis'][
         'description'] = "AWS Spinnaker AMIs"
 
-    r_ubuntu = requests.get(ubuntu_image_url)
+    print "Downloading Ubuntu AMI information..."
+    r_ubuntu = requests.get(ubuntu_image_url, timeout=30.0)
+    print "Ubuntu AMI information downloaded...\n"
 
+    print "Downloading Region information..."
     aws_conn = boto.ec2.connect_to_region("us-east-1")
 
     try:
@@ -87,7 +93,9 @@ def main(argv):
     except Exception, e:
         print "ERROR: Could not connect to AWS. Check your aws keys."
         exit(1)
-        
+
+    print "Region information downloaded...\n"
+
     # The URL actually returns invalid json.
     ubuntu_good_json = re.sub("],\n]\n}", ']]}', r_ubuntu.text)
 
@@ -112,19 +120,29 @@ def main(argv):
         az_string = ''
         zone_count = 0
 
+        print "Parsing zone information for region: " + str(region)
+
         temp_conn = boto.ec2.connect_to_region(region.name)
+        zones = None
 
-        for zone in temp_conn.get_all_zones():
+        try:
+            zones = temp_conn.get_all_zones()
+        except Exception, e:
+            region_error = True
+            print "WARNING: Could not connect to AWS region: " + str(region) + ". Please check your AWS keys. You should be fine to continue if you do not want to use this region for the install."
 
-            az = re.sub(region.name, '', zone.name)
-            az_string = az_string + az + ":"
+        if zones is not None:
+            for zone in zones:
+                print "\tzone: " + str(zone)
+                az = re.sub(region.name, '', zone.name)
+                az_string = az_string + az + ":"
 
-            zone_count += 1
+                zone_count += 1
 
-        az_string = re.sub(":$", '', az_string)
+            az_string = re.sub(":$", '', az_string)
 
-        zone_data[region.name] = az_string
-        zone_count_data[region.name] = str(zone_count)
+            zone_data[region.name] = az_string
+            zone_count_data[region.name] = str(zone_count)
 
     data['variable']['aws_azs']['default'] = zone_data
     data['variable']['aws_az_counts']['default'] = zone_count_data

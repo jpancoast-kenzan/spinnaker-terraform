@@ -2,6 +2,7 @@
 
 available_cloud_providers=(aws)
 available_actions=(plan apply destroy)
+available_ifconfig_providers=(ipinfo.io/ip ifconfig.co ifconfig.me)
 
 iam_roles_to_check_for=(base_iam_role jenkins_role properties_and_logging_role spinnaker_role)
 iam_profiles_to_check_for=(jenkins_profile spinnaker_profile properties_and_logging_profile)
@@ -39,7 +40,6 @@ done
 SCRIPT_DIR=$(pwd)
 
 CURRENT_DATE=$(date +%Y-%m-%d-%H-%M)
-
 
 if [ "x$CLOUD_PROVIDER" == "x" ]; then
     echo "usage: $0 -c <cloud provider (aws only for now)> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional) -t <terraform vars in this format: \"-var 'variable=value' -var 'variable_2=value_2'\">(optional)"
@@ -134,17 +134,73 @@ echo "here is where we could do some checks to make sure the environment is clea
 #   Maybe put all these checks in check_prereqs.py, which is a renamed check_python_prereqs.py
 echo
 
+#
+#   Determine the public IP of the instance/server/machine this script is running on
+#       Checks several services since none of them are reliable. User may have to set this
+#           manually
+#
+if [ "x$LOCAL_IP" == "x" ]; then
+    for ifconfig_provider in "${available_ifconfig_providers[@]}"; do
+        echo "Checking $ifconfig_provider for local public IP"
+
+        curl_local_ip_command="/usr/bin/curl -s --max-time 20 http://$ifconfig_provider/"
+
+        LOCAL_IP=`$curl_local_ip_command`
+
+        if ! [ "x$LOCAL_IP" == "x" ]; then
+            break
+        fi
+    done
+fi
+
+#
+#   Absolute last resort check. Separate block because it requires some sed
+#
+if [ "x$LOCAL_IP" = "x" ]; then
+    echo "Checking checkip.dyndns.org for local public IP"
+    LOCAL_IP=`curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'`
+fi
+
+if [ "x$LOCAL_IP" = "x" ]; then
+    echo "I couldn't figure out the public IP for this machine. Please set the env variable LOCAL_IP to the correct IP and run this script again."
+    exit 1
+else
+    echo "LOCAL_IP found: $LOCAL_IP"
+fi
+
+
 
 if [ -f "$CLOUD_PROVIDER/spinnaker_variables.tf.json" ] && ! test `find "$CLOUD_PROVIDER/spinnaker_variables.tf.json" -mmin +20`
 then
     echo "$CLOUD_PROVIDER/spinnaker_variables.tf.json exists and is less than 20 minutes old. No need to download it again I don't think."
 else
-    echo "Downloading OS Image, region, and AZ information"
-    ./support/kenzan_spinnaker_get_info.py $CLOUD_PROVIDER
+    echo "Downloading OS Image, region, and AZ information. If the script stops somewhere in here it's possible the AWS region(s) are having API issues."
+    COMMAND="./support/kenzan_spinnaker_get_info.py $CLOUD_PROVIDER"
+    
+    echo $COMMAND
+    eval $COMMAND
 fi
 
 
 cd $SCRIPT_DIR/$CLOUD_PROVIDER
+
+if [ "$ACTION" == "destroy" ]; then
+    echo "Deleting any resources created by spinnaker."
+
+    region=$(terraform show $STATEPATH | grep 'Region: ' | head -n1 | sed -e 's/Region: //' )
+    vpc_id=$(terraform show $STATEPATH | grep 'VPC_ID: ' | head -n1 | sed -e 's/VPC_ID: //' )
+    echo "REGION: $region"
+    echo "VPC ID: $vpc_id"
+
+    ../support/tunnel.sh -s $STATEPATH -a stop
+
+    echo "Deleting everything in the VPC that spinnaker doesn't control."
+
+    COMMAND="../support/"$CLOUD_PROVIDER"_delete_things_spinnaker_cant_control.py $region $vpc_id"
+    echo $COMMAND
+    eval $COMMAND
+fi
+
 
 if [ "$ACTION" != "destroy" ] && [ "$LOG" == "YES" ]; then
 	#
@@ -152,9 +208,12 @@ if [ "$ACTION" != "destroy" ] && [ "$LOG" == "YES" ]; then
 	#
 	LOG_TARGET=/tmp/$CLOUD_PROVIDER.SPINNAKER.$ACTION.$(date +%Y-%m-%d-%H-%M-%S)
 	echo "Logging to: $LOG_TARGET"
-	COMMAND="terraform $ACTION -no-color -state=$STATEPATH -backup=$STATEPATH.backup $TFVARS > $LOG_TARGET 2>&1"
+	COMMAND="terraform $ACTION -no-color -state=$STATEPATH -backup=$STATEPATH.backup -var 'local_ip=$LOCAL_IP/32' -var 'kenzan_statepath=$STATEPATH' $TFVARS > $LOG_TARGET 2>&1"
 else
-	COMMAND="terraform $ACTION -state=$STATEPATH -backup=$STATEPATH.backup $TFVARS"
+	COMMAND="terraform $ACTION -state=$STATEPATH -backup=$STATEPATH.backup -var 'local_ip=$LOCAL_IP/32' -var 'kenzan_statepath=$STATEPATH' $TFVARS"
 fi
 
+echo "Running terraform command:"
+echo $COMMAND
+echo ""
 eval $COMMAND
