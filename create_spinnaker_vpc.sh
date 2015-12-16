@@ -176,7 +176,7 @@ then
 else
     echo "Downloading OS Image, region, and AZ information. If the script stops somewhere in here it's possible the AWS region(s) are having API issues."
     COMMAND="./support/kenzan_spinnaker_get_info.py $CLOUD_PROVIDER"
-#    ./support/kenzan_spinnaker_get_info.py 
+    
     echo $COMMAND
     eval $COMMAND
 fi
