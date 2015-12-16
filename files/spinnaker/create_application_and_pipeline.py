@@ -151,7 +151,7 @@ def main(argv):
     pipeline['stages'][1]['clusters'][0][
         'subnetType'] = "ec2_public (" + vpc_name + ")"
 
-    pipeline['stages'][1]['clusters'][0]['iamRole'] = iam_role
+    pipeline['stages'][1]['clusters'][0]['iamRole'] = iam_role + '_profile'
 
     pipeline['stages'][1]['clusters'][0][
         'securityGroups'] = [sg_id, vpc_sg_id, mgmt_sg_id]

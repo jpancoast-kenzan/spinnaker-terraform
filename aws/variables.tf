@@ -21,6 +21,7 @@ variable "internal_dns_zone" {}
 
 variable "adm_bastion_incoming_cidrs" {}
 variable "infra_jenkins_incoming_cidrs" {}
+variable "local_ip" {}
 
 variable "ubuntu_distribution" {}
 variable "ubuntu_virttype" {}
@@ -31,6 +32,8 @@ variable "jenkins_iam_role_name" {}
 variable "base_iam_role_name" {}
 variable "spinnaker_iam_role_name" {}
 variable "properties_and_logging_iam_role_name" {}
+
+variable "kenzan_statepath" {}
 
 
 variable "eelb_public_subnet_block" {

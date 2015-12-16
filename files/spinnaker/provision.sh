@@ -1,5 +1,7 @@
 #!/bin/sh
 
+
+
 cp /tmp/terraform/igor-local.yml /opt/spinnaker/config/
 sed -i.bak -e "s/JENKINS_URL/http:\/\/jenkins.$2\//" -e "s/JENKINS_USERNAME/$3/" -e "s/JENKINS_PASSWORD/$4/" /opt/spinnaker/config/igor-local.yml
 
@@ -25,9 +27,5 @@ sed -i.bak -e "s/# debianRepository: .*/debianRepository: http\:\/\/debianrepo.$
 sed -i.bak -e "s/let awsDefaultRegion = '.*'\;/let awsDefaultRegion = '$1'\;/" /var/www/settings.js
 sudo service apache2 restart
 
-#
-#   clean up /tmp/terraform/
-#
-rm -rf /tmp/terraform*
 
 sleep 5
