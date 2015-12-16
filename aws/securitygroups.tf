@@ -12,12 +12,6 @@ resource "aws_security_group" "adm_bastion" {
     allocated_on="none"
     owner="none"
   }
-  ingress {
-    from_port=22
-    to_port=22
-    protocol="tcp"
-    cidr_blocks=["${split(",",var.adm_bastion_incoming_cidrs)}"]
-  }
 }
 
 /* security group for eelb  */
@@ -325,19 +319,6 @@ resource "aws_security_group" "infra_spinnaker" {
   }
 }
 
-
-
-resource "aws_security_group_rule" "infra_spinnaker_self_referential_rules" {
-  type = "ingress"
-  from_port = 0
-  to_port = 65535
-  protocol = "-1"
-
-  security_group_id = "${aws_security_group.infra_spinnaker.id}"
-  self = true
-}
-
-
 /* Jenkins SG */
 resource "aws_security_group" "infra_jenkins" {
   vpc_id = "${aws_vpc.main.id}"
@@ -350,12 +331,6 @@ resource "aws_security_group" "infra_jenkins" {
     allocated="false"
     allocated_on="none"
     owner="none"
-  }
-  ingress {
-    from_port="80"
-    to_port="80"
-    protocol="tcp"
-    cidr_blocks=["${split(",",var.infra_jenkins_incoming_cidrs)}"]
   }
   ingress {
     from_port="8000"
@@ -385,4 +360,44 @@ resource "aws_security_group" "example_app" {
     allocated_on="none"
     owner="none"
   }
+  ingress {
+    from_port="8080"
+    to_port="8080"
+    protocol="tcp"
+    security_groups=["${aws_security_group.eelb.id}"]
+  }
+}
+
+
+#
+# Creating some rules separately to get around a terraform sg diff bug.
+#
+resource "aws_security_group_rule" "infra_jenkins_incoming_cidrs" {
+  type = "ingress"
+  from_port=80
+  to_port=80
+  cidr_blocks=["${compact(concat(split(",",var.local_ip),split(",",var.infra_jenkins_incoming_cidrs)))}"]
+  protocol = "tcp"
+
+  security_group_id = "${aws_security_group.infra_jenkins.id}"
+}
+
+resource "aws_security_group_rule" "adm_bastion_incoming_cidrs" {
+  type = "ingress"
+  from_port=22
+  to_port=22
+  protocol = "tcp"
+  cidr_blocks=["${compact(concat(split(",",var.local_ip),split(",",var.adm_bastion_incoming_cidrs)))}"]
+
+  security_group_id = "${aws_security_group.adm_bastion.id}"
+}
+
+resource "aws_security_group_rule" "infra_spinnaker_self_referential_rules" {
+  type = "ingress"
+  from_port = 0
+  to_port = 65535
+  protocol = "-1"
+
+  security_group_id = "${aws_security_group.infra_spinnaker.id}"
+  self = true
 }

@@ -7,12 +7,12 @@
             "region": "DUMMY_INFO_REPLACED_BY_SCRIPT",
             "vpcId": "DUMMY_INFO_REPLACED_BY_SCRIPT",
             "healthCheckProtocol": "HTTP",
-            "healthCheckPort": 7001,
+            "healthCheckPort": 8080,
             "healthCheckPath": "/healthcheck",
             "healthTimeout": 5,
             "healthInterval": 10,
-            "healthyThreshold": 10,
-            "unhealthyThreshold": 2,
+            "healthyThreshold": 3,
+            "unhealthyThreshold": 3,
             "regionZones": [
                 "us-west-2a",
                 "us-west-2b",
@@ -24,7 +24,7 @@
             "listeners": [
                 {
                     "internalProtocol": "HTTP",
-                    "internalPort": 7001,
+                    "internalPort": 8080,
                     "externalProtocol": "HTTP",
                     "externalPort": 80
                 }
@@ -32,7 +32,7 @@
             "name": "DUMMY_INFO_REPLACED_BY_SCRIPT",
             "usePreferredZones": true,
             "subnetType": "DUMMY_INFO_REPLACED_BY_SCRIPT",
-            "healthCheck": "HTTP:7001/healthcheck",
+            "healthCheck": "HTTP:8080/healthcheck",
             "type": "upsertLoadBalancer",
             "availabilityZones": {},
             "user": "[anonymous]"
