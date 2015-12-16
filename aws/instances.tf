@@ -99,7 +99,6 @@ resource "aws_instance" "spinnaker" {
   associate_public_ip_address=true
   key_name = "${var.ssh_key_name}"
   iam_instance_profile = "${aws_iam_instance_profile.spinnaker_instance_profile.id}"
-  depends_on = ["aws_instance.jenkins"]
 
   connection {
     user = "${var.ssh_user}"

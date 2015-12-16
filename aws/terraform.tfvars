@@ -21,10 +21,21 @@ internal_dns_zone = "kenzanlabs.int"
 
 
 #
+#	Jenkins user
+#
+jenkins_admin_username = "admin"
+
+#
+#	This NEEDS TO BE SET. Either in this file or you will be prompted for them.
+#		If you set them in here, uncomment them.
+#
+#jenkins_admin_password = "DO NOT LEAVE EMPTY IF YOU SET IT IN HERE"
+
+#
 #	IAM roles
 #
 jenkins_iam_role_name = "jenkins_iam_role"
-base_iam_role_name = "base_iam_role_testing_diff_name"
+base_iam_role_name = "base_iam_role_testing"
 spinnaker_iam_role_name = "spinnaker_iam_role"
 properties_and_logging_iam_role_name = "properties_and_logging_iam_role"
 
@@ -52,17 +63,6 @@ infra_jenkins_incoming_cidrs = ""
 #
 adm_bastion_incoming_cidrs = ""
 
-
-#
-#	Jenkins user
-#
-jenkins_admin_username = "admin"
-
-#
-#	This NEEDS TO BE SET. Either in this file or you will be prompted for them.
-#		If you set them in here, uncomment them.
-#
-#jenkins_admin_password = "DO NOT LEAVE EMPTY IF YOU SET IT IN HERE"
 
 #
 #	Stuff that you probably won't have to update that often

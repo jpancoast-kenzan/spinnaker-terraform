@@ -175,7 +175,10 @@ then
     echo "$CLOUD_PROVIDER/spinnaker_variables.tf.json exists and is less than 20 minutes old. No need to download it again I don't think."
 else
     echo "Downloading OS Image, region, and AZ information. If the script stops somewhere in here it's possible the AWS region(s) are having API issues."
-    ./support/kenzan_spinnaker_get_info.py $CLOUD_PROVIDER
+    COMMAND="../support/"$CLOUD_PROVIDER"_kenzan_spinnaker_get_info.py $CLOUD_PROVIDER"
+#    ./support/kenzan_spinnaker_get_info.py 
+    echo $COMMAND
+    eval $COMMAND
 fi
 
 
