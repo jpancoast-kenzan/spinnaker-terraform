@@ -26,13 +26,13 @@ except ImportError, e:
     print "If you don't have pip, do this first: sudo easy_install pip"
     exit(2)
 
-ubuntu_image_url = "http://cloud-images.ubuntu.com/locator/ec2/releasesTable"
-spinnaker_image_url = "https://raw.githubusercontent.com/spinnaker/spinnaker.github.io/master/online_docs/quick_ref/ami_table.json"
+ubuntu_amazon_image_url = "http://cloud-images.ubuntu.com/locator/ec2/releasesTable"
+spinnaker_amazon_image_url = "https://raw.githubusercontent.com/spinnaker/spinnaker.github.io/master/online_docs/quick_ref/ami_table.json"
 
 
 def parse_spinnaker_amis():
     print "Downloading Spinnaker AMI information..."
-    r_spinnaker_images = requests.get(spinnaker_image_url, timeout=30.0)
+    r_spinnaker_images = requests.get(spinnaker_amazon_image_url, timeout=30.0)
     print "Spinnaker AMI information downloaded...\n"
     spinnaker_amis = {}
 
@@ -46,16 +46,8 @@ def parse_spinnaker_amis():
     return spinnaker_amis
 
 
-def main(argv):
-    pp = pprint.PrettyPrinter(indent=4)
-
-    if len(sys.argv) != 2:
-        print "You need to tell me the cloud provider."
-        exit(1)
-
-    cloud_provider = sys.argv[1]
-
-    variables_file = cloud_provider + "/spinnaker_variables.tf.json"
+def get_aws_info():
+    variables_file = "aws/spinnaker_variables.tf.json"
 
     spinnaker_amis = parse_spinnaker_amis()
 
@@ -82,7 +74,7 @@ def main(argv):
         'description'] = "AWS Spinnaker AMIs"
 
     print "Downloading Ubuntu AMI information..."
-    r_ubuntu = requests.get(ubuntu_image_url, timeout=30.0)
+    r_ubuntu = requests.get(ubuntu_amazon_image_url, timeout=30.0)
     print "Ubuntu AMI information downloaded...\n"
 
     print "Downloading Region information..."
@@ -187,6 +179,26 @@ def main(argv):
 
     f.close()
 
+
+
+def main(argv):
+    pp = pprint.PrettyPrinter(indent=4)
+
+    if len(sys.argv) != 2:
+        print "You need to tell me the cloud provider."
+        exit(1)
+
+    cloud_provider = sys.argv[1]
+
+    if cloud_provider == 'aws':
+        get_aws_info()
+    elif cloud_provider == 'gcp':
+        get_gcp_info()
+    else:
+        print "Invalid Cloud Provider"
+        exit(1)
+
+    
 
 if __name__ == "__main__":
     main(sys.argv)

@@ -38,7 +38,7 @@ resource "aws_instance" "bastion" {
     inline = [
       "chmod 0600 /home/${var.ssh_user}/.ssh/id_rsa",
       "chmod a+x /tmp/terraform/provision.sh",
-      "/tmp/terraform/provision.sh ${var.internal_dns_zone}"
+      "/tmp/terraform/provision.sh ${var.ssh_user}"
     ]
   }
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-available_cloud_providers=(aws)
+available_cloud_providers=(aws gcp)
 available_actions=(plan apply destroy)
 available_ifconfig_providers=(ipinfo.io/ip ifconfig.co ifconfig.me)
 
@@ -42,12 +42,12 @@ SCRIPT_DIR=$(pwd)
 CURRENT_DATE=$(date +%Y-%m-%d-%H-%M)
 
 if [ "x$CLOUD_PROVIDER" == "x" ]; then
-    echo "usage: $0 -c <cloud provider (aws only for now)> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional) -t <terraform vars in this format: \"-var 'variable=value' -var 'variable_2=value_2'\">(optional)"
+    echo "usage: $0 -c <cloud provider> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional) -t <terraform vars in this format: \"-var 'variable=value' -var 'variable_2=value_2'\">(optional)"
     exit 1
 fi
 
 if [ "x$ACTION" == "x" ]; then
-    echo "usage: $0 -c <cloud provider (aws only for now)> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional) -t <terraform vars in this format: \"-var 'variable=value' -var 'variable_2=value_2'\">(optional)"
+    echo "usage: $0 -c <cloud provider> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional) -t <terraform vars in this format: \"-var 'variable=value' -var 'variable_2=value_2'\">(optional)"
     exit 1
 fi
 
@@ -111,7 +111,7 @@ done
 
 #Check the version of terraform... >= 0.6.8
 
-./support/check_python_prereqs.py
+./support/check_python_prereqs.py $CLOUD_PROVIDER
 RETVAL=$?
 
 if [ "$RETVAL" != "0" ]; then
@@ -174,12 +174,14 @@ if [ -f "$CLOUD_PROVIDER/spinnaker_variables.tf.json" ] && ! test `find "$CLOUD_
 then
     echo "$CLOUD_PROVIDER/spinnaker_variables.tf.json exists and is less than 20 minutes old. No need to download it again I don't think."
 else
-    echo "Downloading OS Image, region, and AZ information. If the script stops somewhere in here it's possible the AWS region(s) are having API issues."
-    COMMAND="./support/kenzan_spinnaker_get_info.py $CLOUD_PROVIDER"
+    echo "Downloading $CLOUD_PROVIDER specific information. If the script stops somewhere in here it's possible $CLOUD_PROVIDER is having API issues."
+    COMMAND="./support/"$CLOUD_PROVIDER"_kenzan_spinnaker_get_info.py $CLOUD_PROVIDER"
     
     echo $COMMAND
     eval $COMMAND
 fi
+
+exit
 
 
 cd $SCRIPT_DIR/$CLOUD_PROVIDER
