@@ -1,16 +1,29 @@
-resource "google_compute_firewall" "http-jenkins" {
-	name = "http-jenkins"
+#resource "google_compute_firewall" "http-jenkins" {
+#	name = "http-jenkins"
+#
+#	allow {
+#		protocol = "tcp"
+#		ports = ["80"]
+#	}
+#
+#	network = "${google_compute_network.spinnaker-network.name}"
+#
+#	source_ranges = ["38.75.226.18/32"]
+#
+#	target_tags = ["jenkins-spinnaker"]
+#}
+
+resource "google_compute_firewall" "bastion-to-spinnaker" {
+	name = "bastion-to-spinnaker"
 
 	allow {
 		protocol = "tcp"
-		ports = ["80"]
+		ports = ["22"]
 	}
 
 	network = "${google_compute_network.spinnaker-network.name}"
 
-	source_ranges = ["38.75.226.18/32"]
-
-	target_tags = ["jenkins-spinnaker"]
+	source_tags = ["bastion", "spinnaker-and-jenkins"]
 }
 
 resource "google_compute_firewall" "ssh-bastion" {
@@ -27,3 +40,30 @@ resource "google_compute_firewall" "ssh-bastion" {
 
 	target_tags = ["bastion"]
 }
+
+resource "google_compute_firewall" "aptly-access" {
+	name = "aptly-access"
+
+	allow {
+		protocol = "tcp"
+		ports = ["9999"]
+	}
+
+	network = "${google_compute_network.spinnaker-network.name}"
+
+	source_ranges = ["${var.network_cidr}"]
+	target_tags = ["spinnaker-and-jenkins"]
+}
+
+#resource "google_compute_firewall" "packer-access" {
+#	name = "packer-access"
+#
+#	allow {
+#		protocol = "tcp"
+#		ports = ["22"]
+#	}
+#
+#	network = "${google_compute_network.spinnaker-network.name}"
+#
+#	source_tags = ["spinnaker-and-jenkins"]
+#}

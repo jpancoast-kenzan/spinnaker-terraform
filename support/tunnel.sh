@@ -61,12 +61,12 @@ fi
 if [ "$ACTION" == "start" ]; then
     echo "Starting all the things!"
 
-	REMOTE_TUNNEL_COMMAND="ssh -f -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -i $private_key_location $ssh_user@$bastion_public_ip '/home/ubuntu/spinnaker-tunnel.sh start'"
+	REMOTE_TUNNEL_COMMAND="ssh -f -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -i $private_key_location $ssh_user@$bastion_public_ip '/home/$ssh_user/spinnaker-tunnel.sh start'"
 	LOCAL_TUNNEL_COMMAND="$SCRIPT_DIR/../support/spinnaker-tunnel-control.sh start"
 elif [ "$ACTION" == "stop" ]; then
 	echo "Stopping all the things!"
 
-    REMOTE_TUNNEL_COMMAND="ssh -f -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -i $private_key_location $ssh_user@$bastion_public_ip '/home/ubuntu/spinnaker-tunnel.sh stop'"
+    REMOTE_TUNNEL_COMMAND="ssh -f -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -i $private_key_location $ssh_user@$bastion_public_ip '/home/$ssh_user/spinnaker-tunnel.sh stop'"
     LOCAL_TUNNEL_COMMAND="$SCRIPT_DIR/../support/spinnaker-tunnel-control.sh stop"
 else
 	echo "Invalid Action: $ACTION"
