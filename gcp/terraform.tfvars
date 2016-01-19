@@ -6,9 +6,6 @@ network_cidr = "10.0.0.0/16"
 
 ssh_private_key_location = "~/.ssh/google_compute_engine"
 
-packer_url = "https://dl.bintray.com/mitchellh/packer/packer_0.8.6_linux_amd64.zip"
-
-#jenkins_machine_type = "g1-small"
 bastion_machine_type = "f1-micro"
 spinnaker_machine_type = "n1-highmem-8"
 
@@ -20,6 +17,18 @@ kenzan_statepath = "../gcp" #Hardcoding this for now.
 
 ubuntu_image = "ubuntu-1404-trusty-v20151113"
 spinnaker_image = "spinnaker-codelab"
+
+#
+#	Jenkins user
+#
+jenkins_admin_username = "admin"
+
+#
+#	This NEEDS TO BE SET. Either in this file or you will be prompted for them.
+#		If you set them in here, uncomment them.
+#
+#jenkins_admin_password = "DO NOT LEAVE EMPTY IF YOU SET IT IN HERE"
+
 
 #INSTANCE_NAME=spinnaker-codelab-`date +%Y%m%d`
 #MY_PROJECT=<my project>

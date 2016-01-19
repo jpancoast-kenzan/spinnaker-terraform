@@ -157,7 +157,7 @@ class spinnaker():
 
         return lb_create_success
 
-    def create_application(self, application):
+    def create_application(self, application, account_name):
         print "Create Application"
 
         app_create_success = False
@@ -174,7 +174,7 @@ class spinnaker():
         job['user'] = 'anonymous'
         job['type'] = 'createApplication'
         # default value for now, probably shouldn't hard code it
-        job['account'] = 'my-aws-account'
+        job['account'] = account_name
 
         job['application'] = {}
         job['application']['name'] = application['app_name']

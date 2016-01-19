@@ -51,7 +51,7 @@ resource "google_compute_firewall" "aptly-access" {
 
 	network = "${google_compute_network.spinnaker-network.name}"
 
-	source_ranges = ["${var.network_cidr}"]
+	source_ranges = ["0.0.0.0/0"]
 	target_tags = ["spinnaker-and-jenkins"]
 }
 
