@@ -157,6 +157,51 @@ class spinnaker():
 
         return lb_create_success
 
+    '''
+    OK, objective: make 'create_application' just like the others, pass in a json blob with all the information already
+    '''
+    def create_application(self, application):
+        print "Creating application: " + application['application']
+        app_create_success = False
+        num_tries = 0
+
+        url = 'http://' + self.spinnaker_address + ':' + self.gate_port + \
+            '/applications/' + application['app_name'] + '/tasks'
+
+        print "Attempting to create application..." + url
+
+        try:
+            headers = {'content-type': 'application/json'}
+            r = requests.post(url, data=json.dumps(application), headers=headers)
+        except requests.exceptions.RequestException, e:
+            print e
+            return False
+
+        ref = r.json()['ref']
+
+        check_url = 'http://' + self.spinnaker_address + ':' + self.gate_port + \
+            '/applications/' + application['app_name'] + ref
+
+        while not app_create_success and num_tries < self.retries:
+            r = requests.get(check_url, timeout=30.0)
+            num_tries += 1
+
+            print "Checking for app creation success... " + str(num_tries)
+
+            if r.json()['status'] == 'SUCCEEDED':
+                print "\tSuccess!"
+                app_create_success = True
+            else:
+                time.sleep(self.retry_interval)
+
+        if not app_create_success:
+            self.error_response = r
+
+        return app_create_success
+
+
+
+    '''
     def create_application(self, application, account_name):
         print "Create Application"
 
@@ -184,7 +229,7 @@ class spinnaker():
         job['application']['repoProjectKey'] = application['repo_project_key']
         job['application']['repoSlug'] = application['repo_name']
         job['application']['repoType'] = application['repo_type']
-        job['application']['cloudProviders'] = 'aws'
+        job['application']['cloudProviders'] = application['cloud_provider']
         job['application']['platformHealthOnly'] = True
         job['application']['platformHealthOnlyShowOverride'] = True
 
@@ -207,9 +252,6 @@ class spinnaker():
         check_url = 'http://' + self.spinnaker_address + ':' + self.gate_port + \
             '/applications/' + application['app_name'] + ref
 
-        '''
-        busy waiting is the awesomest. Since I sorta do actually want this to block.
-        '''
         while not app_create_success and num_tries < self.retries:
             r = requests.get(check_url, timeout=30.0)
             num_tries += 1
@@ -226,6 +268,7 @@ class spinnaker():
             self.error_response = r
 
         return app_create_success
+    '''
 
     '''
     Curl to create the first stage:

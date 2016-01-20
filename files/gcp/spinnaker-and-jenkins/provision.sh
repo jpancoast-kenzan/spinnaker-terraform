@@ -10,11 +10,6 @@ sed -i.bak -e "s/<NETWORK>/${1}/" /opt/rosco/config/packer/gce.json
 service rosco restart
 
 
-#### This block is required for the running of the application and pipeline creation script
-sudo apt-get update
-
-#sleep 30	#Gotta wait for Jenkins to be up of course...
-
 i=0
 tput sc
 while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
@@ -25,11 +20,13 @@ while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
         3 ) j="/" ;;
     esac
     tput rc
-    echo -en "\r[$j] Waiting for other software managers to finish..." 
-    sleep 2.0
+    echo "Waiting for other software managers to finish..." 
+    sleep 5.0
     ((i=i+1))
 done 
 
+#### This block is required for the running of the application and pipeline creation script
+sudo apt-get update
 sudo apt-get -y install python-pip
 
 sudo pip install docopt
