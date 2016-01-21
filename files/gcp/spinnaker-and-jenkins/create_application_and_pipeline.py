@@ -4,7 +4,7 @@
 Create an application in spinnaker
 
 Usage:
-    ./create_application.py (--app_name=<app_name>) (--pipeline_name=<pipeline_name>) [(--spinnaker_address=<spinnaker_address>)]
+    ./create_application.py (--app_name=<app_name>) (--pipeline_name=<pipeline_name>) (--region=<region>) (--zone=<zone>) (--network=<network>) (--security_group=<security_group>) [(--spinnaker_address=<spinnaker_address>)]
 
 Options:
     --help Show this screen
@@ -12,6 +12,10 @@ Options:
     -s, --spinnaker_address=<spinnaker_address> Address of the spinnaker host
     -a, --app_name=<app_name> Name of the application to add the pipeline too
     -p, --pipeline_name=<pipeline_name> Name of the pipeline to create
+    -r, --region=<region> Region we're in
+    -n, --network=<network> Network to launch in
+    -g, --security_group=<security_group> Security group to use
+    -z, --zone=<zone> Zone 
 """
 
 VERSION = '0.1'
@@ -23,6 +27,11 @@ import sys
 import os
 import re
 import pprint
+
+'''
+This is only required for when running locally
+'''
+sys.path.append('../../lib')
 
 from spinnaker import spinnaker
 
@@ -42,7 +51,6 @@ except ImportError, e:
 
 
 def main(argv):
-    print "THIS IS THE PYTHON SCRIPT YO"
     arguments = docopt(__doc__, version=str(
         os.path.basename(__file__)) + " " + VERSION, options_first=False)
 
@@ -55,10 +63,14 @@ def main(argv):
 
     app_name = arguments['--app_name']
     pipeline_name = arguments['--pipeline_name']
+    region = arguments['--region']
+    zone = arguments['--zone']
+    network = arguments['--network']
+    security_group = arguments['--security_group']
 
-    pipeline_json_file = 'pipeline.json'
-    app_json_file = 'application.json'
-    lb_json_file = 'loadbalancer.json'
+    pipeline_json_file = 'pipeline_create.json'
+    app_json_file = 'application_create.json'
+    lb_json_file = 'loadbalancer_create.json'
 
     pipeline = {}
     application = {}
@@ -81,8 +93,21 @@ def main(argv):
 
 
     '''
-    Configure the special application vars
+    Configure the special lb vars
     '''
+    loadbalancer['job'][0]['region'] = region
+    loadbalancer['job'][0]['availabilityZones'][region] = []
+
+    '''
+    Configure the special pipeline vars
+    '''
+    pipeline['stages'][1]['clusters'][0]['zone'] = region + '-' + zone
+    pipeline['stages'][1]['clusters'][0]['availabilityZones'][region] = [region + '-' + zone]
+    pipeline['stages'][1]['clusters'][0]['network'] = network
+    pipeline['stages'][1]['clusters'][0]['network'] = [security_group]
+
+
+    spin_tools.wait_for_8084()
 
     if spin_tools.create_application(application):
         print "Application Creation Successful..."

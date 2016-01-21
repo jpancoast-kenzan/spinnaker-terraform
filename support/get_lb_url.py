@@ -21,8 +21,8 @@ def main(argv):
 
     lb_found = False
 
-    app_name = 'kenzanapp' #Hardcoded for now, shouldn't be a problem to hardocde it as long as scripts create the applicaiton, lb, etc.
-    lb_name = 'kenzanapp-jpstack' #same as above, should be OK to hardcode
+    app_name = 'testappname' #Hardcoded for now, shouldn't be a problem to hardocde it as long as scripts create the applicaiton, lb, etc.
+    lb_name = 'testappname-test' #same as above, should be OK to hardcode
 
     spinnaker_lb_url = 'http://localhost:8084/applications/' + app_name + '/loadBalancers'
 
@@ -38,7 +38,7 @@ def main(argv):
 
 
     if lb_found:
-        lb_url = 'http://' + lb_ip
+        lb_url = 'http://' + lb_ip + ':7070/hello'
 
         print "Attempting to determine health of: " + lb_url + ". NOTE: This could take awhile."
         successful_load = False
@@ -47,7 +47,7 @@ def main(argv):
         while not successful_load and current_try < num_tries:
             print "Try #" + str(current_try)
             current_try += 1
-            r_lb = requests.get(lb_url + ":7070/healthcheck", timeout=request_timeout)
+            r_lb = requests.get(lb_url, timeout=request_timeout)
             if r_lb.status_code == requests.codes.ok:
                 successful_load = True
                 print "\tSUCCESS!"
@@ -58,7 +58,7 @@ def main(argv):
 
         if successful_load:
             print "\n\nGo to the following URL in your brower to see the example app you just deployed:"
-            print "\t" + lb_url + "/hello"
+            print "\t" + lb_url
         else:
             print lb_url + " is not healthy. It does take some time for the instance to show up as healthy in the LB, you might want to try again in a few minutes."
 

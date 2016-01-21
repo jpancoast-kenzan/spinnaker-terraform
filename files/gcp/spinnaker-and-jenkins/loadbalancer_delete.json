@@ -1,0 +1,13 @@
+{
+	"job": [{
+		"loadBalancerName": "testappname-test",
+		"region": "us-central1",
+		"type": "deleteLoadBalancer",
+		"regions": ["us-central1"],
+		"credentials": "my-google-account",
+		"cloudProvider": "gce",
+		"user": "[anonymous]"
+	}],
+	"application": "testappname",
+	"description": "Delete load balancer: testappname-test in my-google-account:us-central1"
+}

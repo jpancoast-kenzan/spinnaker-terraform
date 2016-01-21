@@ -13,6 +13,19 @@
 #	target_tags = ["jenkins-spinnaker"]
 #}
 
+resource "google_compute_firewall" "http-7070" {
+	name = "http-7070"
+
+	allow {
+		protocol = "tcp"
+		ports = ["7070"]
+	}
+
+	network = "${google_compute_network.spinnaker-network.name}"
+
+	source_ranges = ["${var.network_cidr}"]
+}
+
 resource "google_compute_firewall" "bastion-to-spinnaker" {
 	name = "bastion-to-spinnaker"
 
@@ -51,7 +64,7 @@ resource "google_compute_firewall" "aptly-access" {
 
 	network = "${google_compute_network.spinnaker-network.name}"
 
-	source_ranges = ["0.0.0.0/0"]
+	source_ranges = ["${var.network_cidr}"]
 	target_tags = ["spinnaker-and-jenkins"]
 }
 

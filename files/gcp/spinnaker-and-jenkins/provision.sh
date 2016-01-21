@@ -9,21 +9,25 @@ sed -i.bak -e "s/<NETWORK>/${1}/" /opt/rosco/config/packer/gce.json
 
 service rosco restart
 
+#
+#   Ok, need to set the proper username and password for jenkins
+#
 
-i=0
-tput sc
-while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
-    case $(($i % 4)) in
-        0 ) j="-" ;;
-        1 ) j="\\" ;;
-        2 ) j="|" ;;
-        3 ) j="/" ;;
-    esac
-    tput rc
+cd /tmp/terraform/
+chmod a+x modify_spinnaker_config.py
+
+cp /opt/spinnaker/config/spinnaker-local.yml /opt/spinnaker/config/spinnaker-local.yml.orig
+/tmp/terraform/modify_spinnaker_config.py /opt/spinnaker/config/spinnaker-local.yml services:jenkins:defaultMaster:username:$2 services:jenkins:defaultMaster:password:$3
+
+service igor restart
+
+#
+#   Have to wait for apt-get -y dist-upgrade to finish.
+#
+while pgrep apt-get > /dev/null; do 
     echo "Waiting for other software managers to finish..." 
-    sleep 5.0
-    ((i=i+1))
-done 
+    sleep 10.0
+done
 
 #### This block is required for the running of the application and pipeline creation script
 sudo apt-get update
@@ -50,5 +54,3 @@ if [ "x$2" != "xadmin" ]; then
 fi
 
 /usr/bin/java -jar /tmp/terraform/jenkins-cli.jar -s http://localhost:9090/ reload-configuration
-
-

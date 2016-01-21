@@ -10,10 +10,10 @@ resource "google_compute_instance" "bastion" {
 	}
 
 	connection {
-    	user = "${var.ssh_user}"
-    	key_file = "${var.ssh_private_key_location}"
-    	agent = false
-  	}
+    user = "${var.ssh_user}"
+  	key_file = "${var.ssh_private_key_location}"
+  	agent = false
+  }
 
 	network_interface {
 		network = "${google_compute_network.spinnaker-network.name}"
@@ -23,28 +23,28 @@ resource "google_compute_instance" "bastion" {
 	}
 
 	provisioner "remote-exec" {
-    	inline = [
-      		"mkdir -p /tmp/terraform/"
-    	]
-  	}
+    inline = [
+  		"mkdir -p /tmp/terraform/"
+    ]
+  }
 
-  	provisioner "file" {
-    	source = "../files/bastion/"
-    	destination = "/tmp/terraform"
-  	}
+  provisioner "file" {
+  	source = "../files/bastion/"
+    destination = "/tmp/terraform"
+  }
 
-  	provisioner "file" {
-    	source = "${var.ssh_private_key_location}"
-    	destination = "/home/${var.ssh_user}/.ssh/id_rsa"
-  	}
+  provisioner "file" {
+    source = "${var.ssh_private_key_location}"
+  	destination = "/home/${var.ssh_user}/.ssh/id_rsa"
+	}
 
-  	provisioner "remote-exec" {
-    	inline = [
-      		"chmod 0600 /home/${var.ssh_user}/.ssh/id_rsa",
-      		"chmod a+x /tmp/terraform/provision.sh",
-      		"/tmp/terraform/provision.sh ${var.ssh_user}"
-    	]
-  	}
+  provisioner "remote-exec" {
+    inline = [
+  		"chmod 0600 /home/${var.ssh_user}/.ssh/id_rsa",
+      "chmod a+x /tmp/terraform/provision.sh",
+  		"/tmp/terraform/provision.sh ${var.ssh_user}"
+  	]
+  }
 }
 
 resource "google_compute_instance" "spinnaker-and-jenkins" {
@@ -80,39 +80,39 @@ resource "google_compute_instance" "spinnaker-and-jenkins" {
 		agent = false
 	}
 
-  	provisioner "remote-exec" {
-    	inline = [
-      		"mkdir -p /tmp/terraform/"
-    	]
-  	}
+  provisioner "remote-exec" {
+    inline = [
+    		"mkdir -p /tmp/terraform/"
+  	]
+  }
 
-  	provisioner "file" {
-    	source = "../files/gcp/spinnaker-and-jenkins/"
-    	destination = "/tmp/terraform"
-  	}
+  provisioner "file" {
+    source = "../files/gcp/spinnaker-and-jenkins/"
+  	destination = "/tmp/terraform"
+	}
 
-  	provisioner "file" {
-    	source = "../files/lib/"
-    	destination = "/tmp/terraform"
-  	}
+  provisioner "file" {
+    source = "../files/lib/"
+  	destination = "/tmp/terraform"
+	}
 
-  	provisioner "remote-exec" {
-    	inline = [
-      		"chmod a+x /tmp/terraform/provision.sh",
-      		"chmod a+x /tmp/terraform/create_application.sh",
-      		"sudo /tmp/terraform/provision.sh ${google_compute_network.spinnaker-network.name} ${var.jenkins_admin_username} ${var.jenkins_admin_password}",
-      		"/tmp/terraform/create_application.sh"
-    	]
-  	}
+  provisioner "remote-exec" {
+    inline = [
+      "chmod a+x /tmp/terraform/provision.sh",
+  		"chmod a+x /tmp/terraform/create_application.sh",
+      "sudo /tmp/terraform/provision.sh ${google_compute_network.spinnaker-network.name} ${var.jenkins_admin_username} ${var.jenkins_admin_password}",
+  		"/tmp/terraform/create_application.sh ${var.region} ${var.zone} ${google_compute_network.spinnaker-network.name} ${google_compute_firewall.http-7070.name}"
+  	]
+  }
 	
 	provisioner "local-exec" {
-    	command = "ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -i ${var.ssh_private_key_location} ${var.ssh_user}@${google_compute_instance.bastion.network_interface.0.access_config.0.nat_ip} 'sed -i.bak -e \"s/<INTERNAL_DNS>/${google_compute_instance.spinnaker-and-jenkins.network_interface.0.address}/\" /home/${var.ssh_user}/.ssh/config'"
-  	}
+    command = "ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -i ${var.ssh_private_key_location} ${var.ssh_user}@${google_compute_instance.bastion.network_interface.0.access_config.0.nat_ip} 'sed -i.bak -e \"s/<INTERNAL_DNS>/${google_compute_instance.spinnaker-and-jenkins.network_interface.0.address}/\" /home/${var.ssh_user}/.ssh/config'"
+  }
 
-#  	provisioner "remote-exec" {
-#    	inline = [
-#      		"sudo rm -rf /tmp/terraform*"
-#    	]
-#  	}
+	provisioner "remote-exec" {
+    inline = [
+    	"sudo rm -rf /tmp/terraform*"
+    ]
+  }
 
 }

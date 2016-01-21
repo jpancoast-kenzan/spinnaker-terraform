@@ -158,6 +158,29 @@ class spinnaker():
         return lb_create_success
 
     '''
+    Wait until 8084 is listening
+    '''
+    def wait_for_8084(self):
+        print "Waiting for port 8084..."
+
+        url = 'http://localhost:8084'
+
+        listening_on_8084 = False
+        num_tries = 0
+
+        while not listening_on_8084 and num_tries < self.retries:
+            try:
+                r = requests.get(url, timeout=10.0)
+
+                num_tries += 1
+
+                if r.status_code == requests.codes.ok:
+                    listening_on_8084 = True
+            except:
+                pass
+
+
+    '''
     OK, objective: make 'create_application' just like the others, pass in a json blob with all the information already
     '''
     def create_application(self, application):
@@ -166,7 +189,7 @@ class spinnaker():
         num_tries = 0
 
         url = 'http://' + self.spinnaker_address + ':' + self.gate_port + \
-            '/applications/' + application['app_name'] + '/tasks'
+            '/applications/' + application['application'] + '/tasks'
 
         print "Attempting to create application..." + url
 
@@ -180,7 +203,7 @@ class spinnaker():
         ref = r.json()['ref']
 
         check_url = 'http://' + self.spinnaker_address + ':' + self.gate_port + \
-            '/applications/' + application['app_name'] + ref
+            '/applications/' + application['application'] + ref
 
         while not app_create_success and num_tries < self.retries:
             r = requests.get(check_url, timeout=30.0)
@@ -199,76 +222,6 @@ class spinnaker():
 
         return app_create_success
 
-
-
-    '''
-    def create_application(self, application, account_name):
-        print "Create Application"
-
-        app_create_success = False
-        num_tries = 0
-
-        payload = {}
-        payload['suppressNotification'] = True
-        payload['application'] = application['app_name']
-        payload['description'] = 'Create Application: ' + \
-            application['app_name']
-        payload['job'] = []
-
-        job = {}
-        job['user'] = 'anonymous'
-        job['type'] = 'createApplication'
-        # default value for now, probably shouldn't hard code it
-        job['account'] = account_name
-
-        job['application'] = {}
-        job['application']['name'] = application['app_name']
-        job['application']['description'] = application['description']
-        job['application']['email'] = application['email']
-        job['application']['pdApiKey'] = application['pd_api_key']
-        job['application']['repoProjectKey'] = application['repo_project_key']
-        job['application']['repoSlug'] = application['repo_name']
-        job['application']['repoType'] = application['repo_type']
-        job['application']['cloudProviders'] = application['cloud_provider']
-        job['application']['platformHealthOnly'] = True
-        job['application']['platformHealthOnlyShowOverride'] = True
-
-        payload['job'].append(job)
-
-        url = 'http://' + self.spinnaker_address + ':' + self.gate_port + \
-            '/applications/' + application['app_name'] + '/tasks'
-
-        print "Attempting to create application..." + url
-
-        try:
-            headers = {'content-type': 'application/json'}
-            r = requests.post(url, data=json.dumps(payload), headers=headers)
-        except requests.exceptions.RequestException, e:
-            print e
-            return False
-
-        ref = r.json()['ref']
-
-        check_url = 'http://' + self.spinnaker_address + ':' + self.gate_port + \
-            '/applications/' + application['app_name'] + ref
-
-        while not app_create_success and num_tries < self.retries:
-            r = requests.get(check_url, timeout=30.0)
-            num_tries += 1
-
-            print "Checking for app creation success... " + str(num_tries)
-
-            if r.json()['status'] == 'SUCCEEDED':
-                print "\tSuccess!"
-                app_create_success = True
-            else:
-                time.sleep(self.retry_interval)
-
-        if not app_create_success:
-            self.error_response = r
-
-        return app_create_success
-    '''
 
     '''
     Curl to create the first stage:
