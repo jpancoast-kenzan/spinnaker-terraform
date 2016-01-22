@@ -38,7 +38,7 @@
 			"availabilityZones": {
 				"us-central1": ["us-central1-a"]
 			},
-			"securityGroups": [],
+			"securityGroups": ["http-7070"],
 			"stack": "test",
 			"loadBalancers": ["testappname-test"],
 			"instanceType": "f1-micro",

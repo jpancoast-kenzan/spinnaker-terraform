@@ -23,7 +23,8 @@ resource "google_compute_firewall" "http-7070" {
 
 	network = "${google_compute_network.spinnaker-network.name}"
 
-	source_ranges = ["${var.network_cidr}"]
+	source_ranges = ["0.0.0.0/0"]
+	target_tags = ["http-7070-server"]
 }
 
 resource "google_compute_firewall" "bastion-to-spinnaker" {
@@ -49,7 +50,7 @@ resource "google_compute_firewall" "ssh-bastion" {
 
 	network = "${google_compute_network.spinnaker-network.name}"
 
-	source_ranges = ["38.75.226.18/32"]
+	source_ranges = ["${compact(concat(split(",",var.local_ip),split(",",var.adm_bastion_incoming_cidrs)))}"]
 
 	target_tags = ["bastion"]
 }

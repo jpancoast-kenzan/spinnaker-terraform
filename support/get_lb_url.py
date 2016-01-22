@@ -47,14 +47,18 @@ def main(argv):
         while not successful_load and current_try < num_tries:
             print "Try #" + str(current_try)
             current_try += 1
-            r_lb = requests.get(lb_url, timeout=request_timeout)
-            if r_lb.status_code == requests.codes.ok:
-                successful_load = True
-                print "\tSUCCESS!"
 
-            else:
-                print "\tWaiting another " + str(request_timeout) + " seconds..."
-                time.sleep(request_timeout)
+            try:
+                r_lb = requests.get(lb_url, timeout=request_timeout)
+                if r_lb.status_code == requests.codes.ok:
+                    successful_load = True
+                    print "\tSUCCESS!"
+
+                else:
+                    print "\tWaiting another " + str(request_timeout) + " seconds..."
+                    time.sleep(request_timeout)
+            except:
+                print "The port is probably not listening or open. Check your firewall rules."
 
         if successful_load:
             print "\n\nGo to the following URL in your brower to see the example app you just deployed:"

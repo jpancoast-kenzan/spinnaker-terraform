@@ -169,19 +169,25 @@ else
 fi
 
 
-
-if [ -f "$CLOUD_PROVIDER/spinnaker_variables.tf.json" ] && ! test `find "$CLOUD_PROVIDER/spinnaker_variables.tf.json" -mmin +20`
-then
-    echo "$CLOUD_PROVIDER/spinnaker_variables.tf.json exists and is less than 20 minutes old. No need to download it again I don't think."
-else
-    echo "Downloading $CLOUD_PROVIDER specific information. If the script stops somewhere in here it's possible $CLOUD_PROVIDER is having API issues."
-    COMMAND="./support/"$CLOUD_PROVIDER"_kenzan_spinnaker_get_info.py $CLOUD_PROVIDER"
+if [ "$CLOUD_PROVIDER" == "aws" ]; then
+    if [ -f "$CLOUD_PROVIDER/spinnaker_variables.tf.json" ] && ! test `find "$CLOUD_PROVIDER/spinnaker_variables.tf.json" -mmin +20`
+    then
+        echo "$CLOUD_PROVIDER/spinnaker_variables.tf.json exists and is less than 20 minutes old. No need to download it again I don't think."
+    else
+        echo "Downloading $CLOUD_PROVIDER specific information. If the script stops somewhere in here it's possible $CLOUD_PROVIDER is having API issues."
+        COMMAND="./support/"$CLOUD_PROVIDER"_kenzan_spinnaker_get_info.py $CLOUD_PROVIDER"
     
-    echo $COMMAND
-    eval $COMMAND
+        echo $COMMAND
+        eval $COMMAND
+    fi
 fi
 
-exit
+
+if [ "$CLOUD_PROVIDER" == "gcp" ]; then
+    #What's the current username, set ssh_user with it. GCP handles this a bit differently than AWS.
+    TFVARS="$TFVARS -var ssh_user=$USER"
+fi
+
 
 
 cd $SCRIPT_DIR/$CLOUD_PROVIDER
@@ -189,20 +195,31 @@ cd $SCRIPT_DIR/$CLOUD_PROVIDER
 if [ "$ACTION" == "destroy" ]; then
     echo "Deleting any resources created by spinnaker."
 
+    echo "Deleting everything that spinnaker created."
     region=$(terraform show $STATEPATH | grep 'Region: ' | head -n1 | sed -e 's/Region: //' )
-    vpc_id=$(terraform show $STATEPATH | grep 'VPC_ID: ' | head -n1 | sed -e 's/VPC_ID: //' )
+
     echo "REGION: $region"
-    echo "VPC ID: $vpc_id"
 
-    ../support/tunnel.sh -s $STATEPATH -a stop
+    if [ "$CLOUD_PROVIDER" == "aws" ]; then
+        vpc_id=$(terraform show $STATEPATH | grep 'VPC_ID: ' | head -n1 | sed -e 's/VPC_ID: //' )
+        echo "VPC ID: $vpc_id"
 
-    echo "Deleting everything in the VPC that spinnaker doesn't control."
+        COMMAND="../support/aws_delete_things.py $region $vpc_id"
+    elif [ "$CLOUD_PROVIDER" == "gcp" ]; then
+        zone=$(terraform show $STATEPATH | grep 'Zone: ' | head -n1 | sed -e 's/Zone: //' )
+        echo "Zone: $zone"
 
-    COMMAND="../support/"$CLOUD_PROVIDER"_delete_things_spinnaker_cant_control.py $region $vpc_id"
+        COMMAND="../support/gcp_delete_things.py $region $zone"
+    fi
+
     echo $COMMAND
     eval $COMMAND
 fi
 
+
+../support/tunnel.sh -s $STATEPATH -a stop
+
+sleep 5
 
 if [ "$ACTION" != "destroy" ] && [ "$LOG" == "YES" ]; then
 	#

@@ -9,6 +9,7 @@ resource "template_file" "output" {
 		bastion_ip = "${google_compute_instance.bastion.network_interface.0.access_config.0.nat_ip}"
 		private_key = "${var.ssh_private_key_location}"
 		ssh_user = "${var.ssh_user}"
+		zone = "${var.zone}"
 	}
 }
 

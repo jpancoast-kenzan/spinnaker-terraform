@@ -104,7 +104,7 @@ def main(argv):
     pipeline['stages'][1]['clusters'][0]['zone'] = region + '-' + zone
     pipeline['stages'][1]['clusters'][0]['availabilityZones'][region] = [region + '-' + zone]
     pipeline['stages'][1]['clusters'][0]['network'] = network
-    pipeline['stages'][1]['clusters'][0]['network'] = [security_group]
+    pipeline['stages'][1]['clusters'][0]['securityGroups'] = [security_group] 
 
 
     spin_tools.wait_for_8084()
@@ -112,7 +112,7 @@ def main(argv):
     if spin_tools.create_application(application):
         print "Application Creation Successful..."
 
-        if spin_tools.create_load_balancer(loadbalancer):
+        if spin_tools.load_balancer(loadbalancer, action='create'):
             if spin_tools.create_pipeline(pipeline):
                 print "Everything created successfully."
             else:

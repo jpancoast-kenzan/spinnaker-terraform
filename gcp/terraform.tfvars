@@ -8,12 +8,8 @@ network_cidr = "10.0.0.0/16"
 
 ssh_private_key_location = "~/.ssh/google_compute_engine"
 
-bastion_machine_type = "f1-micro"
-spinnaker_machine_type = "n1-highmem-8"
 
 created_by = "Kenzan Spinnaker Terraform"
-
-kenzan_statepath = "../gcp" #Hardcoding this for now.
 
 ubuntu_image = "ubuntu-1404-trusty-v20151113"
 spinnaker_image = "spinnaker-codelab"
@@ -40,10 +36,12 @@ jenkins_admin_username = "admin"
 #	NOTE: The IP of the machine that Terraform is running on will be automatically determined and does 
 #		not need to be entered here.
 #
-#adm_bastion_incoming_cidrs = ""
+adm_bastion_incoming_cidrs = ""
 
 #
 #	Stuff that you probably won't have to update that often
+#		Can change bastion type if you want, but be very careful about
+#		changing spinnaker type
 #
-ppa_repo_key = "C2518248EEA14886"
-
+bastion_machine_type = "f1-micro"
+spinnaker_machine_type = "n1-highmem-8"

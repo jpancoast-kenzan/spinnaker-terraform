@@ -2,6 +2,7 @@
 Bastion Public IP (for DNS): ${bastion_ip}
 
 Region: ${region}
+Zone: ${zone}
 Network: ${network}
 STATEPATH: ${kenzan_statepath}
 

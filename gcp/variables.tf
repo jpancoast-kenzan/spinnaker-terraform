@@ -16,3 +16,7 @@ variable "jenkins_admin_username" {}
 variable "jenkins_admin_password" {}
 
 variable "kenzan_statepath" {}
+
+variable "local_ip" {}
+
+variable "adm_bastion_incoming_cidrs" {}

@@ -15,8 +15,8 @@ def main(argv):
 
     if cloud_provider.lower() == 'aws':
         reqd_module_names_and_versions['boto'] = '2.38.0'
-    elif cloud_provider.lower() == 'gcp':
-        reqd_module_names_and_versions['libcloud'] = '0.20.0'
+    #elif cloud_provider.lower() == 'gcp':
+    #    reqd_module_names_and_versions['libcloud'] = '0.20.0'
 
     ret_val = 0
 
