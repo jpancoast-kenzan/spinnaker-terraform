@@ -72,3 +72,16 @@ variable "ielb_private_subnet_block" {
   }
 } 
 
+variable "aws_spinnaker_amis" {
+  "default" = {
+    "ap-northeast-1-hvm" = "ami-00d6e96e"
+    "ap-southeast-1-hvm" = "ami-032fe360"
+    "ap-southeast-2-hvm" = "ami-71d5f012"
+    "eu-central-1-hvm" = "ami-21332a4d"
+    "eu-west-1-hvm" = "ami-0655ff75"
+    "sa-east-1-hvm" = "ami-820889ee"
+    "us-east-1-hvm" = "ami-fed1f694"
+    "us-west-1-hvm" = "ami-0e43376e"
+    "us-west-2-hvm" = "ami-ba3adfda"
+  }
+}

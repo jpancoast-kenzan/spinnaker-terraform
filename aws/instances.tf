@@ -69,7 +69,7 @@ resource "aws_instance" "jenkins" {
   }
 
   provisioner "file" {
-    source = "../files/jenkins/"
+    source = "../files/aws/jenkins/"
     destination = "/tmp/terraform"
   }
 
@@ -116,7 +116,12 @@ resource "aws_instance" "spinnaker" {
   }
 
   provisioner "file" {
-    source = "../files/spinnaker/"
+    source = "../files/lib/"
+    destination = "/tmp/terraform"
+  }
+
+  provisioner "file" {
+    source = "../files/aws/spinnaker/"
     destination = "/tmp/terraform"
   }
 
@@ -136,12 +141,12 @@ resource "aws_instance" "spinnaker" {
     ]
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "chmod a+x /tmp/terraform/create_application.sh",
-      "/tmp/terraform/create_application.sh ${var.region} ${aws_vpc.main.id} ${var.base_iam_role_name} ${var.vpc_name} ${aws_security_group.example_app.id} ${aws_security_group.vpc_sg.id} ${aws_security_group.mgmt_sg.id}"
-    ]
-  }
+#  provisioner "remote-exec" {
+#    inline = [
+#      "chmod a+x /tmp/terraform/create_application.sh",
+#      "/tmp/terraform/create_application.sh ${var.region} ${aws_vpc.main.id} ${var.base_iam_role_name} ${var.vpc_name} ${aws_security_group.example_app.id} ${aws_security_group.vpc_sg.id} ${aws_security_group.mgmt_sg.id}"
+#    ]
+#  }
 
   provisioner "local-exec" {
     command = "ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -i ${var.ssh_private_key_location} ${var.ssh_user}@${aws_instance.bastion.public_ip} 'ssh-keyscan -H ${aws_instance.spinnaker.private_ip} >> ~/.ssh/known_hosts'"

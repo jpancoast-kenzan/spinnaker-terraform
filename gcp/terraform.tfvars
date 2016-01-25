@@ -1,6 +1,4 @@
 
-credentials_file = "~/.gce/jpancoast-gmail-kenzan-spinnaker.json"
-project = "spinnaker-1127"
 region = "us-central1"
 zone = "a"
 

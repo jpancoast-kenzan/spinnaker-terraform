@@ -78,9 +78,9 @@ def main(argv):
     vpc_name = arguments['--vpc_name']
     iam_role = arguments['--iam_role']
 
-    pipeline_json_file = 'pipeline.json'
-    app_json_file = 'application.json'
-    lb_json_file = 'loadbalancer.json'
+    pipeline_json_file = 'pipeline_create.json'
+    app_json_file = 'application_create.json'
+    lb_json_file = 'loadbalancer_create.json'
 
     pipeline = {}
     application = {}

@@ -27,8 +27,10 @@ except ImportError, e:
     exit(2)
 
 ubuntu_amazon_image_url = "http://cloud-images.ubuntu.com/locator/ec2/releasesTable"
-spinnaker_amazon_image_url = "https://raw.githubusercontent.com/spinnaker/spinnaker.github.io/master/online_docs/quick_ref/ami_table.json"
 
+
+'''
+spinnaker_amazon_image_url = "https://raw.githubusercontent.com/spinnaker/spinnaker.github.io/master/online_docs/quick_ref/ami_table.json"
 
 def parse_spinnaker_amis():
     print "Downloading Spinnaker AMI information..."
@@ -44,12 +46,13 @@ def parse_spinnaker_amis():
                 region + '-' + instance_type.lower()] = ami_info[instance_type][region]
 
     return spinnaker_amis
+'''
 
 
 def get_aws_info():
     variables_file = "aws/spinnaker_variables.tf.json"
 
-    spinnaker_amis = parse_spinnaker_amis()
+#    spinnaker_amis = parse_spinnaker_amis()
 
     data_error = False
     region_error = False
@@ -64,14 +67,14 @@ def get_aws_info():
     data['variable']['aws_azs'] = {}
     data['variable']['aws_az_counts'] = {}
     data['variable']['aws_ubuntu_amis'] = {}
-    data['variable']['aws_spinnaker_amis'] = {}
+#    data['variable']['aws_spinnaker_amis'] = {}
 
     data['variable']['aws_azs']['description'] = "AWS AZs per region"
     data['variable']['aws_az_counts'][
         'description'] = "AWS AZ counts per region"
     data['variable']['aws_ubuntu_amis']['description'] = "AWS Ubuntu AMIs"
-    data['variable']['aws_spinnaker_amis'][
-        'description'] = "AWS Spinnaker AMIs"
+#    data['variable']['aws_spinnaker_amis'][
+#        'description'] = "AWS Spinnaker AMIs"
 
     print "Downloading Ubuntu AMI information..."
     r_ubuntu = requests.get(ubuntu_amazon_image_url, timeout=30.0)
@@ -109,36 +112,39 @@ def get_aws_info():
     data['variable']['aws_ubuntu_amis']['default'] = ami_data
 
     for region in regions:
-        az_string = ''
-        zone_count = 0
+        if region.name == 'sa-east-1':
+            print "Skipping region: " + region.name + " as it's really slow."
+        else:
+            az_string = ''
+            zone_count = 0
 
-        print "Parsing zone information for region: " + str(region)
+            print "Parsing zone information for region: " + str(region)
 
-        temp_conn = boto.ec2.connect_to_region(region.name)
-        zones = None
+            temp_conn = boto.ec2.connect_to_region(region.name)
+            zones = None
 
-        try:
-            zones = temp_conn.get_all_zones()
-        except Exception, e:
-            region_error = True
-            print "WARNING: Could not connect to AWS region: " + str(region) + ". Please check your AWS keys. You should be fine to continue if you do not want to use this region for the install."
+            try:
+                zones = temp_conn.get_all_zones()
+            except Exception, e:
+                region_error = True
+                print "WARNING: Could not connect to AWS region: " + str(region) + ". Please check your AWS keys. You should be fine to continue if you do not want to use this region for the install."
 
-        if zones is not None:
-            for zone in zones:
-                print "\tzone: " + str(zone)
-                az = re.sub(region.name, '', zone.name)
-                az_string = az_string + az + ":"
+            if zones is not None:
+                for zone in zones:
+                    print "\tzone: " + str(zone)
+                    az = re.sub(region.name, '', zone.name)
+                    az_string = az_string + az + ":"
 
-                zone_count += 1
+                    zone_count += 1
 
-            az_string = re.sub(":$", '', az_string)
+                az_string = re.sub(":$", '', az_string)
 
-            zone_data[region.name] = az_string
-            zone_count_data[region.name] = str(zone_count)
+                zone_data[region.name] = az_string
+                zone_count_data[region.name] = str(zone_count)
 
     data['variable']['aws_azs']['default'] = zone_data
     data['variable']['aws_az_counts']['default'] = zone_count_data
-    data['variable']['aws_spinnaker_amis']['default'] = spinnaker_amis
+#    data['variable']['aws_spinnaker_amis']['default'] = spinnaker_amis
 
     '''
     Check to make sure all parts have some data in them
@@ -159,10 +165,12 @@ def get_aws_info():
         print "WARNING: NO UBUNTU AMI DATA"
         data_error = True
 
+    '''
     if len(data['variable']['aws_spinnaker_amis']['default'].keys()) < 1:
         print "WARING: NO SPINNAKER AMI DATA"
         data_error = True
-
+    '''
+    
     if data_error:
         if os.path.isfile(variables_file):
             # exit status 1 means there was a data error, but the variables
