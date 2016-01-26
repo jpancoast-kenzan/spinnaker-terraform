@@ -9,9 +9,9 @@
 ## What does this do?
 This is a set of terraform files and scripts designed to create a cloud environment from scratch with an example Jenkins job and Spinnaker application and pipeline.
 
-[AWS Instructions](AWS.md)
+[AWS Instructions](docs/AWS.md)
 
-[GCP Instructions](GCP.md)
+[GCP Instructions](docs/GCP.md)
 
 ## TODO
 * Remove unnecessary packages and services from the Bastion host.
