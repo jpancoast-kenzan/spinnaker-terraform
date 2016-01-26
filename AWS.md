@@ -12,7 +12,7 @@ Bastion: Default instance type: t2.micro (can be changed in terraform.tfvars). A
 
 Jenkins: Default instance type: t2.small (can be changed in terraform.tfvars). Where your Jenkins jobs reside, obviously.
 
-Spinnaker: Default instance type: m4.2xlarge (can be changed in terraform.tfvars but this is the smallest recommended size due to Spinnakers memory requirements). Access to this host is tunneled/port forwarded through the bastion because it currently has no authorization or authentication available.
+Spinnaker: Default instance type: m4.2xlarge (can be changed in terraform.tfvars but this is the smallest recommended size due to Spinnakers memory requirements). Access to this host is tunneled/port forwarded through the bastion because Spinnaker currently has no authorization or authentication available.
 
 Other things the terraform does:
 * Creates an internal DNS zone
@@ -22,7 +22,7 @@ Other things the terraform does:
 ## To use:
 * Install Pre-Requisites. The scripts will happily complain if the pre-reqs aren't there, but who wants to hear complaining?
   * git
-  * Terraform >= 0.6.8 
+  * Terraform >= 0.6.9 
     * Download from https://terraform.io/downloads.html and put it in your $PATH
   * Python Modules:
     * boto >= 2.38.0
@@ -47,7 +47,7 @@ Other things the terraform does:
 ./install_spinnaker.sh -a apply -c aws
 ```
 -a is the terraform action to run (apply, plan, or destroy)
--c is the cloud provider you're using (aws is the only option right now)
+-c is the cloud provider you're using
 
 There are two optional flags you can pass to the install_spinnaker.sh script
 ```
@@ -134,7 +134,3 @@ aws iam list-instance-profiles
 ```
 aws iam delete-instance-profile --instance-profile-name <profile_name_from_the_list_above>
 ```
-
-## TODO
-* Remove unnecessary packages and services from the Bastion host.
-* Implement GCE and other Cloud Providers

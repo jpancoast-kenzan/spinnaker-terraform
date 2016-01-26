@@ -12,3 +12,6 @@ This is a set of terraform files and scripts designed to create a cloud environm
 [AWS Instructions](AWS.md)
 
 [GCP Instructions](GCP.md)
+
+## TODO
+* Remove unnecessary packages and services from the Bastion host.

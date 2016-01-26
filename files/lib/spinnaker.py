@@ -128,7 +128,7 @@ class spinnaker():
         verb = 'Creating '
 
         if action == 'delete':
-            verb += 'Deleting '
+            verb = 'Deleting '
 
         print verb + 'load_balancer: ' + loadbalancer['application']
 
