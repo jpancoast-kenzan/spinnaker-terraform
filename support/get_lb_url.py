@@ -22,7 +22,9 @@ def main(argv):
     lb_found = False
 
     app_name = 'testappname' #Hardcoded for now, shouldn't be a problem to hardocde it as long as scripts create the applicaiton, lb, etc.
-    lb_name = 'testappname-test' #same as above, should be OK to hardcode
+    cloud_provider = sys.argv[1]
+    lb_name = sys.argv[2]
+    lb_listen_port = sys.argv[3]
 
     spinnaker_lb_url = 'http://localhost:8084/applications/' + app_name + '/loadBalancers'
 
@@ -32,13 +34,17 @@ def main(argv):
 
     for lb in lbs:
         if lb['name'] == lb_name:
-            lb_ip = lb['ipAddress']
+            if cloud_provider == 'aws':
+                lb_address = lb['canonicalHostedZoneName']
+            elif cloud_provider == 'gcp':
+                lb_address = lb['ipAddress']
+
             lb_found = True
 
 
 
     if lb_found:
-        lb_url = 'http://' + lb_ip + ':7070/hello'
+        lb_url = 'http://' + lb_address + ':' + lb_listen_port + '/hello'
 
         print "Attempting to determine health of: " + lb_url + ". NOTE: This could take awhile."
         successful_load = False

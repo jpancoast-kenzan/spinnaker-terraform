@@ -1,9 +1,14 @@
 {
-	"app_name": "default app name",
-	"description": "This is a test description.",
-	"email": "default@default.com",
-	"pd_api_key": "",
-	"repo_project_key": "Repo Project Key",
-	"repo_name": "Repository Name",
-	"repo_type": "stash"
+	"job": [{
+		"type": "createApplication",
+		"account": "my-aws-account",
+		"application": {
+			"cloudProviders": "aws",
+			"name": "testappname",
+			"email": "blah@blah.com"
+		},
+		"user": "[anonymous]"
+	}],
+	"application": "testappname",
+	"description": "Create Application: testappname"
 }
