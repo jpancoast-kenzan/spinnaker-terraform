@@ -6,6 +6,9 @@ network_cidr = "10.0.0.0/16"
 
 ssh_private_key_location = "~/.ssh/google_compute_engine"
 
+credentials_file = "Credentials file location"
+
+project = "name of your gcp project"
 
 created_by = "Kenzan Spinnaker Terraform"
 

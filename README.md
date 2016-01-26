@@ -9,11 +9,6 @@
 ## What does this do?
 This is a set of terraform files and scripts designed to create a cloud environment from scratch with an example Jenkins job and Spinnaker application and pipeline.
 
-
-The environment contains a Bastion host, a Spinnaker Host, and a Jenkins host (in GCP the Spinnaker host and Jenkins host are on the same instance).
-
-![Diagram](diagram.png)
-
 [AWS Instructions](AWS.md)
 
 [GCP Instructions](GCP.md)

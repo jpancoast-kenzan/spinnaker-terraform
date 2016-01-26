@@ -4,6 +4,9 @@
 * Bakes only work in us-east-1 and us-west-2 (pending rosco update to handle bakes in other regions).
 * If Spinnaker has already been installed somewhere in the account make sure the IAM roles in terraform.tfvars will not conflict with ones that may have already been created.
 
+The environment contains a Bastion host, a Spinnaker Host, and a Jenkins host.
+
+![Diagram](diagram.png)
 
 Bastion: Default instance type: t2.micro (can be changed in terraform.tfvars). All SSH connectivity and tunnels go through this host.
 
