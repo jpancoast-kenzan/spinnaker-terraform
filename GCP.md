@@ -20,7 +20,7 @@ Other things the terraform does:
     * docopt >= 0.6.2
   * You may need to install pip. Please consult pip install instructions specific to your OS.
 * generate an ssh key. This should not be your default ssh key.
-* Look at ./aws/terraform.tfvars and change anything you think might need changing (region, zone, network_cidr, credentials_file, and project). If these variables are not set you will be prompted for them when you run terraform. These can also be set via the install_spinnaker.sh command line.
+* Look at ./gcp/terraform.tfvars and change anything you think might need changing (region, zone, network_cidr, credentials_file, and project). If these variables are not set you will be prompted for them when you run terraform. These can also be set via the install_spinnaker.sh command line.
   * Required:
     * Set ssh_private_key_location to the filesystem location of the ssh private key you created.
     * Set jenkins_admin_password. Due to a bug in terraform this value must be set here or via the install_spinnaker.sh command line.
@@ -105,7 +105,7 @@ Run this command:
 ```
 Congratulations, your Spinnaker network is now gone!
 
-# If you need to destroy the VPC manually (This requires the aws cli tools be installed):
+# If you need to destroy the network manually:
 * Terminate all instances in the network that was created.
 * Delete any Load Balancers that were created
 * Delete the network that was created
