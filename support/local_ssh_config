@@ -1,0 +1,20 @@
+Host spinnaker-start
+        StrictHostKeyChecking no
+        HostName <BASTION_IP>
+        IdentityFile <SSH_PRIVATE_KEY>
+        IdentitiesOnly yes
+        ControlMaster yes
+        ControlPath ~/.ssh/spinnaker-tunnel.ctl
+        RequestTTY no
+        LocalForward 9000 127.0.0.1:9000
+        LocalForward 8084 127.0.0.1:8084
+        LocalForward 8087 127.0.0.1:8087
+        LocalForward 9090 127.0.0.1:9090
+        User ubuntu
+
+Host spinnaker-stop
+        HostName <BASTION_IP>
+        IdentityFile <SSH_PRIVATE_KEY>
+        IdentitiesOnly yes
+        ControlPath ~/.ssh/spinnaker-tunnel.ctl
+        RequestTTY no

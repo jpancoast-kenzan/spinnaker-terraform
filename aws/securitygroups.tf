@@ -12,12 +12,6 @@ resource "aws_security_group" "adm_bastion" {
     allocated_on="none"
     owner="none"
   }
-  ingress {
-    from_port=22
-    to_port=22
-    protocol="tcp"
-    cidr_blocks=["${split(",",var.adm_bastion_incoming_cidrs)}"]
-  }
 }
 
 /* security group for eelb  */
@@ -350,12 +344,6 @@ resource "aws_security_group" "infra_jenkins" {
     protocol="tcp"
     security_groups=["${aws_security_group.infra_spinnaker.id}"]
   }
-  ingress {
-    from_port=80
-    to_port=80
-    protocol="tcp"
-    cidr_blocks=["${split(",",var.infra_jenkins_incoming_cidrs)}"]
-  }
 }
 
 
@@ -384,6 +372,26 @@ resource "aws_security_group" "example_app" {
 #
 # Creating some rules separately to get around a terraform sg diff bug.
 #
+resource "aws_security_group_rule" "infra_jenkins_incoming_cidrs" {
+  type = "ingress"
+  from_port=80
+  to_port=80
+  cidr_blocks=["${compact(concat(split(",",var.local_ip),split(",",var.infra_jenkins_incoming_cidrs)))}"]
+  protocol = "tcp"
+
+  security_group_id = "${aws_security_group.infra_jenkins.id}"
+}
+
+resource "aws_security_group_rule" "adm_bastion_incoming_cidrs" {
+  type = "ingress"
+  from_port=22
+  to_port=22
+  protocol = "tcp"
+  cidr_blocks=["${compact(concat(split(",",var.local_ip),split(",",var.adm_bastion_incoming_cidrs)))}"]
+
+  security_group_id = "${aws_security_group.adm_bastion.id}"
+}
+
 resource "aws_security_group_rule" "infra_spinnaker_self_referential_rules" {
   type = "ingress"
   from_port = 0
@@ -391,15 +399,5 @@ resource "aws_security_group_rule" "infra_spinnaker_self_referential_rules" {
   protocol = "-1"
 
   security_group_id = "${aws_security_group.infra_spinnaker.id}"
-  self = true
-}
-
-resource "aws_security_group_rule" "infra_jenkins_rule_one" {
-  type = "ingress"
-  from_port = 80
-  to_port = 80
-  protocol = "tcp"
-
-  security_group_id = "${aws_security_group.infra_jenkins.id}"
   self = true
 }

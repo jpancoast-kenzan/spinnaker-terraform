@@ -26,12 +26,16 @@ except ImportError, e:
     print "If you don't have pip, do this first: sudo easy_install pip"
     exit(2)
 
-ubuntu_image_url = "http://cloud-images.ubuntu.com/locator/ec2/releasesTable"
-spinnaker_image_url = "https://raw.githubusercontent.com/spinnaker/spinnaker.github.io/master/online_docs/quick_ref/ami_table.json"
+ubuntu_amazon_image_url = "http://cloud-images.ubuntu.com/locator/ec2/releasesTable"
 
+
+'''
+spinnaker_amazon_image_url = "https://raw.githubusercontent.com/spinnaker/spinnaker.github.io/master/online_docs/quick_ref/ami_table.json"
 
 def parse_spinnaker_amis():
-    r_spinnaker_images = requests.get(spinnaker_image_url)
+    print "Downloading Spinnaker AMI information..."
+    r_spinnaker_images = requests.get(spinnaker_amazon_image_url, timeout=30.0)
+    print "Spinnaker AMI information downloaded...\n"
     spinnaker_amis = {}
 
     ami_info = r_spinnaker_images.json()
@@ -42,22 +46,16 @@ def parse_spinnaker_amis():
                 region + '-' + instance_type.lower()] = ami_info[instance_type][region]
 
     return spinnaker_amis
+'''
 
 
-def main(argv):
-    pp = pprint.PrettyPrinter(indent=4)
+def get_aws_info():
+    variables_file = "aws/spinnaker_variables.tf.json"
 
-    if len(sys.argv) != 2:
-        print "You need to tell me the cloud provider."
-        exit(1)
-
-    cloud_provider = sys.argv[1]
-
-    variables_file = cloud_provider + "/spinnaker_variables.tf.json"
-
-    spinnaker_amis = parse_spinnaker_amis()
+#    spinnaker_amis = parse_spinnaker_amis()
 
     data_error = False
+    region_error = False
 
     data = {}
     zone_data = {}
@@ -69,17 +67,20 @@ def main(argv):
     data['variable']['aws_azs'] = {}
     data['variable']['aws_az_counts'] = {}
     data['variable']['aws_ubuntu_amis'] = {}
-    data['variable']['aws_spinnaker_amis'] = {}
+#    data['variable']['aws_spinnaker_amis'] = {}
 
     data['variable']['aws_azs']['description'] = "AWS AZs per region"
     data['variable']['aws_az_counts'][
         'description'] = "AWS AZ counts per region"
     data['variable']['aws_ubuntu_amis']['description'] = "AWS Ubuntu AMIs"
-    data['variable']['aws_spinnaker_amis'][
-        'description'] = "AWS Spinnaker AMIs"
+#    data['variable']['aws_spinnaker_amis'][
+#        'description'] = "AWS Spinnaker AMIs"
 
-    r_ubuntu = requests.get(ubuntu_image_url)
+    print "Downloading Ubuntu AMI information..."
+    r_ubuntu = requests.get(ubuntu_amazon_image_url, timeout=30.0)
+    print "Ubuntu AMI information downloaded...\n"
 
+    print "Downloading Region information..."
     aws_conn = boto.ec2.connect_to_region("us-east-1")
 
     try:
@@ -87,7 +88,9 @@ def main(argv):
     except Exception, e:
         print "ERROR: Could not connect to AWS. Check your aws keys."
         exit(1)
-        
+
+    print "Region information downloaded...\n"
+
     # The URL actually returns invalid json.
     ubuntu_good_json = re.sub("],\n]\n}", ']]}', r_ubuntu.text)
 
@@ -109,26 +112,39 @@ def main(argv):
     data['variable']['aws_ubuntu_amis']['default'] = ami_data
 
     for region in regions:
-        az_string = ''
-        zone_count = 0
+        if region.name == 'sa-east-1':
+            print "Skipping region: " + region.name + " as it's really slow."
+        else:
+            az_string = ''
+            zone_count = 0
 
-        temp_conn = boto.ec2.connect_to_region(region.name)
+            print "Parsing zone information for region: " + str(region)
 
-        for zone in temp_conn.get_all_zones():
+            temp_conn = boto.ec2.connect_to_region(region.name)
+            zones = None
 
-            az = re.sub(region.name, '', zone.name)
-            az_string = az_string + az + ":"
+            try:
+                zones = temp_conn.get_all_zones()
+            except Exception, e:
+                region_error = True
+                print "WARNING: Could not connect to AWS region: " + str(region) + ". Please check your AWS keys. You should be fine to continue if you do not want to use this region for the install."
 
-            zone_count += 1
+            if zones is not None:
+                for zone in zones:
+                    print "\tzone: " + str(zone)
+                    az = re.sub(region.name, '', zone.name)
+                    az_string = az_string + az + ":"
 
-        az_string = re.sub(":$", '', az_string)
+                    zone_count += 1
 
-        zone_data[region.name] = az_string
-        zone_count_data[region.name] = str(zone_count)
+                az_string = re.sub(":$", '', az_string)
+
+                zone_data[region.name] = az_string
+                zone_count_data[region.name] = str(zone_count)
 
     data['variable']['aws_azs']['default'] = zone_data
     data['variable']['aws_az_counts']['default'] = zone_count_data
-    data['variable']['aws_spinnaker_amis']['default'] = spinnaker_amis
+#    data['variable']['aws_spinnaker_amis']['default'] = spinnaker_amis
 
     '''
     Check to make sure all parts have some data in them
@@ -149,10 +165,12 @@ def main(argv):
         print "WARNING: NO UBUNTU AMI DATA"
         data_error = True
 
+    '''
     if len(data['variable']['aws_spinnaker_amis']['default'].keys()) < 1:
         print "WARING: NO SPINNAKER AMI DATA"
         data_error = True
-
+    '''
+    
     if data_error:
         if os.path.isfile(variables_file):
             # exit status 1 means there was a data error, but the variables
@@ -169,6 +187,26 @@ def main(argv):
 
     f.close()
 
+
+
+def main(argv):
+    pp = pprint.PrettyPrinter(indent=4)
+
+    if len(sys.argv) != 2:
+        print "You need to tell me the cloud provider."
+        exit(1)
+
+    cloud_provider = sys.argv[1]
+
+    if cloud_provider == 'aws':
+        get_aws_info()
+    elif cloud_provider == 'gcp':
+        get_gcp_info()
+    else:
+        print "Invalid Cloud Provider"
+        exit(1)
+
+    
 
 if __name__ == "__main__":
     main(sys.argv)
