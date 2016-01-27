@@ -114,6 +114,20 @@ done
 ./support/check_python_prereqs.py $CLOUD_PROVIDER
 RETVAL=$?
 
+TF_VERSION=`terraform -version | sed -e 's/.*v//'`
+TF_FORMATTED_VERSION=`terraform -version | sed -e 's/.*v//' -e 's/\.//' -e 's/\.//'`
+
+REQD_TF_VERSION='0.6.9'
+REQD_TF_FORMATTED_VERSION=`echo $REQD_TF_VERSION | sed -e 's/\.//' -e 's/\.//'`
+
+
+if [ "$TF_FORMATTED_VERSION" -ge "$REQD_TF_FORMATTED_VERSION" ] ; then
+    echo "Correct TF version."
+else
+    echo "ERROR: Terraform is not of high enough version. You have $TF_VERSION but you need $REQD_TF_VERSION or above."
+    ERROR=1
+fi
+
 if [ "$RETVAL" != "0" ]; then
 	echo
 	echo 'ERROR: I could not import some or all of the required python modules'
