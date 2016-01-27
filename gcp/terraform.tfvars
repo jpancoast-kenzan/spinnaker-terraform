@@ -4,6 +4,10 @@ zone = "a"
 
 network_cidr = "10.0.0.0/16"
 
+#
+#	Note: This needs to be the ssh key you have associated with your google compute 
+#		engine account. It can't just be some random one.
+#
 ssh_private_key_location = "~/.ssh/google_compute_engine"
 
 credentials_file = "Credentials file location"
