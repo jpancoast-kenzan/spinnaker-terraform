@@ -1,6 +1,6 @@
 #!/bin/bash
 
-available_cloud_providers=(aws)
+available_cloud_providers=(aws gcp)
 available_actions=(plan apply destroy)
 available_ifconfig_providers=(ipinfo.io/ip ifconfig.co ifconfig.me)
 
@@ -42,12 +42,12 @@ SCRIPT_DIR=$(pwd)
 CURRENT_DATE=$(date +%Y-%m-%d-%H-%M)
 
 if [ "x$CLOUD_PROVIDER" == "x" ]; then
-    echo "usage: $0 -c <cloud provider (aws only for now)> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional) -t <terraform vars in this format: \"-var 'variable=value' -var 'variable_2=value_2'\">(optional)"
+    echo "usage: $0 -c <cloud provider> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional) -t <terraform vars in this format: \"-var 'variable=value' -var 'variable_2=value_2'\">(optional)"
     exit 1
 fi
 
 if [ "x$ACTION" == "x" ]; then
-    echo "usage: $0 -c <cloud provider (aws only for now)> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional) -t <terraform vars in this format: \"-var 'variable=value' -var 'variable_2=value_2'\">(optional)"
+    echo "usage: $0 -c <cloud provider> -a <terraform action to perform plan|apply|destroy> -s <terraform state path>(optional, defaults to PWD) -l (optional) -t <terraform vars in this format: \"-var 'variable=value' -var 'variable_2=value_2'\">(optional)"
     exit 1
 fi
 
@@ -111,8 +111,21 @@ done
 
 #Check the version of terraform... >= 0.6.8
 
-./support/check_python_prereqs.py
+./support/check_python_prereqs.py $CLOUD_PROVIDER
 RETVAL=$?
+
+TF_VERSION=`terraform -version | head -1 | sed -e 's/.*v//'`
+TF_FORMATTED_VERSION=`echo $TF_VERSION | sed -e 's/.*v//' -e 's/\.//' -e 's/\.//'`
+
+REQD_TF_VERSION='0.6.9'
+REQD_TF_FORMATTED_VERSION=`echo $REQD_TF_VERSION | sed -e 's/\.//' -e 's/\.//'`
+
+if [ "$TF_FORMATTED_VERSION" -ge "$REQD_TF_FORMATTED_VERSION" ] ; then
+    echo "Correct TF version."
+else
+    echo "ERROR: Terraform is not of high enough version. You have $TF_VERSION but you need $REQD_TF_VERSION or above."
+    ERROR=1
+fi
 
 if [ "$RETVAL" != "0" ]; then
 	echo
@@ -169,17 +182,25 @@ else
 fi
 
 
-
-if [ -f "$CLOUD_PROVIDER/spinnaker_variables.tf.json" ] && ! test `find "$CLOUD_PROVIDER/spinnaker_variables.tf.json" -mmin +20`
-then
-    echo "$CLOUD_PROVIDER/spinnaker_variables.tf.json exists and is less than 20 minutes old. No need to download it again I don't think."
-else
-    echo "Downloading OS Image, region, and AZ information. If the script stops somewhere in here it's possible the AWS region(s) are having API issues."
-    COMMAND="./support/kenzan_spinnaker_get_info.py $CLOUD_PROVIDER"
+if [ "$CLOUD_PROVIDER" == "aws" ]; then
+    if [ -f "$CLOUD_PROVIDER/spinnaker_variables.tf.json" ] && ! test `find "$CLOUD_PROVIDER/spinnaker_variables.tf.json" -mmin +20`
+    then
+        echo "$CLOUD_PROVIDER/spinnaker_variables.tf.json exists and is less than 20 minutes old. No need to download it again I don't think."
+    else
+        echo "Downloading $CLOUD_PROVIDER specific information. If the script stops somewhere in here it's possible $CLOUD_PROVIDER is having API issues."
+        COMMAND="./support/"$CLOUD_PROVIDER"_kenzan_spinnaker_get_info.py $CLOUD_PROVIDER"
     
-    echo $COMMAND
-    eval $COMMAND
+        echo $COMMAND
+        eval $COMMAND
+    fi
 fi
+
+
+if [ "$CLOUD_PROVIDER" == "gcp" ]; then
+    #What's the current username, set ssh_user with it. GCP handles this a bit differently than AWS.
+    TFVARS="$TFVARS -var ssh_user=$USER"
+fi
+
 
 
 cd $SCRIPT_DIR/$CLOUD_PROVIDER
@@ -187,20 +208,31 @@ cd $SCRIPT_DIR/$CLOUD_PROVIDER
 if [ "$ACTION" == "destroy" ]; then
     echo "Deleting any resources created by spinnaker."
 
+    echo "Deleting everything that spinnaker created."
     region=$(terraform show $STATEPATH | grep 'Region: ' | head -n1 | sed -e 's/Region: //' )
-    vpc_id=$(terraform show $STATEPATH | grep 'VPC_ID: ' | head -n1 | sed -e 's/VPC_ID: //' )
+
     echo "REGION: $region"
-    echo "VPC ID: $vpc_id"
 
-    ../support/tunnel.sh -s $STATEPATH -a stop
+    if [ "$CLOUD_PROVIDER" == "aws" ]; then
+        vpc_id=$(terraform show $STATEPATH | grep 'VPC_ID: ' | head -n1 | sed -e 's/VPC_ID: //' )
+        echo "VPC ID: $vpc_id"
 
-    echo "Deleting everything in the VPC that spinnaker doesn't control."
+        COMMAND="../support/aws_delete_things.py $region $vpc_id"
+    elif [ "$CLOUD_PROVIDER" == "gcp" ]; then
+        zone=$(terraform show $STATEPATH | grep 'Zone: ' | head -n1 | sed -e 's/Zone: //' )
+        echo "Zone: $zone"
 
-    COMMAND="../support/"$CLOUD_PROVIDER"_delete_things_spinnaker_cant_control.py $region $vpc_id"
+        COMMAND="../support/gcp_delete_things.py $region $zone"
+    fi
+
     echo $COMMAND
     eval $COMMAND
 fi
 
+
+../support/tunnel.sh -s $STATEPATH -a stop
+
+sleep 5
 
 if [ "$ACTION" != "destroy" ] && [ "$LOG" == "YES" ]; then
 	#

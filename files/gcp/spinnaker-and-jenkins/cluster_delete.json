@@ -1,0 +1,16 @@
+{
+	"job": [{
+		"cloudProvider": "gce",
+		"serverGroupName": "testappname-test-v000",
+		"region": "us-central1",
+		"zone": "us-central1-a",
+		"asgName": "testappname-test-v000",
+		"type": "destroyServerGroup",
+		"regions": ["us-central1"],
+		"zones": ["us-central1-a"],
+		"credentials": "my-google-account",
+		"user": "[anonymous]"
+	}],
+	"application": "testappname",
+	"description": "Destroy Server Group: testappname-test-v000"
+}

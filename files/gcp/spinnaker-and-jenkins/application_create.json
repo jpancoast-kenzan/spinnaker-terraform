@@ -1,0 +1,14 @@
+{
+	"job": [{
+		"type": "createApplication",
+		"account": "my-google-account",
+		"application": {
+			"cloudProviders": "gce",
+			"name": "testappname",
+			"email": "default@default.com"
+		},
+		"user": "[anonymous]"
+	}],
+	"application": "testappname",
+	"description": "Create Application: testappname"
+}

@@ -25,6 +25,6 @@ Execute the following steps, in this order, to create a tunnel to the spinnaker 
 
 6.	Run the following command and it will give you a URL where you can access the example app that was launched in the previous step (if it was deployed successfully):
 	--- cut ---
-	cd support ; ./get_lb_url.py ${aws_region} ${vpc_id}
+	cd support ; ./get_lb_url.py aws testappname-teststack-testdetail 80
 	--- end cut ---
 	NOTE: it may take a few minutes before the instance is available in the load balancer.

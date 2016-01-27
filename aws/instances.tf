@@ -38,7 +38,7 @@ resource "aws_instance" "bastion" {
     inline = [
       "chmod 0600 /home/${var.ssh_user}/.ssh/id_rsa",
       "chmod a+x /tmp/terraform/provision.sh",
-      "/tmp/terraform/provision.sh ${var.internal_dns_zone}"
+      "/tmp/terraform/provision.sh ${var.ssh_user}"
     ]
   }
 }
@@ -69,7 +69,7 @@ resource "aws_instance" "jenkins" {
   }
 
   provisioner "file" {
-    source = "../files/jenkins/"
+    source = "../files/aws/jenkins/"
     destination = "/tmp/terraform"
   }
 
@@ -116,7 +116,12 @@ resource "aws_instance" "spinnaker" {
   }
 
   provisioner "file" {
-    source = "../files/spinnaker/"
+    source = "../files/lib/"
+    destination = "/tmp/terraform"
+  }
+
+  provisioner "file" {
+    source = "../files/aws/spinnaker/"
     destination = "/tmp/terraform"
   }
 
