@@ -33,7 +33,11 @@ import pprint
 
 import boto.vpc
 
-#from pprint import pprint
+'''
+This is only required for when running locally
+'''
+sys.path.append('../../lib')
+
 from spinnaker import spinnaker
 
 try:
@@ -78,9 +82,9 @@ def main(argv):
     vpc_name = arguments['--vpc_name']
     iam_role = arguments['--iam_role']
 
-    pipeline_json_file = 'pipeline.json'
-    app_json_file = 'application.json'
-    lb_json_file = 'loadbalancer.json'
+    pipeline_json_file = 'pipeline_create.json'
+    app_json_file = 'application_create.json'
+    lb_json_file = 'loadbalancer_create.json'
 
     pipeline = {}
     application = {}
@@ -171,12 +175,17 @@ def main(argv):
     pipeline['application'] = app_name
 
     '''
-    Configure the special application vars
+    Set the special applicaiton vars
     '''
-    application['app_name'] = app_name
+    application['job'][0]['application']['name'] = app_name
+    application['application'] = app_name
+    application['description'] = 'Create Application: ' + app_name
+
+    spin_tools.wait_for_8084()
+
 
     if spin_tools.create_application(application):
-        if spin_tools.create_load_balancer(loadbalancer):
+        if spin_tools.load_balancer(loadbalancer):
             if spin_tools.create_pipeline(pipeline):
                 print "Everything created successfully."
             else:
@@ -189,7 +198,7 @@ def main(argv):
     else:
         print "Application creation failed, not continuing."
         pp.pprint(application)
-
+    
 
 if __name__ == "__main__":
     main(sys.argv)

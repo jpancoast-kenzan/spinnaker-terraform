@@ -1,0 +1,14 @@
+{
+	"job": [{
+		"type": "createApplication",
+		"account": "my-aws-account",
+		"application": {
+			"cloudProviders": "aws",
+			"name": "testappname",
+			"email": "blah@blah.com"
+		},
+		"user": "[anonymous]"
+	}],
+	"application": "testappname",
+	"description": "Create Application: testappname"
+}
