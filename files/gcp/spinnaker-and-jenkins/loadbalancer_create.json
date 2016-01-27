@@ -1,0 +1,43 @@
+{
+	"job": [{
+		"cloudProvider": "gce",
+		"loadBalancerName": "testappname-test",
+		"ipProtocol": "TCP",
+		"portRange": "7070",
+		"healthCheck": {
+			"port": 7070,
+			"requestPath": "/healthcheck",
+			"timeoutSec": 1,
+			"checkIntervalSec": 1,
+			"healthyThreshold": 1,
+			"unhealthyThreshold": 1
+		},
+		"provider": "gce",
+		"stack": "test",
+		"detail": "",
+		"credentials": "my-google-account",
+		"region": "us-central1",
+		"healthCheckProtocol": "HTTP",
+		"healthCheckPort": 7070,
+		"healthCheckPath": "/healthcheck",
+		"healthTimeout": 1,
+		"healthInterval": 1,
+		"healthyThreshold": 1,
+		"unhealthyThreshold": 1,
+		"regionZones": [],
+		"listeners": [{
+			"protocol": "TCP",
+			"portRange": "7070",
+			"healthCheck": true
+		}],
+		"name": "testappname-test",
+		"type": "upsertLoadBalancer",
+		"availabilityZones": {
+			"us-central1": []
+		},
+		"securityGroups": null,
+		"user": "[anonymous]"
+	}],
+	"application": "testappname",
+	"description": "Create Load Balancer: testappname-test"
+}

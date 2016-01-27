@@ -1,0 +1,66 @@
+{
+	"name": "testappnamepipeline",
+	"stages": [{
+		"requisiteStageRefIds": [],
+		"refId": "1",
+		"type": "bake",
+		"name": "Bake",
+		"cloudProviderType": "gce",
+		"region": "global",
+		"user": "[anonymous]",
+		"baseOs": "trusty",
+		"baseLabel": "release",
+		"package": "hello-karyon-rxnetty"
+	}, {
+		"requisiteStageRefIds": ["1"],
+		"refId": "2",
+		"type": "deploy",
+		"name": "Deploy",
+		"clusters": [{
+			"application": "testappname",
+			"zone": "us-central1-a",
+			"network": "default",
+			"strategy": "highlander",
+			"capacity": {
+				"min": 1,
+				"max": 1,
+				"desired": 1
+			},
+			"instanceMetadata": {
+				"load-balancer-names": "testappname-test"
+			},
+			"tags": ["http-7070-server"],
+			"preemptible": false,
+			"automaticRestart": true,
+			"onHostMaintenance": "MIGRATE",
+			"authScopes": ["cloud.useraccounts.readonly", "devstorage.read_only", "logging.write", "monitoring.write"],
+			"cloudProvider": "gce",
+			"availabilityZones": {
+				"us-central1": ["us-central1-a"]
+			},
+			"securityGroups": ["http-7070"],
+			"stack": "test",
+			"loadBalancers": ["testappname-test"],
+			"instanceType": "f1-micro",
+			"disks": [{
+				"type": "pd-ssd",
+				"sizeGb": 10
+			}],
+			"targetSize": 1,
+			"provider": "gce",
+			"account": "my-google-account"
+		}]
+	}],
+	"triggers": [{
+		"enabled": true,
+		"type": "jenkins",
+		"master": "jenkins",
+		"job": "TestJob2"
+	}],
+	"application": "testappname",
+	"limitConcurrent": true,
+	"stageCounter": 2,
+	"parallel": true,
+	"index": 0,
+	"id": "a5954270-c074-11e5-97fc-af172cda2bee"
+}

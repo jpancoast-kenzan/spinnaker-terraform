@@ -1,6 +1,6 @@
 
 resource "template_file" "output" {
-	template = "../files/output.tpl"
+	template = "output.tpl"
 
 	vars {
 		jenkins_public_ip = "${aws_instance.jenkins.public_ip}"
@@ -17,6 +17,7 @@ resource "template_file" "output" {
 		aws_region = "${var.region}"
 		vpc_id = "${aws_vpc.main.id}"
 		instance_iam_role = "${var.base_iam_role_name}"
+		kenzan_statepath = "${var.kenzan_statepath}"
 	}
 }
 
