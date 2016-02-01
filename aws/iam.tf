@@ -66,7 +66,7 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "jenkins_instance_profile" {
-  name = "jenkins_profile"
+  name = "${var.jenkins_profile_name}"
   roles = ["${aws_iam_role.jenkins_role.id}"]
 }
 
@@ -118,7 +118,7 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "properties_and_logging_instance_profile" {
-  name = "properties_and_logging_profile"
+  name = "${var.properties_and_logging_profile_name}"
   roles = ["${aws_iam_role.properties_and_logging_role.id}"]
 }
 
@@ -128,7 +128,7 @@ resource "aws_iam_instance_profile" "properties_and_logging_instance_profile" {
 
 # Don't think we actually need a spinnaker user...
 resource "aws_iam_user" "spinnaker" {
-  name = "spinnaker"
+  name = "${var.spinnaker_username}"
   path = "/system/"
 }
 
@@ -137,7 +137,7 @@ resource "aws_iam_user" "spinnaker" {
 #}
 
 resource "aws_iam_user_policy" "spinnaker" {
-    name = "spinnaker"
+    name = "${var.spinnaker_username}"
     user = "${aws_iam_user.spinnaker.name}"
     policy = <<EOF
 {
@@ -191,7 +191,7 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "spinnaker_instance_profile" {
-  name = "spinnaker_profile"
+  name = "${var.spinnaker_profile_name}"
   roles = ["${aws_iam_role.spinnaker_role.id}"]
 
 }

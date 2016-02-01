@@ -114,11 +114,15 @@ done
 ./support/check_python_prereqs.py $CLOUD_PROVIDER
 RETVAL=$?
 
+echo "checking other things..."
+
 TF_VERSION=`terraform -version | head -1 | sed -e 's/.*v//'`
 TF_FORMATTED_VERSION=`echo $TF_VERSION | sed -e 's/.*v//' -e 's/\.//' -e 's/\.//'`
 
 REQD_TF_VERSION='0.6.9'
 REQD_TF_FORMATTED_VERSION=`echo $REQD_TF_VERSION | sed -e 's/\.//' -e 's/\.//'`
+
+echo "1"
 
 if [ "$TF_FORMATTED_VERSION" -ge "$REQD_TF_FORMATTED_VERSION" ] ; then
     echo "Correct TF version."

@@ -6,6 +6,7 @@ import re
 
 
 def main(argv):
+    print "Checking python pre requisites..."
     cloud_provider = sys.argv[1]
 
     reqd_module_names_and_versions = {}
@@ -39,6 +40,7 @@ def main(argv):
             print "ERROR: Could not import required python module '" + module_name + "'. Please install it with pip."
             ret_val = 1
 
+    print "Finished checking python pre-requisites..."
     sys.exit(ret_val)
 
 

@@ -35,6 +35,10 @@ variable "properties_and_logging_iam_role_name" {}
 
 variable "kenzan_statepath" {}
 
+variable "jenkins_profile_name" {}
+variable "spinnaker_profile_name" {}
+variable "properties_and_logging_profile_name" {}
+variable "spinnaker_username" {}
 
 variable "eelb_public_subnet_block" {
   default = {

@@ -3,12 +3,12 @@
 #	Variables to be updated by each user
 #
 region = "us-west-2"
-vpc_cidr = "192.168.0.0/16"
-vpc_name = "vpc_DIFFNAME"
+vpc_cidr = "10.253.0.0/16"
+vpc_name = "kenzan-devops"
 ssh_key_name = "my-aws-account-keypair"
 
-ssh_private_key_location = "~/.ssh/id_rsa_spinnaker_terraform"
-ssh_public_key_location = "~/.ssh/id_rsa_spinnaker_terraform.pub"
+ssh_private_key_location = "~/.ssh/kenzan-devops"
+ssh_public_key_location = "~/.ssh/kenzan-devops.pub"
 
 packer_url = "https://dl.bintray.com/mitchellh/packer/packer_0.8.6_linux_amd64.zip"
 jenkins_instance_type = "t2.small"
@@ -34,10 +34,16 @@ jenkins_admin_username = "admin"
 #
 #	IAM roles
 #
-jenkins_iam_role_name = "jenkins_iam_role"
-base_iam_role_name = "base_iam_role_testing"
-spinnaker_iam_role_name = "spinnaker_iam_role"
-properties_and_logging_iam_role_name = "properties_and_logging_iam_role"
+jenkins_iam_role_name = "jenkins_iam_role_kd"
+base_iam_role_name = "base_iam_role_testing_kd"
+spinnaker_iam_role_name = "spinnaker_iam_role_kd"
+properties_and_logging_iam_role_name = "properties_and_logging_iam_role_kd"
+
+jenkins_profile_name = "jenkins_profile_kd"
+spinnaker_profile_name = "spinnaker_profile_kd"
+properties_and_logging_profile_name = "properties_and_logging_profile_kd"
+
+spinnaker_username = "spinnaker_kd"
 
 
 #
