@@ -3,14 +3,14 @@
 #	Variables to be updated by each user
 #
 region = "us-west-2"
-vpc_cidr = "10.253.0.0/16"
-vpc_name = "kenzan-devops"
+vpc_cidr = "192.168.0.0/16"
+vpc_name = "testing-iam-variables"
 ssh_key_name = "my-aws-account-keypair"
 
 ssh_private_key_location = "~/.ssh/kenzan-devops"
 ssh_public_key_location = "~/.ssh/kenzan-devops.pub"
 
-packer_url = "https://dl.bintray.com/mitchellh/packer/packer_0.8.6_linux_amd64.zip"
+packer_url = "https://releases.hashicorp.com/packer/0.8.6/packer_0.8.6_linux_amd64.zip"
 jenkins_instance_type = "t2.small"
 bastion_instance_type = "t2.micro"
 spinnaker_instance_type = "m4.2xlarge"

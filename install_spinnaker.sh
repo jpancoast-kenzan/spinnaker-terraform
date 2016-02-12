@@ -116,13 +116,19 @@ RETVAL=$?
 
 echo "checking other things..."
 
+#
+#   It is sometimes blocking in here for some reason...
+#       (between here and the echo 4)
+#
+echo "0"
 TF_VERSION=`terraform -version | head -1 | sed -e 's/.*v//'`
-TF_FORMATTED_VERSION=`echo $TF_VERSION | sed -e 's/.*v//' -e 's/\.//' -e 's/\.//'`
-
-REQD_TF_VERSION='0.6.9'
-REQD_TF_FORMATTED_VERSION=`echo $REQD_TF_VERSION | sed -e 's/\.//' -e 's/\.//'`
-
 echo "1"
+TF_FORMATTED_VERSION=`echo $TF_VERSION | sed -e 's/.*v//' -e 's/\.//' -e 's/\.//'`
+echo "2"
+REQD_TF_VERSION='0.6.9'
+echo "3"
+REQD_TF_FORMATTED_VERSION=`echo $REQD_TF_VERSION | sed -e 's/\.//' -e 's/\.//'`
+echo "4"
 
 if [ "$TF_FORMATTED_VERSION" -ge "$REQD_TF_FORMATTED_VERSION" ] ; then
     echo "Correct TF version."

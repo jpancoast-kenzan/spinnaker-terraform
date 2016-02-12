@@ -44,7 +44,10 @@ def main(argv):
 
 
     if lb_found:
-        lb_url = 'http://' + lb_address + ':' + lb_listen_port + '/hello'
+        if cloud_provider == 'aws':
+            lb_url = 'http://' + lb_address + ':' + lb_listen_port
+        elif cloud_provider == 'gcp':
+            lb_url = 'http://' + lb_address + ':' + lb_listen_port + '/hello'
 
         print "Attempting to determine health of: " + lb_url + ". NOTE: This could take awhile."
         successful_load = False
