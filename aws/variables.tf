@@ -83,8 +83,8 @@ variable "aws_spinnaker_amis" {
     "ap-southeast-2-hvm" = "ami-911e39f2"
     "eu-central-1-hvm" = "ami-a5ced5c9"
     "eu-west-1-hvm" = "ami-ade152de"
-    "sa-east-1-hvm-hvm" = "ami-cd8f0ca1"
-    "us-east-1" = "ami-c33207a9"
+    "sa-east-1-hvm" = "ami-cd8f0ca1"
+    "us-east-1-hvm" = "ami-c33207a9"
     "us-west-1-hvm" = "ami-5deb9d3d"
     "us-west-2-hvm" = "ami-6ce8080c"
   }
