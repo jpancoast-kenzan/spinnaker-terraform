@@ -109,7 +109,7 @@ do
 	fi
 done
 
-#Check the version of terraform... >= 0.6.8
+#Check the version of terraform... >= 0.8.2
 
 ./support/check_python_prereqs.py $CLOUD_PROVIDER
 RETVAL=$?
@@ -121,7 +121,7 @@ TF_VERSION_FULL=`terraform -version`
 TF_VERSION=`echo "${TF_VERSION_FULL}" | head -1 | sed -e 's/.*v//'`
 TF_FORMATTED_VERSION=`echo $TF_VERSION | sed -e 's/.*v//' -e 's/\.//' -e 's/\.//'`
 
-REQD_TF_VERSION='0.6.9'
+REQD_TF_VERSION='0.8.2'
 REQD_TF_FORMATTED_VERSION=`echo $REQD_TF_VERSION | sed -e 's/\.//' -e 's/\.//'`
 
 if [ "$TF_FORMATTED_VERSION" -ge "$REQD_TF_FORMATTED_VERSION" ] ; then
@@ -244,9 +244,20 @@ if [ "$ACTION" != "destroy" ] && [ "$LOG" == "YES" ]; then
 	#
 	LOG_TARGET=/tmp/$CLOUD_PROVIDER.SPINNAKER.$ACTION.$(date +%Y-%m-%d-%H-%M-%S)
 	echo "Logging to: $LOG_TARGET"
-	COMMAND="terraform $ACTION -no-color -state=$STATEPATH -backup=$STATEPATH.backup -var 'local_ip=$LOCAL_IP/32' -var 'kenzan_statepath=$STATEPATH' $TFVARS > $LOG_TARGET 2>&1"
+
+    if [ "$ACTION" == 'plan' ]; then
+        # as of Terraform 0.7.0 'terraform plan' no longer has the -backup option
+        COMMAND="terraform $ACTION -no-color -state=$STATEPATH -var 'local_ip=$LOCAL_IP/32' -var 'kenzan_statepath=$STATEPATH' $TFVARS > $LOG_TARGET 2>&1"
+    else
+    	COMMAND="terraform $ACTION -no-color -state=$STATEPATH -backup=$STATEPATH.backup -var 'local_ip=$LOCAL_IP/32' -var 'kenzan_statepath=$STATEPATH' $TFVARS > $LOG_TARGET 2>&1"
+    fi
 else
-	COMMAND="terraform $ACTION -state=$STATEPATH -backup=$STATEPATH.backup -var 'local_ip=$LOCAL_IP/32' -var 'kenzan_statepath=$STATEPATH' $TFVARS"
+    if [ "$ACTION" == 'plan' ]; then
+        # as of Terraform 0.7.0 'terraform plan' no longer has the -backup option
+        COMMAND="terraform $ACTION -state=$STATEPATH -var 'local_ip=$LOCAL_IP/32' -var 'kenzan_statepath=$STATEPATH' $TFVARS"
+    else
+    	COMMAND="terraform $ACTION -state=$STATEPATH -backup=$STATEPATH.backup -var 'local_ip=$LOCAL_IP/32' -var 'kenzan_statepath=$STATEPATH' $TFVARS"
+    fi
 fi
 
 echo "Running terraform command:"

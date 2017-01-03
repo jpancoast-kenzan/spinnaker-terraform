@@ -1,5 +1,5 @@
 
-resource "template_file" "output" {
+data "template_file" "output" {
 	template = "output.tpl"
 
 	vars {
@@ -22,5 +22,5 @@ resource "template_file" "output" {
 }
 
 output "" {
-	value = "${template_file.output.rendered}"
+	value = "${data.template_file.output.rendered}"
 }
