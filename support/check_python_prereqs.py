@@ -26,10 +26,10 @@ def main(argv):
 
             installed_version = str(__import__(module_name).__version__)
 
-            installed_version_formatted = re.sub(
-                "\.", '', str(__import__(module_name).__version__))
-            reqd_version = re.sub(
-                "\.", '', reqd_module_names_and_versions[module_name])
+            installed_version_formatted = int(re.sub(
+                "\.", '', str(__import__(module_name).__version__)))
+            reqd_version = int(re.sub(
+                "\.", '', reqd_module_names_and_versions[module_name]))
 
             if installed_version_formatted < reqd_version:
                 print "ERROR: Module " + module_name + " is not of high enough version. You need: v" + reqd_module_names_and_versions[module_name] + ", you have: " + installed_version
