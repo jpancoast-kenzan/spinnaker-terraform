@@ -1,6 +1,6 @@
 
-resource "template_file" "output" {
-	template = "output.tpl"
+data "template_file" "output" {
+	template = "${file("${path.module}/output.tpl")}"
 
 	vars {
 		region = "${var.region}"

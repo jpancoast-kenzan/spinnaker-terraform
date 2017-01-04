@@ -10,7 +10,7 @@ ssh_key_name = "my-aws-account-keypair"
 ssh_private_key_location = "~/.ssh/id_rsa_spinnaker_terraform"
 ssh_public_key_location = "~/.ssh/id_rsa_spinnaker_terraform.pub"
 
-packer_url = "https://dl.bintray.com/mitchellh/packer/packer_0.8.6_linux_amd64.zip"
+packer_url = "https://releases.hashicorp.com/packer/0.12.1/packer_0.12.1_linux_amd64.zip"
 jenkins_instance_type = "t2.small"
 bastion_instance_type = "t2.micro"
 spinnaker_instance_type = "m4.2xlarge"

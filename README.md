@@ -1,5 +1,8 @@
 # Spinnaker Terraform, now with more Googles!
 
+## Updates:
+### 1/4/2017:
+* Now requires Terraform 0.8.2 or above
 
 ## Several things to Note:
 * Store your terraform state file and it's backup in a secure place. It's not a good idea to push it to a public repository.

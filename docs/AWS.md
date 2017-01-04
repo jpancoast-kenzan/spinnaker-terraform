@@ -22,7 +22,7 @@ Other things the terraform does:
 ## To use:
 * Install Pre-Requisites. The scripts will happily complain if the pre-reqs aren't there, but who wants to hear complaining?
   * git
-  * Terraform >= 0.6.9 
+  * Terraform >= 0.8.2
     * Download from https://terraform.io/downloads.html and put it in your $PATH
   * Python Modules:
     * boto >= 2.38.0

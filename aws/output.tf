@@ -1,6 +1,6 @@
 
 data "template_file" "output" {
-	template = "output.tpl"
+	template = "${file("${path.module}/output.tpl")}"
 
 	vars {
 		jenkins_public_ip = "${aws_instance.jenkins.public_ip}"

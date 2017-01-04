@@ -14,7 +14,7 @@ resource "aws_instance" "bastion" {
 
   connection {
     user = "${var.ssh_user}"
-    key_file = "${var.ssh_private_key_location}"
+    private_key = "${file(var.ssh_private_key_location)}"
     agent = false
   }
 
@@ -57,7 +57,7 @@ resource "aws_instance" "jenkins" {
     user = "${var.ssh_user}"
     bastion_host = "${aws_instance.bastion.public_ip}"
     bastion_user = "${var.ssh_user}"
-    key_file = "${var.ssh_private_key_location}"
+    private_key = "${file(var.ssh_private_key_location)}"
     host = "${aws_instance.jenkins.private_ip}"
     agent = false
   }
@@ -104,7 +104,7 @@ resource "aws_instance" "spinnaker" {
     user = "${var.ssh_user}"
     bastion_host = "${aws_instance.bastion.public_ip}"
     bastion_user = "${var.ssh_user}"
-    key_file = "${var.ssh_private_key_location}"
+    private_key = "${file(var.ssh_private_key_location)}"
     host = "${aws_instance.spinnaker.private_ip}"
     agent = false
   }
